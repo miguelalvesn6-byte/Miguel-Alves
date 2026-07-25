@@ -16,12 +16,26 @@
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
   }
 
+  // Plantel de voleibol feminino ainda em formação para 2026/27 — jogadoras confirmadas
+  // (renovações/reforços oficializados) segundo noticiário do FC Porto e imprensa desportiva
+  // a 25/07/2026. Sem calendário divulgado ainda. Confirma e ajusta em "Modalidades FC Porto"
+  // à medida que saem mais anúncios.
+  const SEED_VOLEIBOL_SQUAD = [
+    { id: "seed-1", number: "", name: "Beatriz Basto", position: "Líbero" },
+    { id: "seed-2", number: "", name: "Annie Cesar", position: "Líbero" },
+    { id: "seed-3", number: "", name: "Milana Bozic", position: "Distribuidora" },
+    { id: "seed-4", number: "", name: "Saska Durovic", position: "Central" },
+    { id: "seed-5", number: "", name: "Kelsey Veltman", position: "Central" },
+    { id: "seed-6", number: "", name: "Natalia Murek", position: "Zona 4" },
+    { id: "seed-7", number: "", name: "Caylen Alexander", position: "Zona 4" },
+  ];
+
   function loadState() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) return JSON.parse(raw);
     } catch (e) { /* ignore corrupt storage */ }
-    return {};
+    return { voleibol: { squad: SEED_VOLEIBOL_SQUAD.slice(), matches: [] } };
   }
   function saveState() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
