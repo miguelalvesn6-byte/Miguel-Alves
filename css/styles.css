@@ -276,6 +276,95 @@ body {
 .report-line { display: flex; justify-content: space-between; font-size: 0.9rem; padding: 6px 0; border-bottom: 1px solid var(--gridline); }
 .report-meta { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 18px; }
 
+.modality-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+.modality-pill {
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.modality-pill.active { background: var(--series-blue); color: #fff; border-color: var(--series-blue); }
+.modality-pill .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-left: 6px; vertical-align: middle; }
+.modality-pill .dot.manual { background: var(--warning); }
+
+.modality-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.modality-header img.badge-img { width: 48px; height: 48px; object-fit: contain; }
+.modality-header .modality-title { font-size: 1.1rem; font-weight: 700; margin: 0; }
+.modality-header .modality-sub { color: var(--text-secondary); font-size: 0.85rem; margin-top: 2px; }
+.modality-header .spacer { flex: 1; }
+.modality-header .updated-at { color: var(--text-muted); font-size: 0.8rem; }
+
+.modality-section { margin-bottom: 20px; }
+.modality-section h3 { margin: 0 0 12px; font-size: 1rem; }
+
+.squad-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.player-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+  position: relative;
+}
+.player-card img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; background: var(--surface-2); }
+.player-card .player-number {
+  position: absolute; top: 8px; left: 8px;
+  background: var(--series-blue); color: #fff;
+  font-size: 0.7rem; font-weight: 700;
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.player-card .player-name { font-size: 0.85rem; font-weight: 600; margin-top: 8px; }
+.player-card .player-position { font-size: 0.75rem; color: var(--text-secondary); }
+.player-card .player-edit { position: absolute; top: 6px; right: 6px; cursor: pointer; font-size: 0.8rem; color: var(--text-muted); background: none; border: none; }
+
+.match-list { display: flex; flex-direction: column; gap: 8px; }
+.match-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+}
+.match-row .match-date { color: var(--text-muted); width: 90px; flex-shrink: 0; font-size: 0.8rem; }
+.match-row .match-teams { flex: 1; display: flex; align-items: center; gap: 8px; }
+.match-row .match-teams img { width: 20px; height: 20px; object-fit: contain; }
+.match-row .match-score { font-weight: 700; min-width: 50px; text-align: center; }
+.match-row .match-competition { color: var(--text-muted); font-size: 0.78rem; }
+.match-row .match-edit { cursor: pointer; color: var(--text-muted); background: none; border: none; }
+
+.standings-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.standings-table th, .standings-table td { padding: 8px 10px; text-align: center; border-bottom: 1px solid var(--gridline); }
+.standings-table th { color: var(--text-muted); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; }
+.standings-table td:nth-child(2) { text-align: left; }
+.standings-table tr.is-fcporto { background: rgba(42,120,214,0.08); font-weight: 600; }
+
+.manual-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(250,178,25,0.15); color: var(--warning);
+  border-radius: 999px; padding: 3px 10px; font-size: 0.75rem; font-weight: 600;
+}
+
 @media print {
   .topbar, .tabs, .no-print { display: none !important; }
   body { background: #fff; color: #000; }

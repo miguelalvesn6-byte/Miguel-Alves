@@ -10,6 +10,7 @@ Dashboard pessoal para gerir tarefas, projetos e gerar relatórios de progresso 
 - **Relatório para chefia** — resumo pronto a imprimir/exportar em PDF, com o que foi concluído, próximos prazos, atrasos e bloqueios.
 - **Exportar / Importar dados** — ficheiro JSON para fazer cópia de segurança ou partilhar o estado atual com outra pessoa/dispositivo.
 - **Modo claro/escuro.**
+- **Modalidades FC Porto** — Andebol, Basquetebol e Hóquei em Patins com plantel, calendário e classificação atualizados automaticamente (botão "Atualizar dados", que vai buscar os dados ao site oficial do FC Porto). Futsal e Voleibol ficam com plantel/calendário de introdução manual, já que o FC Porto não tem essas modalidades na sua app/API oficial.
 
 ## Como usar
 

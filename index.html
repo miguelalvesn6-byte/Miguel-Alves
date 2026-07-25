@@ -27,6 +27,7 @@
     <button class="tab" data-tab="projects" role="tab" aria-selected="false">Projetos</button>
     <button class="tab" data-tab="tasks" role="tab" aria-selected="false">Tarefas</button>
     <button class="tab" data-tab="report" role="tab" aria-selected="false">Relatório para chefia</button>
+    <button class="tab" data-tab="fcporto" role="tab" aria-selected="false">Modalidades FC Porto</button>
   </nav>
 
   <main>
@@ -106,7 +107,79 @@
       <div id="reportView" class="report"></div>
     </section>
 
+    <!-- FC PORTO MODALITIES -->
+    <section id="tab-fcporto" class="tab-panel">
+      <div class="section-head">
+        <h2>Modalidades FC Porto</h2>
+      </div>
+
+      <div class="modality-pills" id="modalityPills"></div>
+
+      <div id="modalityContent"></div>
+    </section>
+
   </main>
+</div>
+
+<!-- MANUAL PLAYER MODAL (Futsal / Voleibol) -->
+<div id="manualPlayerModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <h2 id="manualPlayerModalTitle">Novo jogador</h2>
+    <form id="manualPlayerForm">
+      <input type="hidden" id="manualPlayerId" />
+      <label>Número
+        <input type="text" id="manualPlayerNumber" />
+      </label>
+      <label>Nome
+        <input type="text" id="manualPlayerName" required />
+      </label>
+      <label>Posição
+        <input type="text" id="manualPlayerPosition" />
+      </label>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="manualPlayerDelete" hidden>Eliminar</button>
+        <div class="spacer"></div>
+        <button type="button" class="btn btn-ghost" id="manualPlayerCancel">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MANUAL MATCH MODAL (Futsal / Voleibol) -->
+<div id="manualMatchModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <h2 id="manualMatchModalTitle">Novo jogo</h2>
+    <form id="manualMatchForm">
+      <input type="hidden" id="manualMatchId" />
+      <label>Data
+        <input type="date" id="manualMatchDate" required />
+      </label>
+      <label>Adversário
+        <input type="text" id="manualMatchOpponent" required />
+      </label>
+      <div class="form-row">
+        <label>Local
+          <select id="manualMatchVenue">
+            <option value="casa">Casa</option>
+            <option value="fora">Fora</option>
+          </select>
+        </label>
+        <label>Competição
+          <input type="text" id="manualMatchCompetition" />
+        </label>
+      </div>
+      <label>Resultado (opcional)
+        <input type="text" id="manualMatchResult" placeholder="ex: 28-24" />
+      </label>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="manualMatchDelete" hidden>Eliminar</button>
+        <div class="spacer"></div>
+        <button type="button" class="btn btn-ghost" id="manualMatchCancel">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- PROJECT MODAL -->
@@ -193,5 +266,6 @@
 </div>
 
 <script src="js/app.js"></script>
+<script src="js/modalidades.js"></script>
 </body>
 </html>
