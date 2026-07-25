@@ -275,6 +275,60 @@
         ` : `<div class="card list-empty">Classificação ainda não disponível (normalmente só sai depois da época começar).</div>`}
       </div>
       ` : ""}
+
+      ${renderPerformanceSection(ms)}
+    `;
+  }
+
+  function renderPerformanceSection(ms) {
+    const perf = ms.performance || [];
+    const seasons = [...new Set(perf.map((p) => p.season))].sort().reverse().slice(0, 5);
+    const competitions = [...new Set(perf.map((p) => p.competition))];
+
+    const gridHtml = perf.length && seasons.length ? `
+      <div class="table-wrap" style="margin-bottom:14px;">
+        <table class="performance-grid">
+          <thead><tr><th>Competição</th>${seasons.map((s) => `<th>${escapeHtml(s)}</th>`).join("")}</tr></thead>
+          <tbody>
+            ${competitions.map((comp) => `
+              <tr>
+                <td>${escapeHtml(comp)}</td>
+                ${seasons.map((s) => {
+                  const entry = perf.find((p) => p.competition === comp && p.season === s);
+                  if (!entry) return `<td class="empty-cell">—</td>`;
+                  const hasRecord = entry.won != null || entry.drawn != null || entry.lost != null;
+                  return `<td>${escapeHtml(entry.result)}${hasRecord ? `<span class="perf-record">${entry.won || 0}V ${entry.drawn || 0}E ${entry.lost || 0}D</span>` : ""}</td>`;
+                }).join("")}
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    ` : "";
+
+    const listHtml = perf.length ? `
+      <div class="performance-list">
+        ${[...perf].sort((a, b) => (b.season || "").localeCompare(a.season || "")).map((p) => `
+          <div class="list-item" data-perf-id="${p.id}">
+            <div>
+              <span class="list-item-title">${escapeHtml(p.season)} · ${escapeHtml(p.competition)}</span>
+              <div class="list-item-sub">${escapeHtml(p.result)}</div>
+            </div>
+            <button class="btn btn-ghost performance-edit" data-id="${p.id}">Editar</button>
+          </div>
+        `).join("")}
+      </div>
+    ` : `<div class="list-empty">Ainda sem registos de épocas anteriores. Adiciona os resultados de cada competição para veres o comparativo.</div>`;
+
+    return `
+      <div class="modality-section">
+        <div class="section-head" style="margin-bottom:12px;">
+          <h3 style="margin:0;">Desempenho por época</h3>
+          <button class="btn btn-ghost" id="btnAddPerformance">+ Registo</button>
+        </div>
+        ${gridHtml}
+        ${listHtml}
+      </div>
     `;
   }
 
@@ -297,6 +351,7 @@
   function wireAutoModalityEvents(key) {
     const btn = document.getElementById("btnUpdateModality");
     if (btn) btn.addEventListener("click", () => updateAutoModality(key));
+    wirePerformanceEvents(key);
   }
 
   // ---------- Manual modalities (Futsal / Voleibol) ----------
@@ -351,6 +406,8 @@
           </div>
         </div>
       </div>
+
+      ${renderPerformanceSection(ms)}
     `;
   }
 
@@ -365,6 +422,16 @@
     if (addMatchBtn) addMatchBtn.addEventListener("click", () => openManualMatchModal(key, null));
     document.querySelectorAll(".manual-match-edit").forEach((btn) => {
       btn.addEventListener("click", () => openManualMatchModal(key, btn.dataset.id));
+    });
+
+    wirePerformanceEvents(key);
+  }
+
+  function wirePerformanceEvents(key) {
+    const addPerfBtn = document.getElementById("btnAddPerformance");
+    if (addPerfBtn) addPerfBtn.addEventListener("click", () => openPerformanceModal(key, null));
+    document.querySelectorAll(".performance-edit").forEach((btn) => {
+      btn.addEventListener("click", () => openPerformanceModal(key, btn.dataset.id));
     });
   }
 
@@ -474,6 +541,65 @@
     saveState();
     closeManualMatchModal();
     renderModalityContent(manualMatchModality);
+  });
+
+  // ---------- Performance modal (histórico por competição/época) ----------
+  const performanceModal = document.getElementById("performanceModal");
+  let performanceModality = null;
+
+  function openPerformanceModal(modalityKey, perfId) {
+    performanceModality = modalityKey;
+    const ms = modalityState(modalityKey);
+    const entry = perfId ? (ms.performance || []).find((p) => p.id === perfId) : null;
+    document.getElementById("performanceModalTitle").textContent = entry ? "Editar registo" : "Novo registo de época";
+    document.getElementById("performanceId").value = entry ? entry.id : "";
+    document.getElementById("performanceSeason").value = entry ? entry.season : "";
+    document.getElementById("performanceCompetition").value = entry ? entry.competition : "";
+    document.getElementById("performanceResult").value = entry ? entry.result : "";
+    document.getElementById("performanceWon").value = entry && entry.won != null ? entry.won : "";
+    document.getElementById("performanceDrawn").value = entry && entry.drawn != null ? entry.drawn : "";
+    document.getElementById("performanceLost").value = entry && entry.lost != null ? entry.lost : "";
+    document.getElementById("performanceDelete").hidden = !entry;
+    performanceModal.classList.remove("hidden");
+  }
+  function closePerformanceModal() { performanceModal.classList.add("hidden"); }
+
+  document.getElementById("performanceCancel").addEventListener("click", closePerformanceModal);
+  performanceModal.addEventListener("click", (e) => { if (e.target === performanceModal) closePerformanceModal(); });
+
+  document.getElementById("performanceForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const ms = modalityState(performanceModality);
+    if (!ms.performance) ms.performance = [];
+    const id = document.getElementById("performanceId").value;
+    const numOrNull = (v) => (v === "" ? null : Number(v));
+    const data = {
+      season: document.getElementById("performanceSeason").value.trim(),
+      competition: document.getElementById("performanceCompetition").value.trim(),
+      result: document.getElementById("performanceResult").value.trim(),
+      won: numOrNull(document.getElementById("performanceWon").value),
+      drawn: numOrNull(document.getElementById("performanceDrawn").value),
+      lost: numOrNull(document.getElementById("performanceLost").value),
+    };
+    if (!data.season || !data.competition || !data.result) return;
+    if (id) {
+      Object.assign(ms.performance.find((p) => p.id === id), data);
+    } else {
+      ms.performance.push({ id: uid(), ...data });
+    }
+    saveState();
+    closePerformanceModal();
+    renderModalityContent(performanceModality);
+  });
+
+  document.getElementById("performanceDelete").addEventListener("click", () => {
+    const ms = modalityState(performanceModality);
+    const id = document.getElementById("performanceId").value;
+    if (!id || !confirm("Eliminar este registo?")) return;
+    ms.performance = (ms.performance || []).filter((p) => p.id !== id);
+    saveState();
+    closePerformanceModal();
+    renderModalityContent(performanceModality);
   });
 
   // ---------- Init ----------

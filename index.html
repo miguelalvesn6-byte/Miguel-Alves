@@ -182,6 +182,44 @@
   </div>
 </div>
 
+<!-- PERFORMANCE MODAL (histórico por competição/época) -->
+<div id="performanceModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <h2 id="performanceModalTitle">Novo registo de época</h2>
+    <form id="performanceForm">
+      <input type="hidden" id="performanceId" />
+      <div class="form-row">
+        <label>Época
+          <input type="text" id="performanceSeason" placeholder="ex: 2024/2025" required />
+        </label>
+        <label>Competição
+          <input type="text" id="performanceCompetition" placeholder="ex: Campeonato Andebol 1" required />
+        </label>
+      </div>
+      <label>Resultado final
+        <input type="text" id="performanceResult" placeholder="ex: 3º lugar, Campeão, Eliminado nas meias-finais" required />
+      </label>
+      <div class="form-row">
+        <label>Vitórias
+          <input type="number" id="performanceWon" min="0" />
+        </label>
+        <label>Empates
+          <input type="number" id="performanceDrawn" min="0" />
+        </label>
+        <label>Derrotas
+          <input type="number" id="performanceLost" min="0" />
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="performanceDelete" hidden>Eliminar</button>
+        <div class="spacer"></div>
+        <button type="button" class="btn btn-ghost" id="performanceCancel">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- PROJECT MODAL -->
 <div id="projectModal" class="modal-backdrop hidden">
   <div class="modal">

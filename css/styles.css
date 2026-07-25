@@ -359,6 +359,15 @@ body {
 .standings-table td:nth-child(2) { text-align: left; }
 .standings-table tr.is-fcporto { background: rgba(42,120,214,0.08); font-weight: 600; }
 
+.performance-grid { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.performance-grid th, .performance-grid td { padding: 10px 12px; text-align: center; border-bottom: 1px solid var(--gridline); white-space: nowrap; }
+.performance-grid th { color: var(--text-muted); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; }
+.performance-grid td:first-child, .performance-grid th:first-child { text-align: left; font-weight: 600; color: var(--text-primary); white-space: normal; min-width: 160px; }
+.performance-grid td.empty-cell { color: var(--text-muted); }
+.performance-grid td .perf-record { display: block; color: var(--text-muted); font-size: 0.75rem; margin-top: 2px; }
+
+.performance-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+
 .manual-badge {
   display: inline-flex; align-items: center; gap: 6px;
   background: rgba(250,178,25,0.15); color: var(--warning);
