@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Painel de Controlo de Trabalho</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="topbar-title">
+      <h1>Painel de Controlo de Trabalho</h1>
+      <p class="muted">Tarefas, projetos e relatórios num só lugar</p>
+    </div>
+    <div class="topbar-actions">
+      <button id="btnTheme" class="btn btn-ghost" title="Alternar tema">🌓</button>
+      <button id="btnExport" class="btn btn-ghost">Exportar dados</button>
+      <button id="btnImport" class="btn btn-ghost">Importar dados</button>
+      <input type="file" id="fileImport" accept="application/json" hidden />
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="overview" role="tab" aria-selected="true">Visão geral</button>
+    <button class="tab" data-tab="projects" role="tab" aria-selected="false">Projetos</button>
+    <button class="tab" data-tab="tasks" role="tab" aria-selected="false">Tarefas</button>
+    <button class="tab" data-tab="report" role="tab" aria-selected="false">Relatório para chefia</button>
+  </nav>
+
+  <main>
+
+    <!-- OVERVIEW -->
+    <section id="tab-overview" class="tab-panel active">
+      <div class="kpi-row" id="kpiRow"></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h2>Próximos prazos</h2>
+          <div id="upcomingList" class="list"></div>
+        </div>
+        <div class="card">
+          <h2>Progresso dos projetos</h2>
+          <div id="projectProgressList" class="list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="tab-projects" class="tab-panel">
+      <div class="section-head">
+        <h2>Projetos</h2>
+        <button id="btnNewProject" class="btn btn-primary">+ Novo projeto</button>
+      </div>
+      <div id="projectsGrid" class="cards-grid"></div>
+    </section>
+
+    <!-- TASKS -->
+    <section id="tab-tasks" class="tab-panel">
+      <div class="section-head">
+        <h2>Tarefas</h2>
+        <button id="btnNewTask" class="btn btn-primary">+ Nova tarefa</button>
+      </div>
+
+      <div class="filters">
+        <select id="filterProject"><option value="">Todos os projetos</option></select>
+        <select id="filterStatus">
+          <option value="">Todos os estados</option>
+          <option value="pendente">Pendente</option>
+          <option value="em-curso">Em curso</option>
+          <option value="concluida">Concluída</option>
+          <option value="bloqueada">Bloqueada</option>
+        </select>
+        <select id="filterPriority">
+          <option value="">Todas as prioridades</option>
+          <option value="alta">Alta</option>
+          <option value="media">Média</option>
+          <option value="baixa">Baixa</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table class="task-table">
+          <thead>
+            <tr>
+              <th>Tarefa</th>
+              <th>Projeto</th>
+              <th>Prioridade</th>
+              <th>Prazo</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="taskTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- REPORT -->
+    <section id="tab-report" class="tab-panel">
+      <div class="section-head no-print">
+        <h2>Relatório para chefia</h2>
+        <button id="btnPrint" class="btn btn-primary">Imprimir / Exportar PDF</button>
+      </div>
+      <div id="reportView" class="report"></div>
+    </section>
+
+  </main>
+</div>
+
+<!-- PROJECT MODAL -->
+<div id="projectModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <h2 id="projectModalTitle">Novo projeto</h2>
+    <form id="projectForm">
+      <input type="hidden" id="projectId" />
+      <label>Nome
+        <input type="text" id="projectName" required />
+      </label>
+      <label>Descrição
+        <textarea id="projectDesc" rows="2"></textarea>
+      </label>
+      <div class="form-row">
+        <label>Estado
+          <select id="projectStatus">
+            <option value="planeamento">Planeamento</option>
+            <option value="em-curso">Em curso</option>
+            <option value="concluido">Concluído</option>
+            <option value="bloqueado">Bloqueado</option>
+          </select>
+        </label>
+        <label>Progresso (%)
+          <input type="number" id="projectProgress" min="0" max="100" value="0" />
+        </label>
+      </div>
+      <label>Prazo
+        <input type="date" id="projectDeadline" />
+      </label>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="projectDelete" hidden>Eliminar</button>
+        <div class="spacer"></div>
+        <button type="button" class="btn btn-ghost" id="projectCancel">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- TASK MODAL -->
+<div id="taskModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <h2 id="taskModalTitle">Nova tarefa</h2>
+    <form id="taskForm">
+      <input type="hidden" id="taskId" />
+      <label>Título
+        <input type="text" id="taskTitle" required />
+      </label>
+      <label>Projeto
+        <select id="taskProject"><option value="">— Sem projeto —</option></select>
+      </label>
+      <div class="form-row">
+        <label>Prioridade
+          <select id="taskPriority">
+            <option value="alta">Alta</option>
+            <option value="media" selected>Média</option>
+            <option value="baixa">Baixa</option>
+          </select>
+        </label>
+        <label>Estado
+          <select id="taskStatus">
+            <option value="pendente">Pendente</option>
+            <option value="em-curso">Em curso</option>
+            <option value="concluida">Concluída</option>
+            <option value="bloqueada">Bloqueada</option>
+          </select>
+        </label>
+      </div>
+      <label>Prazo
+        <input type="date" id="taskDeadline" />
+      </label>
+      <label>Notas
+        <textarea id="taskNotes" rows="2"></textarea>
+      </label>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="taskDelete" hidden>Eliminar</button>
+        <div class="spacer"></div>
+        <button type="button" class="btn btn-ghost" id="taskCancel">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
