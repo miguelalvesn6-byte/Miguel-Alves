@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard Triatlo — Atleta</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="topbar-title">
+      <h1>Dashboard Triatlo</h1>
+      <p class="muted" id="welcomeMsg">O meu treino</p>
+    </div>
+    <div class="topbar-actions">
+      <button id="btnTheme" class="btn btn-ghost" title="Alternar tema">🌓</button>
+      <button id="btnLogout" class="btn btn-ghost">Sair</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="plan" role="tab" aria-selected="true">O meu plano</button>
+    <button class="tab" data-tab="workouts" role="tab" aria-selected="false">Os meus treinos</button>
+  </nav>
+
+  <main>
+
+    <!-- PLAN -->
+    <section id="tab-plan" class="tab-panel active">
+      <div class="section-head">
+        <h2>Treinos atribuídos pelo coach</h2>
+      </div>
+      <div id="planList" class="list"></div>
+    </section>
+
+    <!-- WORKOUTS -->
+    <section id="tab-workouts" class="tab-panel">
+      <div class="section-head">
+        <h2>Os meus treinos</h2>
+      </div>
+
+      <div class="card" style="margin-bottom: 18px;">
+        <h3 style="margin-top:0;">Importar do TrainingPeaks</h3>
+        <p class="muted">Exporta o treino do TrainingPeaks como ficheiro <code>.tcx</code> e faz upload aqui — os dados (distância, duração, FC, ritmo) são extraídos automaticamente.</p>
+        <input type="file" id="tcxFile" accept=".tcx,application/xml,text/xml" />
+        <p id="importMsg" class="muted"></p>
+      </div>
+
+      <form id="manualWorkoutForm" class="inline-form">
+        <label>Data
+          <input type="date" id="wDate" required />
+        </label>
+        <label>Tipo
+          <select id="wSport" required>
+            <option value="corrida">Corrida</option>
+            <option value="ciclismo">Ciclismo</option>
+            <option value="natacao">Natação</option>
+            <option value="ginasio">Ginásio</option>
+            <option value="alongamento">Alongamentos</option>
+            <option value="outro">Outro</option>
+          </select>
+        </label>
+        <label>Duração (min)
+          <input type="number" id="wDuration" min="0" />
+        </label>
+        <label>Distância (km)
+          <input type="number" id="wDistance" min="0" step="0.01" />
+        </label>
+        <label style="grid-column: 1 / -1;">Notas
+          <textarea id="wNotes" placeholder="Como correu, sensações, etc."></textarea>
+        </label>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">+ Registar treino manual</button>
+        </div>
+      </form>
+
+      <div id="workoutsList" class="list"></div>
+    </section>
+
+  </main>
+</div>
+<script type="module" src="js/athlete.js"></script>
+</body>
+</html>

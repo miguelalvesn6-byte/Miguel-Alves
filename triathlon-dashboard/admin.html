@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard Triatlo — Coach</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="topbar-title">
+      <h1>Dashboard Triatlo</h1>
+      <p class="muted" id="welcomeMsg">Área do coach</p>
+    </div>
+    <div class="topbar-actions">
+      <button id="btnTheme" class="btn btn-ghost" title="Alternar tema">🌓</button>
+      <button id="btnLogout" class="btn btn-ghost">Sair</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="athletes" role="tab" aria-selected="true">Atletas</button>
+    <button class="tab" data-tab="plans" role="tab" aria-selected="false">Planos de Treino</button>
+    <button class="tab" data-tab="workouts" role="tab" aria-selected="false">Treinos</button>
+  </nav>
+
+  <main>
+
+    <!-- ATHLETES -->
+    <section id="tab-athletes" class="tab-panel active">
+      <div class="section-head">
+        <h2>Atletas</h2>
+      </div>
+
+      <form id="newAthleteForm" class="inline-form">
+        <label>Nome
+          <input type="text" id="athleteName" required />
+        </label>
+        <label>Email
+          <input type="email" id="athleteEmail" required />
+        </label>
+        <label>Password temporária
+          <input type="text" id="athletePassword" required minlength="6" />
+        </label>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">+ Criar conta de atleta</button>
+          <span id="newAthleteMsg" class="muted"></span>
+        </div>
+      </form>
+
+      <div id="athletesList" class="list"></div>
+    </section>
+
+    <!-- TRAINING PLANS -->
+    <section id="tab-plans" class="tab-panel">
+      <div class="section-head">
+        <h2>Planos de Treino</h2>
+      </div>
+
+      <form id="newPlanForm" class="inline-form">
+        <label>Atleta
+          <select id="planAthlete" required></select>
+        </label>
+        <label>Categoria
+          <select id="planType" required>
+            <option value="corrida">Corrida</option>
+            <option value="tecnica">Técnica de corrida</option>
+            <option value="ginasio">Ginásio</option>
+            <option value="alongamento">Alongamentos</option>
+            <option value="outro">Outro</option>
+          </select>
+        </label>
+        <label>Data
+          <input type="date" id="planDate" required />
+        </label>
+        <label>Título
+          <input type="text" id="planTitle" required placeholder="Ex.: Treino de técnica — passadas" />
+        </label>
+        <label style="grid-column: 1 / -1;">Descrição / instruções
+          <textarea id="planDescription" placeholder="Detalhes, séries, links de vídeo, etc."></textarea>
+        </label>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">+ Adicionar treino</button>
+          <span id="newPlanMsg" class="muted"></span>
+        </div>
+      </form>
+
+      <div id="plansList" class="list"></div>
+    </section>
+
+    <!-- WORKOUTS -->
+    <section id="tab-workouts" class="tab-panel">
+      <div class="section-head">
+        <h2>Treinos registados</h2>
+        <select id="workoutsAthleteFilter" style="min-width: 200px;"></select>
+      </div>
+      <div id="workoutsStats" class="stat-row"></div>
+      <div id="workoutsList" class="list"></div>
+    </section>
+
+  </main>
+</div>
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>
