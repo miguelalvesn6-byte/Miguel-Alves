@@ -12,6 +12,10 @@ Dashboard pessoal para gerir tarefas, projetos e gerar relatórios de progresso 
 - **Modo claro/escuro.**
 - **Modalidades FC Porto** — Andebol, Basquetebol e Hóquei em Patins com plantel, calendário e classificação atualizados automaticamente (botão "Atualizar dados", que vai buscar os dados ao site oficial do FC Porto). Futsal e Voleibol ficam com plantel/calendário de introdução manual, já que o FC Porto não tem essas modalidades na sua app/API oficial.
 
+## Treino Físico (triatlo)
+
+A pasta [`treino-fisico/`](treino-fisico/) tem um site à parte para os atletas de triatlo: sessões e exercícios de força, core, mobilidade e prevenção, e a escala RPE. Ver [`treino-fisico/README.md`](treino-fisico/README.md).
+
 ## Como usar
 
 Não precisa de instalação nem de servidor: basta abrir `index.html` num browser.

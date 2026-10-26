@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Treino Físico Triatlo</title>
+<meta name="claude:viewport-fit-sides" content="cover" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="estilos.css" />
+</head>
+<body>
+<div class="wrap">
+
+  <header class="topo">
+    <p class="sobre">Swim · Bike · Run · <strong>Força</strong></p>
+    <h1>Treino Físico</h1>
+    <p class="lead">Sessões e exercícios de força, core, mobilidade e prevenção. Abre a sessão que tens no TrainingPeaks e segue a ordem.</p>
+  </header>
+
+  <nav class="tabs" aria-label="Secções">
+    <a class="tab" href="#sessoes" data-tab="sessoes">Sessões</a>
+    <a class="tab" href="#exercicios" data-tab="exercicios">Exercícios</a>
+    <a class="tab" href="#escala" data-tab="escala">Escala RPE</a>
+  </nav>
+
+  <main>
+    <!-- LISTA DE SESSÕES -->
+    <section id="vista-sessoes" class="vista" hidden>
+      <div id="listaSessoes" class="lista-sessoes"></div>
+    </section>
+
+    <!-- LISTA DE EXERCÍCIOS -->
+    <section id="vista-exercicios" class="vista" hidden>
+      <div class="filtros">
+        <label class="pesquisa">
+          <span class="sr">Pesquisar</span>
+          <input id="fPesquisa" type="search" placeholder="Pesquisar exercício ou músculo" autocomplete="off" />
+        </label>
+        <div class="chips" id="fCategoria" role="group" aria-label="Categoria"></div>
+        <div class="chips" id="fDisciplina" role="group" aria-label="Disciplina"></div>
+        <div class="chips" id="fMaterial" role="group" aria-label="Material"></div>
+      </div>
+      <p class="contagem" id="contagem"></p>
+      <div id="listaExercicios" class="lista-ex"></div>
+    </section>
+
+    <!-- ESCALA RPE -->
+    <section id="vista-escala" class="vista" hidden>
+      <div class="escala-intro">
+        <h2>Escala de esforço (RPE CR-10)</h2>
+        <p>No fim de cada sessão, regista no TrainingPeaks o esforço da sessão inteira, 15–30 min depois de acabares. Pensa em como foi o treino no geral, não só o último exercício.</p>
+      </div>
+      <ol class="escala" id="escala"></ol>
+    </section>
+
+    <!-- DETALHE: SESSÃO -->
+    <section id="vista-sessao" class="vista" hidden></section>
+
+    <!-- DETALHE: EXERCÍCIO -->
+    <section id="vista-exercicio" class="vista" hidden></section>
+  </main>
+
+  <footer class="rodape">
+    <p>Se sentires dor aguda (acima de 5/10), interrompe o exercício e fala com o treinador.</p>
+  </footer>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="dados.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
