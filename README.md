@@ -16,6 +16,10 @@ Dashboard pessoal para gerir tarefas, projetos e gerar relatórios de progresso 
 
 A pasta [`treino-fisico/`](treino-fisico/) tem um site à parte para os atletas de triatlo: sessões e exercícios de força, core, mobilidade e prevenção, e a escala RPE. Ver [`treino-fisico/README.md`](treino-fisico/README.md).
 
+## Plataforma de treino com login
+
+A pasta [`plataforma/`](plataforma/) tem a versão com contas: o treinador atribui treinos a cada atleta e os atletas registam o RPE. Configuração em [`plataforma/README.md`](plataforma/README.md).
+
 ## Como usar
 
 Não precisa de instalação nem de servidor: basta abrir `index.html` num browser.

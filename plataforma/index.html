@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Treino Físico Triatlo</title>
+<meta name="theme-color" content="#0b6e7a" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="estilos.css" />
+</head>
+<body>
+<div class="wrap">
+  <header class="barra">
+    <a class="marca" href="#">
+      <span class="sobre">Swim · Bike · Run · <strong>Força</strong></span>
+      <span class="marca-nome">Treino Físico</span>
+    </a>
+    <div class="conta" id="conta" hidden>
+      <span id="contaNome"></span>
+      <button class="btn pequeno" type="button" id="btnSair">Sair</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="menu" aria-label="Secções" hidden></nav>
+
+  <main id="app" aria-live="polite">
+    <p class="vazio">A carregar…</p>
+  </main>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
