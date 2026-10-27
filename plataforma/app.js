@@ -6,9 +6,12 @@
   // ======================================================================
   const sb = window.supabase.createClient(window.CONFIG.supabaseUrl, window.CONFIG.supabaseAnonKey);
 
-  const CATEGORIAS = { forca: "Força", core: "Core", mobilidade: "Mobilidade", prevencao: "Prevenção", ativacao: "Ativação" };
+  const CATEGORIAS = { forca: "Força", core: "Core", mobilidade: "Mobilidade", prevencao: "Prevenção", ativacao: "Ativação", pliometria: "Pliometria" };
   const DISCIPLINAS = { natacao: "Natação", ciclismo: "Ciclismo", corrida: "Corrida" };
-  const MATERIAIS = { ginasio: "Ginásio", halteres: "Halteres", elastico: "Elástico", "peso-corporal": "Peso corporal" };
+  const MATERIAIS = {
+    "peso-corporal": "Peso corporal", elastico: "Elástico", halteres: "Halteres", kettlebell: "Kettlebell", ginasio: "Ginásio",
+    fitball: "Fitball", rolo: "Rolo", trx: "TRX", "bola-medicinal": "Bola medicinal"
+  };
   const ESTADOS = { planeado: "Planeado", feito: "Feito", nao_feito: "Não feito" };
   const ESCALA_RPE = [
     [0, "Repouso", "Nenhum esforço."],
@@ -35,10 +38,12 @@
     sessoes: [],
     atletas: [],          // só treinador
     recuperacao: false,   // a definir nova palavra-passe
-    filtros: { texto: "", categoria: null, disciplina: null },
+    filtros: { texto: "", categoria: null, disciplina: null, material: null },
     rascunho: null,       // formulário de treino em edição
     rascunhoRota: "",     // rota a que o rascunho pertence
-    modeloPendente: null  // sessão-modelo a aplicar ao abrir "novo treino"
+    modeloPendente: null, // sessão-modelo a aplicar ao abrir "novo treino"
+    duplicarDe: null,     // treino a copiar ao abrir "novo treino"
+    treinoAtual: null     // último treino aberto (para duplicar)
   };
 
   // ======================================================================
@@ -59,6 +64,13 @@
     const [a, m, d] = iso.split("-").map(Number);
     return isoLocal(new Date(a, m - 1, d + n));
   }
+  // Segunda-feira da semana de uma data (AAAA-MM-DD).
+  function segundaDe(iso) {
+    const [a, m, d] = iso.split("-").map(Number);
+    return somarDias(iso, -((new Date(a, m - 1, d).getDay() + 6) % 7));
+  }
+  const DIAS_SEMANA = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+
   function dataBonita(iso, longa) {
     const [a, m, d] = iso.split("-").map(Number);
     const dt = new Date(a, m - 1, d);
@@ -409,6 +421,7 @@
       return;
     }
     const atleta = eTreinador() ? est.atletas.find((a) => a.id === t.atleta_id) : null;
+    est.treinoAtual = t;
 
     const factos = `
       <dl class="factos">
@@ -433,7 +446,8 @@
     const acoesTreinador = eTreinador() ? `
       <div class="acoes">
         <a class="btn primario" href="#editar-${t.id}">Editar treino</a>
-        <a class="btn" href="#novo-${t.atleta_id}">Novo treino para ${esc(atleta ? (atleta.nome || atleta.email) : "este atleta")}</a>
+        <button class="btn" type="button" data-duplicar="1">Duplicar (outro dia ou atleta)</button>
+        <a class="btn" href="#novo-${t.atleta_id}">Novo treino em branco</a>
       </div>` : "";
 
     app().innerHTML = `
@@ -511,7 +525,7 @@
     await carregarAtletas();
     const h = hoje();
     const { data: treinos, error } = await sb.from("treinos")
-      .select("id, atleta_id, data, estado, rpe, duracao_real")
+      .select("id, atleta_id, data, titulo, estado, rpe, duracao_real")
       .gte("data", somarDias(h, -6)).lte("data", somarDias(h, 14));
     if (error) throw error;
 
@@ -547,6 +561,15 @@
                 </div>
               </div>`).join("")}
           </div>` : ""}
+
+        ${(() => {
+          const deHoje = treinos.filter((t) => t.data === h);
+          if (!deHoje.length) return "";
+          const feitos = deHoje.filter((t) => t.estado !== "planeado").length;
+          return `
+            <h2 class="titulo-secao">Hoje · ${feitos} de ${deHoje.length} registados</h2>
+            <div class="lista-treinos">${deHoje.map((t) => linhaTreino(t, true)).join("")}</div>`;
+        })()}
 
         ${ativos.length ? `
           <p class="muted legenda-tabela">Últimos 7 dias · carga = soma de RPE × minutos (UA)</p>
@@ -602,11 +625,7 @@
     if (error) throw error;
 
     // Carga por semana (segunda a domingo), últimas 8 semanas.
-    const segunda = (iso) => {
-      const [y, m, d] = iso.split("-").map(Number);
-      const dt = new Date(y, m - 1, d);
-      return somarDias(iso, -((dt.getDay() + 6) % 7));
-    };
+    const segunda = segundaDe;
     const semanas = [];
     for (let i = 7; i >= 0; i--) semanas.push(somarDias(segunda(h), -7 * i));
     const cargaSem = semanas.map((s) => data.filter((t) => segunda(t.data) === s).reduce((acc, t) => acc + carga(t), 0));
@@ -623,7 +642,10 @@
             <h1>${esc(a.nome || a.email)}</h1>
             <p class="muted">${esc(a.email)}</p>
           </div>
-          <a class="btn primario" href="#novo-${a.id}">+ Atribuir treino</a>
+          <div class="acoes-linha">
+            <a class="btn primario" href="#novo-${a.id}">+ Atribuir treino</a>
+            <button class="btn" type="button" data-copiar-semana="${a.id}">Copiar esta semana para a próxima</button>
+          </div>
         </div>
 
         <div class="grafico">
@@ -669,8 +691,18 @@
         est.rascunho = {
           id: null, atletas: atletaId ? [atletaId] : [], data: somarDias(hoje(), 1), sessao_id: "",
           titulo: "", duracao_prevista: "", rpe_alvo: "", notas_treinador: "",
-          blocos: [{ titulo: "Principal", itens: [] }]
+          blocos: [{ titulo: "Principal", itens: [] }],
+          dias: [], semanas: 1
         };
+        const d = est.duplicarDe;
+        if (d) {
+          Object.assign(est.rascunho, {
+            atletas: [d.atleta_id], data: somarDias(d.data, 7), sessao_id: d.sessao_id || "",
+            titulo: d.titulo, duracao_prevista: d.duracao_prevista || "", rpe_alvo: d.rpe_alvo,
+            notas_treinador: d.notas_treinador, blocos: structuredClone(d.blocos || [])
+          });
+          est.duplicarDe = null;
+        }
         if (est.modeloPendente) {
           aplicarModelo(est.modeloPendente);
           est.modeloPendente = null;
@@ -700,7 +732,11 @@
               : ativos.length
                 ? `<div class="checks">${ativos.map((a) => `
                     <label class="check"><input type="checkbox" name="atleta" value="${a.id}" ${r.atletas.includes(a.id) ? "checked" : ""} /> ${esc(a.nome || a.email)}</label>`).join("")}</div>
-                   <p class="muted pequeno-txt">Podes escolher vários atletas: cada um recebe uma cópia que podes ajustar depois.</p>`
+                   <div class="acoes-linha" style="margin-top:.5rem">
+                     <button type="button" class="btn pequeno" data-acao="todos-atletas">Selecionar todos</button>
+                     <button type="button" class="btn pequeno" data-acao="nenhum-atleta">Limpar</button>
+                   </div>
+                   <p class="muted pequeno-txt">Cada atleta recebe uma cópia que podes ajustar depois.</p>`
                 : `<p class="muted">Ainda não tens atletas aprovados.</p>`}
           </fieldset>
 
@@ -713,6 +749,19 @@
               </select>
             </label>
           </div>
+
+          ${r.id ? "" : `
+          <fieldset class="grupo">
+            <legend>Repetir (opcional)</legend>
+            <div class="dias">
+              ${DIAS_SEMANA.map((n, i) => `
+                <label class="dia"><input type="checkbox" name="dia" value="${i}" ${r.dias.includes(i) ? "checked" : ""} /><span>${n}</span></label>`).join("")}
+            </div>
+            <label class="campo curto"><span>Durante quantas semanas</span>
+              <input id="tSemanas" type="number" inputmode="numeric" min="1" max="16" value="${esc(r.semanas)}" />
+            </label>
+            <p class="muted pequeno-txt" id="resumoRepetir">${textoRepetir(r)}</p>
+          </fieldset>`}
 
           <label class="campo"><span>Título</span><input id="tTitulo" type="text" value="${esc(r.titulo)}" placeholder="Ex.: Força base — semana 3" required /></label>
           <div class="linha-campos">
@@ -750,12 +799,40 @@
       </section>`;
   }
 
+  // Datas em que o treino vai ser criado (a partir da data escolhida).
+  function datasRepetir(r) {
+    if (r.id || !r.dias.length) return r.data ? [r.data] : [];
+    const semanas = Math.min(16, Math.max(1, Number(r.semanas) || 1));
+    const inicio = segundaDe(r.data);
+    const datas = [];
+    for (let w = 0; w < semanas; w++) {
+      r.dias.forEach((i) => {
+        const dt = somarDias(inicio, w * 7 + i);
+        if (dt >= r.data) datas.push(dt);
+      });
+    }
+    return datas.sort();
+  }
+
+  function textoRepetir(r) {
+    const datas = datasRepetir(r);
+    const n = Math.max(1, r.atletas.length);
+    if (!r.dias.length) return "Sem repetição: só na data escolhida.";
+    if (!datas.length) return "Nenhum dia a partir da data escolhida.";
+    return `${datas.length} treino${datas.length === 1 ? "" : "s"} por atleta (de ${dataBonita(datas[0])} a ${dataBonita(datas[datas.length - 1])})` +
+      (n > 1 ? ` · ${datas.length * n} no total.` : ".");
+  }
+
   // Lê o formulário para o rascunho (antes de redesenhar ou guardar).
   function lerFormTreino() {
     const r = est.rascunho;
     if (!r || !$("fTreino")) return;
     if (!r.id) r.atletas = [...document.querySelectorAll('input[name="atleta"]:checked')].map((i) => i.value);
     r.data = $("tData").value;
+    if (!r.id) {
+      r.dias = [...document.querySelectorAll('input[name="dia"]:checked')].map((i) => Number(i.value));
+      r.semanas = $("tSemanas").value;
+    }
     r.sessao_id = $("tModelo").value;
     r.titulo = $("tTitulo").value;
     r.duracao_prevista = $("tDur").value;
@@ -799,6 +876,10 @@
       .filter((b) => b.itens.length);
     if (!blocos.length) return toast("Junta pelo menos um exercício.");
 
+    const datas = datasRepetir(r);
+    if (!datas.length) return toast("Nenhum dia da repetição cai a partir da data escolhida.");
+    if (datas.length * Math.max(1, r.atletas.length) > 300) return toast("Demasiados treinos de uma vez (máx. 300).");
+
     const base = {
       data: r.data,
       sessao_id: r.sessao_id || null,
@@ -812,12 +893,15 @@
     btn.disabled = true;
     let res;
     if (r.id) res = await sb.from("treinos").update(base).eq("id", r.id).select("id");
-    else res = await sb.from("treinos").insert(r.atletas.map((a) => ({ ...base, atleta_id: a }))).select("id");
+    else res = await sb.from("treinos")
+      .insert(r.atletas.flatMap((a) => datas.map((dt) => ({ ...base, data: dt, atleta_id: a }))))
+      .select("id");
     btn.disabled = false;
     if (res.error) return erro(res.error);
 
     const destino = r.id ? `#t-${r.id}` : (r.atletas.length === 1 ? `#a-${r.atletas[0]}` : "#atletas");
-    toast(r.id ? "Treino atualizado." : `Treino atribuído a ${r.atletas.length} atleta${r.atletas.length === 1 ? "" : "s"}.`);
+    const total = r.id ? 1 : res.data.length;
+    toast(r.id ? "Treino atualizado." : `${total} treino${total === 1 ? "" : "s"} criado${total === 1 ? "" : "s"}.`);
     est.rascunho = null;
     location.hash = destino;
   }
@@ -838,6 +922,31 @@
     const atleta = r.atletas[0];
     est.rascunho = null;
     location.hash = `#a-${atleta}`;
+  }
+
+  async function copiarSemana(btn, atletaId) {
+    if (btn.dataset.confirmar !== "1") {
+      btn.dataset.confirmar = "1";
+      btn.textContent = "Carrega outra vez para copiar";
+      setTimeout(() => {
+        if (btn.isConnected) { btn.dataset.confirmar = ""; btn.textContent = "Copiar esta semana para a próxima"; }
+      }, 4000);
+      return;
+    }
+    btn.disabled = true;
+    const seg = segundaDe(hoje());
+    const { data, error } = await sb.from("treinos").select("*").eq("atleta_id", atletaId)
+      .gte("data", seg).lte("data", somarDias(seg, 6));
+    if (error) { btn.disabled = false; return erro(error); }
+    if (!data.length) { btn.disabled = false; return toast("Esta semana não tem treinos para copiar."); }
+    const novos = data.map((t) => ({
+      atleta_id: t.atleta_id, data: somarDias(t.data, 7), sessao_id: t.sessao_id, titulo: t.titulo,
+      duracao_prevista: t.duracao_prevista, rpe_alvo: t.rpe_alvo, notas_treinador: t.notas_treinador, blocos: t.blocos
+    }));
+    const res = await sb.from("treinos").insert(novos).select("id");
+    if (res.error) { btn.disabled = false; return erro(res.error); }
+    toast(`${novos.length} treino${novos.length === 1 ? "" : "s"} copiado${novos.length === 1 ? "" : "s"} para a próxima semana.`);
+    rota();
   }
 
   // ======================================================================
@@ -876,6 +985,7 @@
           </label>
           <div class="chips" role="group" aria-label="Categoria">${chips(CATEGORIAS, "categoria")}</div>
           <div class="chips" role="group" aria-label="Disciplina">${chips(DISCIPLINAS, "disciplina")}</div>
+          <div class="chips" role="group" aria-label="Material">${chips(MATERIAIS, "material")}</div>
         </div>
         <p class="contagem" id="contagem"></p>
         <div id="listaExercicios" class="lista-ex"></div>
@@ -889,6 +999,7 @@
     const lista = est.exercicios.filter((e) => {
       if (f.categoria && e.categoria !== f.categoria) return false;
       if (f.disciplina && !(e.disciplinas || []).includes(f.disciplina)) return false;
+      if (f.material && !(e.material || []).includes(f.material)) return false;
       if (t && !normalizar(`${e.nome} ${e.musculos} ${e.nome_en}`).includes(t)) return false;
       return true;
     });
@@ -1022,6 +1133,12 @@
     // Treinador
     if (el.dataset.aprovar) { aprovar(el.dataset.aprovar, true); return; }
     if (el.dataset.recusar) { aprovar(el.dataset.recusar, false); return; }
+    if (el.dataset.duplicar && est.treinoAtual) {
+      est.duplicarDe = est.treinoAtual;
+      location.hash = "#novo";
+      return;
+    }
+    if (el.dataset.copiarSemana) { copiarSemana(el, el.dataset.copiarSemana); return; }
     if (el.dataset.usarModelo) {
       est.modeloPendente = el.dataset.usarModelo;
       location.hash = "#novo";
@@ -1032,6 +1149,8 @@
       if (acao === "apagar") { apagarTreino(el); return; }
       lerFormTreino();
       const r = est.rascunho;
+      if (acao === "todos-atletas") r.atletas = est.atletas.filter((a) => a.aprovado).map((a) => a.id);
+      if (acao === "nenhum-atleta") r.atletas = [];
       if (acao === "add-bloco") r.blocos.push({ titulo: `Bloco ${r.blocos.length + 1}`, itens: [{ ex: "", dose: "", descanso: "" }] });
       if (acao === "rem-bloco") r.blocos.splice(Number(el.dataset.bi), 1);
       if (acao === "add-item") r.blocos[Number(el.dataset.bi)].itens.push({ ex: "", dose: "", descanso: "" });
@@ -1047,6 +1166,11 @@
       if (el.value) aplicarModelo(el.value);
       else est.rascunho.sessao_id = "";
       vistaFormTreino({});
+    }
+    // Atualiza o resumo da repetição.
+    if ((el.name === "dia" || el.name === "atleta" || el.id === "tSemanas" || el.id === "tData") && est.rascunho && $("resumoRepetir")) {
+      lerFormTreino();
+      $("resumoRepetir").textContent = textoRepetir(est.rascunho);
     }
     // Ao escolher um exercício sem dose, sugere a dose habitual.
     if (el.classList.contains("i-ex")) {

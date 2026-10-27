@@ -805,3 +805,20 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   .item-edit .icone { grid-column: 3; grid-row: 2; }
   .rpe-op { font-size: 1rem; padding: .5rem 0; }
 }
+
+/* ---------- Repetir por dias da semana ---------- */
+.dias { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin-bottom: .6rem; }
+.dia { position: relative; cursor: pointer; }
+.dia input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.dia span {
+  display: block;
+  text-align: center;
+  padding: .5rem 0;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  font-weight: 600;
+  font-size: .85rem;
+}
+.dia input:checked + span { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.dia input:focus-visible + span { outline: 3px solid var(--buoy); outline-offset: 2px; }
