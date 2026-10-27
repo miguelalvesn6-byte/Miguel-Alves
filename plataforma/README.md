@@ -11,7 +11,7 @@ Cada atleta só consegue ler os seus próprios treinos; isso é garantido na bas
 
 ## Configuração (uma vez)
 
-1. **Base de dados** — no Supabase, abre **SQL Editor → New query**, cola o conteúdo de `sql/01-estrutura.sql` e carrega em **Run**. Depois faz o mesmo com `sql/02-biblioteca.sql` e `sql/03-biblioteca-alargada.sql` (143 exercícios e 17 sessões-modelo).
+1. **Base de dados** — no Supabase, abre **SQL Editor → New query**, cola o conteúdo de `sql/01-estrutura.sql` e carrega em **Run**. Depois faz o mesmo com `sql/02-biblioteca.sql` (o `sql/03-biblioteca-alargada.sql` é opcional: a plataforma já carrega a biblioteca completa dos ficheiros do site).
 2. **Email de confirmação** — em **Authentication → Sign In / Providers → Email**, desliga **Confirm email**. Como és tu que aprovas cada atleta, não é preciso, e o envio de emails grátis do Supabase é muito limitado (poucos por hora).
 3. **A tua conta** — abre o site, carrega em "Ainda não tenho conta" e regista-te. Depois, no SQL Editor, corre (com o teu email):
    ```sql
@@ -29,7 +29,7 @@ Cada atleta só consegue ler os seus próprios treinos; isso é garantido na bas
 - **Duplicar:** dentro de um treino, "Duplicar" abre uma cópia para outro dia ou outro atleta.
 - **Copiar semana:** na página do atleta, copia todos os treinos desta semana para a semana seguinte.
 - **Hoje:** a página Atletas mostra os treinos de hoje de todos os atletas e quantos já registaram.
-- Os exercícios e as sessões-modelo estão nas tabelas `exercicios` e `sessoes` do Supabase (podes editá-los no **Table Editor**, por exemplo para pôr o link de um vídeo teu no campo `video`).
+- A biblioteca (143 exercícios, 17 sessões-modelo) vem de `../treino-fisico/dados.js` e `../treino-fisico/exercicios-extra.js`. Se um exercício ou sessão com o mesmo `id` existir nas tabelas `exercicios`/`sessoes` do Supabase, essa versão é a que aparece (por exemplo, para pores o link de um vídeo teu no campo `video`).
 
 ## Ficheiros
 

@@ -139,9 +139,22 @@
     ]);
     if (ex.error) throw ex.error;
     if (se.error) throw se.error;
-    est.exercicios = ex.data;
-    est.exPorId = Object.fromEntries(ex.data.map((e) => [e.id, e]));
-    est.sessoes = se.data;
+
+    // A biblioteca base vem dos ficheiros do site (../treino-fisico/dados.js e exercicios-extra.js).
+    // O que estiver na base de dados com o mesmo id substitui-a (ex.: um vídeo teu).
+    const base = (window.EXERCICIOS_BASE || []).map((e) => ({
+      id: e.id, nome: e.nome, nome_en: e.nomeEn || "", categoria: e.categoria, material: e.material,
+      disciplinas: e.disciplinas, musculos: e.musculos, execucao: e.execucao, erros: e.erros,
+      regressao: e.regressao, progressao: e.progressao, dose: e.dose, video: e.video || ""
+    }));
+    const porId = new Map(base.map((e) => [e.id, e]));
+    ex.data.forEach((e) => porId.set(e.id, e));
+    est.exercicios = [...porId.values()].sort((x, y) => x.nome.localeCompare(y.nome, "pt"));
+    est.exPorId = Object.fromEntries(est.exercicios.map((e) => [e.id, e]));
+
+    const sesPorId = new Map((window.SESSOES_BASE || []).map((s) => [s.id, s]));
+    se.data.forEach((s) => sesPorId.set(s.id, s));
+    est.sessoes = [...sesPorId.values()].sort((x, y) => x.nome.localeCompare(y.nome, "pt"));
   }
 
   async function carregarAtletas() {
