@@ -822,3 +822,5 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 }
 .dia input:checked + span { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .dia input:focus-visible + span { outline: 3px solid var(--buoy); outline-offset: 2px; }
+
+.muted-grupo { margin: -.3rem 0 .6rem; color: var(--ink-2); font-size: .9rem; }

@@ -472,3 +472,15 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+.titulo-grupo {
+  margin: 1rem 0 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+}
+.titulo-grupo:first-child { margin-top: 0; }
+.muted-grupo { margin: -.4rem 0 .1rem; color: var(--ink-2); font-size: .9rem; }

@@ -57,7 +57,7 @@
 
   // ---------- Sessões ----------
   function renderSessoes() {
-    $("listaSessoes").innerHTML = SESSOES.map((s) => {
+    const cartao = (s) => {
       const disc = new Set();
       s.blocos.forEach((b) => b.itens.forEach((i) => (exPorId[i.ex]?.disciplinas || []).forEach((d) => disc.add(d))));
       return `
@@ -70,7 +70,15 @@
             <div class="tags" style="margin-top:.5rem">${tagsDisciplinas([...disc])}</div>
           </div>
         </a>`;
-    }).join("");
+    };
+    const completas = SESSOES.filter((s) => s.completa);
+    const outras = SESSOES.filter((s) => !s.completa);
+    $("listaSessoes").innerHTML = `
+      <h2 class="titulo-grupo">Sessões completas · até 1 h</h2>
+      <p class="muted-grupo">Mobilidade → Técnica de corrida → Pliometria → Força inferior → Força superior e core</p>
+      ${completas.map(cartao).join("")}
+      <h2 class="titulo-grupo">Sessões curtas e blocos</h2>
+      ${outras.map(cartao).join("")}`;
   }
 
   function renderSessao(id) {

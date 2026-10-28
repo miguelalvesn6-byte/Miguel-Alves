@@ -154,7 +154,12 @@
 
     const sesPorId = new Map((window.SESSOES_BASE || []).map((s) => [s.id, s]));
     se.data.forEach((s) => sesPorId.set(s.id, s));
-    est.sessoes = [...sesPorId.values()].sort((x, y) => x.nome.localeCompare(y.nome, "pt"));
+    // Sessões completas primeiro (pela ordem definida), depois as restantes por nome.
+    const todas = [...sesPorId.values()];
+    est.sessoes = [
+      ...todas.filter((s) => s.completa),
+      ...todas.filter((s) => !s.completa).sort((x, y) => x.nome.localeCompare(y.nome, "pt"))
+    ];
   }
 
   async function carregarAtletas() {
@@ -704,7 +709,8 @@
         est.rascunho = {
           id: null, atletas: atletaId ? [atletaId] : [], data: somarDias(hoje(), 1), sessao_id: "",
           titulo: "", duracao_prevista: "", rpe_alvo: "", notas_treinador: "",
-          blocos: [{ titulo: "Principal", itens: [] }],
+          blocos: ["1 · Mobilidade", "2 · Técnica de corrida", "3 · Pliometria", "4 · Força inferior — agachamento e peso morto", "5 · Força superior e core"]
+            .map((titulo) => ({ titulo, itens: [] })),
           dias: [], semanas: 1
         };
         const d = est.duplicarDe;
@@ -758,7 +764,11 @@
             <label class="campo"><span>Partir de uma sessão-modelo</span>
               <select id="tModelo">
                 <option value="">— Em branco —</option>
-                ${est.sessoes.map((s) => `<option value="${esc(s.id)}" ${s.id === r.sessao_id ? "selected" : ""}>${esc(s.nome)} (${s.duracao} min)</option>`).join("")}
+                ${[["Sessões completas (até 1 h)", true], ["Sessões curtas e blocos", false]].map(([grupo, comp]) => `
+                  <optgroup label="${grupo}">
+                    ${est.sessoes.filter((s) => !!s.completa === comp)
+                      .map((s) => `<option value="${esc(s.id)}" ${s.id === r.sessao_id ? "selected" : ""}>${esc(s.nome)} (${s.duracao} min)</option>`).join("")}
+                  </optgroup>`).join("")}
               </select>
             </label>
           </div>
@@ -978,9 +988,11 @@
     app().innerHTML = `
       <section class="vista">
         <h1>Biblioteca</h1>
-        <h2 class="titulo-secao">Sessões-modelo</h2>
+        ${[["Sessões completas · até 1 h", true], ["Sessões curtas e blocos", false]].map(([grupo, comp]) => `
+        <h2 class="titulo-secao">${grupo}</h2>
+        ${comp ? `<p class="muted-grupo">Mobilidade → Técnica de corrida → Pliometria → Força inferior → Força superior e core</p>` : ""}
         <div class="lista-sessoes">
-          ${est.sessoes.map((s) => `
+          ${est.sessoes.filter((s) => !!s.completa === comp).map((s) => `
             <a class="cartao-sessao" href="#m-${esc(s.id)}">
               <div class="minutos"><div><b>${s.duracao}</b><br><span>min</span></div></div>
               <div>
@@ -989,7 +1001,7 @@
                 <p class="obj">${esc(s.objetivo)}</p>
               </div>
             </a>`).join("")}
-        </div>
+        </div>`).join("")}
 
         <h2 class="titulo-secao">Exercícios</h2>
         <div class="filtros">
