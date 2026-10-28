@@ -7,7 +7,8 @@
     mobilidade: "Mobilidade",
     prevencao: "Prevenção",
     ativacao: "Ativação",
-    pliometria: "Pliometria"
+    pliometria: "Pliometria",
+    tecnica: "Técnica de corrida"
   };
   const DISCIPLINAS = { natacao: "Natação", ciclismo: "Ciclismo", corrida: "Corrida" };
   const MATERIAIS = {
@@ -19,7 +20,8 @@
     fitball: "Fitball",
     rolo: "Rolo",
     trx: "TRX",
-    "bola-medicinal": "Bola medicinal"
+    "bola-medicinal": "Bola medicinal",
+    "escada-agilidade": "Escada de agilidade"
   };
   const ESCALA_RPE = [
     [0, "Repouso", "Nenhum esforço."],

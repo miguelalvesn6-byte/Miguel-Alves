@@ -6,11 +6,11 @@
   // ======================================================================
   const sb = window.supabase.createClient(window.CONFIG.supabaseUrl, window.CONFIG.supabaseAnonKey);
 
-  const CATEGORIAS = { forca: "Força", core: "Core", mobilidade: "Mobilidade", prevencao: "Prevenção", ativacao: "Ativação", pliometria: "Pliometria" };
+  const CATEGORIAS = { forca: "Força", core: "Core", mobilidade: "Mobilidade", prevencao: "Prevenção", ativacao: "Ativação", pliometria: "Pliometria", tecnica: "Técnica de corrida" };
   const DISCIPLINAS = { natacao: "Natação", ciclismo: "Ciclismo", corrida: "Corrida" };
   const MATERIAIS = {
     "peso-corporal": "Peso corporal", elastico: "Elástico", halteres: "Halteres", kettlebell: "Kettlebell", ginasio: "Ginásio",
-    fitball: "Fitball", rolo: "Rolo", trx: "TRX", "bola-medicinal": "Bola medicinal"
+    fitball: "Fitball", rolo: "Rolo", trx: "TRX", "bola-medicinal": "Bola medicinal", "escada-agilidade": "Escada de agilidade"
   };
   const ESTADOS = { planeado: "Planeado", feito: "Feito", nao_feito: "Não feito" };
   const ESCALA_RPE = [

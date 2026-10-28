@@ -75,7 +75,7 @@ create table if not exists public.exercicios (
   id          text primary key,
   nome        text not null,
   nome_en     text not null default '',
-  categoria   text not null check (categoria in ('forca', 'core', 'mobilidade', 'prevencao', 'ativacao', 'pliometria')),
+  categoria   text not null check (categoria in ('forca', 'core', 'mobilidade', 'prevencao', 'ativacao', 'pliometria', 'tecnica')),
   material    text[] not null default '{}',
   disciplinas text[] not null default '{}',
   musculos    text not null default '',

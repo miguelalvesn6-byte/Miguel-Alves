@@ -2,7 +2,7 @@
 //
 // Para acrescentar um exercício, copia um bloco de EXERCICIOS e muda os campos.
 // - id: só letras minúsculas, números e hífens (é usado no link do exercício)
-// - categoria: "forca" | "core" | "mobilidade" | "prevencao" | "ativacao" | "pliometria"
+// - categoria: "forca" | "core" | "mobilidade" | "prevencao" | "ativacao" | "pliometria" | "tecnica"
 // - material: lista com "ginasio" | "halteres" | "elastico" | "peso-corporal" | "kettlebell" | "fitball" | "rolo" | "trx" | "bola-medicinal"
 // - disciplinas: lista com "natacao" | "ciclismo" | "corrida"
 // - video: link para um vídeo teu (YouTube, Drive...). Vazio = mostra pesquisa no YouTube.

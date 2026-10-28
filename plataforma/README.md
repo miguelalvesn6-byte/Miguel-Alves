@@ -29,7 +29,7 @@ Cada atleta só consegue ler os seus próprios treinos; isso é garantido na bas
 - **Duplicar:** dentro de um treino, "Duplicar" abre uma cópia para outro dia ou outro atleta.
 - **Copiar semana:** na página do atleta, copia todos os treinos desta semana para a semana seguinte.
 - **Hoje:** a página Atletas mostra os treinos de hoje de todos os atletas e quantos já registaram.
-- A biblioteca (143 exercícios, 17 sessões-modelo) vem de `../treino-fisico/dados.js` e `../treino-fisico/exercicios-extra.js`. Se um exercício ou sessão com o mesmo `id` existir nas tabelas `exercicios`/`sessoes` do Supabase, essa versão é a que aparece (por exemplo, para pores o link de um vídeo teu no campo `video`).
+- A biblioteca (169 exercícios, 29 sessões-modelo, incluindo técnica de corrida e pliometria) vem de `../treino-fisico/dados.js`, `exercicios-extra.js` e `tecnica-pliometria.js`. Se um exercício ou sessão com o mesmo `id` existir nas tabelas `exercicios`/`sessoes` do Supabase, essa versão é a que aparece (por exemplo, para pores o link de um vídeo teu no campo `video`).
 
 ## Ficheiros
 
