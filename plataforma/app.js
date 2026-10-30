@@ -43,8 +43,12 @@
     rascunhoRota: "",     // rota a que o rascunho pertence
     modeloPendente: null, // sessão-modelo a aplicar ao abrir "novo treino"
     duplicarDe: null,     // treino a copiar ao abrir "novo treino"
-    treinoAtual: null     // último treino aberto (para duplicar)
+    treinoAtual: null,    // último treino aberto (para duplicar)
+    sessoesNaBD: new Set(),
+    nivel: "basico",      // nível escolhido no planeamento
+    plano: null           // formulário "atribuir fase"
   };
+  try { est.nivel = localStorage.getItem("nivelPlaneamento") || "basico"; } catch (_) { /* sem armazenamento */ }
 
   // ======================================================================
   // Utilitários
@@ -154,6 +158,7 @@
 
     const sesPorId = new Map((window.SESSOES_BASE || []).map((s) => [s.id, s]));
     se.data.forEach((s) => sesPorId.set(s.id, s));
+    est.sessoesNaBD = new Set(se.data.map((s) => s.id));
     // Sessões completas primeiro (pela ordem definida), depois as restantes por nome.
     const todas = [...sesPorId.values()];
     est.sessoes = [
@@ -333,6 +338,7 @@
       else if (h.startsWith("t-")) { marcarTab(eTreinador() ? "atletas" : "treinos"); await vistaTreino(h.slice(2)); }
       else if (eTreinador() && h.startsWith("a-")) { marcarTab("atletas"); await vistaAtleta(h.slice(2)); }
       else if (eTreinador() && (h === "novo" || h.startsWith("novo-"))) { marcarTab("atletas"); vistaFormTreino({ atletaId: h.slice(5) || null }); }
+      else if (eTreinador() && h.startsWith("plano-")) { marcarTab("atletas"); vistaPlano(h.slice(6)); }
       else if (eTreinador() && h.startsWith("editar-")) { marcarTab("atletas"); await vistaFormTreino({ treinoId: h.slice(7) }); }
       else if (eTreinador()) { marcarTab("atletas"); await vistaAtletas(); }
       else { marcarTab("treinos"); await vistaMeusTreinos(); }
@@ -764,10 +770,11 @@
             <label class="campo"><span>Partir de uma sessão-modelo</span>
               <select id="tModelo">
                 <option value="">— Em branco —</option>
-                ${[["Sessões completas (até 1 h)", true], ["Sessões curtas e blocos", false]].map(([grupo, comp]) => `
+                ${[...(window.PLANEAMENTO ? window.PLANEAMENTO.niveis.map((n) => [`Planeamento · ${n.nome}`, (s) => s.nivel === n.id]) : []),
+                   ["Sessões curtas e blocos", (s) => !s.nivel]].map(([grupo, filtro]) => `
                   <optgroup label="${grupo}">
-                    ${est.sessoes.filter((s) => !!s.completa === comp)
-                      .map((s) => `<option value="${esc(s.id)}" ${s.id === r.sessao_id ? "selected" : ""}>${esc(s.nome)} (${s.duracao} min)</option>`).join("")}
+                    ${est.sessoes.filter(filtro)
+                      .map((s) => `<option value="${esc(s.id)}" ${s.id === r.sessao_id ? "selected" : ""}>${esc(s.nivel ? `${s.fase} · Dia ${s.dia} (${s.foco})` : s.nome)} · ${s.duracao} min</option>`).join("")}
                   </optgroup>`).join("")}
               </select>
             </label>
@@ -905,7 +912,8 @@
 
     const base = {
       data: r.data,
-      sessao_id: r.sessao_id || null,
+      // Só as sessões guardadas na base de dados podem ser referenciadas (chave estrangeira).
+      sessao_id: est.sessoesNaBD && est.sessoesNaBD.has(r.sessao_id) ? r.sessao_id : null,
       titulo: r.titulo.trim(),
       duracao_prevista: Number(r.duracao_prevista) || 0,
       rpe_alvo: r.rpe_alvo.trim(),
@@ -945,6 +953,161 @@
     const atleta = r.atletas[0];
     est.rascunho = null;
     location.hash = `#a-${atleta}`;
+  }
+
+  // ======================================================================
+  // Planeamento por fases e níveis
+  // ======================================================================
+  function htmlPlaneamento() {
+    const P = window.PLANEAMENTO;
+    if (!P) return "";
+    const nv = P.niveis.find((n) => n.id === est.nivel) || P.niveis[0];
+    const ni = P.niveis.indexOf(nv);
+    const porId = Object.fromEntries(est.sessoes.map((s) => [s.id, s]));
+    return `
+      <div id="planeamento">
+        <div class="niveis" role="group" aria-label="Nível">
+          ${P.niveis.map((n) => `<button type="button" class="chip-nivel" data-nivel="${n.id}" aria-pressed="${n.id === nv.id}">${n.nome}</button>`).join("")}
+        </div>
+        <p class="nivel-desc">${esc(nv.descricao)}</p>
+        <ol class="fases">
+          ${P.fases.map((f) => `
+            <li class="fase">
+              <div class="fase-cab">
+                <h3>${esc(f.nome)}</h3>
+                <span class="fase-sem">${esc(f.semanas)} · RPE ${esc(f.rpe[ni])}</span>
+              </div>
+              <p class="fase-obj">${esc(f.objetivo)}</p>
+              ${f.nota ? `<p class="fase-nota">${esc(f.nota)}</p>` : ""}
+              <div class="fase-dias">
+                ${f.sessoes[nv.id].map((id) => {
+                  const s = porId[id];
+                  return s ? `<a class="dia-link" href="#m-${id}"><b>Dia ${s.dia}</b><span>${esc(s.foco)}</span><small>${s.duracao} min</small></a>` : "";
+                }).join("")}
+              </div>
+              ${eTreinador() ? `<div class="fase-acoes"><a class="btn primario pequeno" href="#plano-${f.id}--${nv.id}">Atribuir esta fase (${nv.nome})</a></div>` : ""}
+            </li>`).join("")}
+        </ol>
+      </div>`;
+  }
+
+  // Segunda-feira seguinte (ou hoje, se for segunda).
+  function proximaSegunda() {
+    const seg = segundaDe(hoje());
+    return seg === hoje() ? seg : somarDias(seg, 7);
+  }
+
+  function datasPlano(p) {
+    const semanas = Math.min(16, Math.max(1, Number(p.semanas) || 1));
+    const inicio = segundaDe(p.inicio);
+    const lista = [];
+    for (let w = 0; w < semanas; w++) {
+      [[p.dia1, 0], [p.dia2, 1]].forEach(([d, i]) => {
+        const data = somarDias(inicio, w * 7 + Number(d));
+        if (data >= p.inicio) lista.push({ data, dia: i, semana: w + 1 });
+      });
+    }
+    return lista.sort((a, b) => a.data.localeCompare(b.data));
+  }
+
+  function vistaPlano(chave) {
+    const P = window.PLANEAMENTO;
+    const [faseId, nivelId] = chave.split("--");
+    const f = P && P.fases.find((x) => x.id === faseId);
+    const nv = P && P.niveis.find((x) => x.id === nivelId);
+    if (!f || !nv) {
+      app().innerHTML = `<a class="voltar" href="#biblioteca">← Biblioteca</a><p class="vazio">Fase não encontrada.</p>`;
+      return;
+    }
+    if (!est.plano || est.plano.chave !== chave) {
+      est.plano = { chave, atletas: [], inicio: proximaSegunda(), dia1: 1, dia2: 4, semanas: f.semanasNum, descarga: true };
+    }
+    const p = est.plano;
+    const ativos = est.atletas.filter((a) => a.aprovado);
+    const datas = datasPlano(p);
+    const nAtl = p.atletas.length;
+    const sel = (id, v) => `<select id="${id}">${DIAS_SEMANA.map((d, i) => `<option value="${i}" ${Number(v) === i ? "selected" : ""}>${d}</option>`).join("")}</select>`;
+
+    app().innerHTML = `
+      <section class="vista">
+        <a class="voltar" href="#biblioteca">← Biblioteca</a>
+        <h1>Atribuir fase</h1>
+        <p class="muted">${esc(f.nome)} · ${esc(nv.nome)} · ${esc(f.semanas)}</p>
+        <form id="fPlano" class="form" novalidate>
+          <fieldset class="grupo">
+            <legend>Para quem</legend>
+            ${ativos.length
+              ? `<div class="checks">${ativos.map((a) => `
+                  <label class="check"><input type="checkbox" name="pAtleta" value="${a.id}" ${p.atletas.includes(a.id) ? "checked" : ""} /> ${esc(a.nome || a.email)}</label>`).join("")}</div>
+                 <div class="acoes-linha" style="margin-top:.5rem">
+                   <button type="button" class="btn pequeno" data-plano-acao="todos">Selecionar todos</button>
+                   <button type="button" class="btn pequeno" data-plano-acao="nenhum">Limpar</button>
+                 </div>`
+              : `<p class="muted">Ainda não tens atletas aprovados.</p>`}
+          </fieldset>
+          <div class="linha-campos">
+            <label class="campo"><span>Começa na semana de</span><input id="pInicio" type="date" value="${esc(p.inicio)}" /></label>
+            <label class="campo"><span>Semanas</span><input id="pSemanas" type="number" inputmode="numeric" min="1" max="16" value="${esc(p.semanas)}" /></label>
+          </div>
+          <div class="linha-campos">
+            <label class="campo"><span>Dia 1 (${esc(f.dias[0].foco)})</span>${sel("pDia1", p.dia1)}</label>
+            <label class="campo"><span>Dia 2 (${esc(f.dias[1].foco)})</span>${sel("pDia2", p.dia2)}</label>
+          </div>
+          <label class="check"><input type="checkbox" id="pDescarga" ${p.descarga ? "checked" : ""} /> Semana de descarga a cada 4.ª semana (uma série a menos em cada exercício)</label>
+          <p class="resumo-plano">${datas.length && nAtl
+            ? `<strong>${datas.length * nAtl}</strong> treinos: ${datas.length} por atleta, de ${esc(dataBonita(datas[0].data))} a ${esc(dataBonita(datas[datas.length - 1].data))}.`
+            : !nAtl ? "Escolhe pelo menos um atleta." : "Nenhuma data a partir do início escolhido."}</p>
+          <button class="btn primario grande" type="submit" ${datas.length && nAtl ? "" : "disabled"}>Criar treinos</button>
+        </form>
+      </section>`;
+  }
+
+  function lerFormPlano() {
+    const p = est.plano;
+    if (!p || !$("fPlano")) return;
+    p.atletas = [...document.querySelectorAll('input[name="pAtleta"]:checked')].map((i) => i.value);
+    p.inicio = $("pInicio").value || p.inicio;
+    p.semanas = $("pSemanas").value;
+    p.dia1 = Number($("pDia1").value);
+    p.dia2 = Number($("pDia2").value);
+    p.descarga = $("pDescarga").checked;
+  }
+
+  async function guardarPlano() {
+    lerFormPlano();
+    const p = est.plano;
+    if (p.dia1 === p.dia2) return toast("Escolhe dois dias diferentes.");
+    const [faseId, nivelId] = p.chave.split("--");
+    const f = window.PLANEAMENTO.fases.find((x) => x.id === faseId);
+    const sessoes = f.sessoes[nivelId].map((id) => est.sessoes.find((s) => s.id === id));
+    const datas = datasPlano(p);
+    const linhas = [];
+    p.atletas.forEach((atleta) => {
+      datas.forEach(({ data, dia, semana }) => {
+        const s = sessoes[dia];
+        const descarga = p.descarga && semana % 4 === 0;
+        linhas.push({
+          atleta_id: atleta,
+          data,
+          sessao_id: est.sessoesNaBD.has(s.id) ? s.id : null,
+          titulo: `${s.fase} · Dia ${s.dia} — semana ${semana}${descarga ? " (descarga)" : ""}`,
+          duracao_prevista: s.duracao,
+          rpe_alvo: descarga ? String(Math.max(3, parseFloat(s.rpe) - 2)) : s.rpe,
+          notas_treinador: (descarga ? "SEMANA DE DESCARGA: faz uma série a menos em cada exercício e não vás perto da falha. " : "") + (s.nota || ""),
+          blocos: s.blocos
+        });
+      });
+    });
+    if (!linhas.length) return toast("Nada para criar.");
+    if (linhas.length > 500) return toast("Demasiados treinos de uma vez (máx. 500). Escolhe menos atletas ou semanas.");
+    const btn = document.querySelector('#fPlano button[type="submit"]');
+    btn.disabled = true;
+    const { error } = await sb.from("treinos").insert(linhas);
+    btn.disabled = false;
+    if (error) return erro(error);
+    toast(`${linhas.length} treinos criados.`);
+    est.plano = null;
+    location.hash = p.atletas.length === 1 ? `#a-${p.atletas[0]}` : "#atletas";
   }
 
   async function copiarSemana(btn, atletaId) {
@@ -988,11 +1151,14 @@
     app().innerHTML = `
       <section class="vista">
         <h1>Biblioteca</h1>
-        ${[["Sessões completas · até 1 h", true], ["Sessões curtas e blocos", false]].map(([grupo, comp]) => `
+        <h2 class="titulo-secao">Planeamento por fases · 2 dias por semana</h2>
+        <p class="muted-grupo">Cada sessão (até 1 h): Mobilidade → Técnica de corrida → Pliometria → Força inferior → Força superior e core</p>
+        ${htmlPlaneamento()}
+
+        ${[["Sessões curtas e blocos", false]].map(([grupo, comp]) => `
         <h2 class="titulo-secao">${grupo}</h2>
-        ${comp ? `<p class="muted-grupo">Mobilidade → Técnica de corrida → Pliometria → Força inferior → Força superior e core</p>` : ""}
         <div class="lista-sessoes">
-          ${est.sessoes.filter((s) => !!s.completa === comp).map((s) => `
+          ${est.sessoes.filter((s) => !s.nivel).map((s) => `
             <a class="cartao-sessao" href="#m-${esc(s.id)}">
               <div class="minutos"><div><b>${s.duracao}</b><br><span>min</span></div></div>
               <div>
@@ -1057,6 +1223,7 @@
           <dl class="factos">
             <div><dt>Duração</dt><dd>${s.duracao} min</dd></div>
             <div><dt>Fase</dt><dd>${esc(s.fase)}</dd></div>
+            ${s.nivel ? `<div><dt>Nível · dia</dt><dd>${esc((window.PLANEAMENTO.niveis.find((n) => n.id === s.nivel) || {}).nome || s.nivel)} · Dia ${s.dia} (${esc(s.foco)})</dd></div>` : ""}
             <div><dt>Frequência</dt><dd>${esc(s.frequencia)}</dd></div>
             <div><dt>RPE alvo</dt><dd>${esc(s.rpe)} / 10</dd></div>
           </dl>
@@ -1122,6 +1289,7 @@
     if (f.id === "fAuth") { ev.preventDefault(); submeterAuth(f); }
     else if (f.id === "fRegisto") { ev.preventDefault(); submeterRegisto(f); }
     else if (f.id === "fTreino") { ev.preventDefault(); guardarTreino(); }
+    else if (f.id === "fPlano") { ev.preventDefault(); guardarPlano(); }
   });
 
   document.addEventListener("click", (ev) => {
@@ -1164,6 +1332,20 @@
       return;
     }
     if (el.dataset.copiarSemana) { copiarSemana(el, el.dataset.copiarSemana); return; }
+    if (el.classList.contains("chip-nivel")) {
+      est.nivel = el.dataset.nivel;
+      try { localStorage.setItem("nivelPlaneamento", est.nivel); } catch (_) { /* sem armazenamento */ }
+      const cont = $("planeamento");
+      if (cont) cont.outerHTML = htmlPlaneamento();
+      return;
+    }
+    if (el.dataset.planoAcao && est.plano) {
+      lerFormPlano();
+      if (el.dataset.planoAcao === "todos") est.plano.atletas = est.atletas.filter((a) => a.aprovado).map((a) => a.id);
+      if (el.dataset.planoAcao === "nenhum") est.plano.atletas = [];
+      vistaPlano(est.plano.chave);
+      return;
+    }
     if (el.dataset.usarModelo) {
       est.modeloPendente = el.dataset.usarModelo;
       location.hash = "#novo";
@@ -1191,6 +1373,11 @@
       if (el.value) aplicarModelo(el.value);
       else est.rascunho.sessao_id = "";
       vistaFormTreino({});
+    }
+    if (el.closest && el.closest("#fPlano") && est.plano) {
+      lerFormPlano();
+      vistaPlano(est.plano.chave);
+      return;
     }
     // Atualiza o resumo da repetição.
     if ((el.name === "dia" || el.name === "atleta" || el.id === "tSemanas" || el.id === "tData") && est.rascunho && $("resumoRepetir")) {

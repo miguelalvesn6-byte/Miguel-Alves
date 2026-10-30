@@ -484,3 +484,62 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 }
 .titulo-grupo:first-child { margin-top: 0; }
 .muted-grupo { margin: -.4rem 0 .1rem; color: var(--ink-2); font-size: .9rem; }
+
+/* ---------- Planeamento por fases ---------- */
+.niveis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.chip-nivel {
+  font: inherit;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: .5rem 0;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.chip-nivel[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.nivel-desc { margin: .1rem 0 .25rem; color: var(--ink-2); font-size: .9rem; }
+.fases { list-style: none; margin: 0 0 .5rem; padding: 0; display: grid; gap: .6rem; counter-reset: fase; }
+.fase {
+  counter-increment: fase;
+  padding: .9rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  display: grid;
+  gap: .4rem;
+}
+.fase-cab { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .2rem .75rem; }
+.fase-cab h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.35rem;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+.fase-cab h3::before { content: counter(fase) " · "; color: var(--accent); }
+.fase-sem { font-size: .85rem; color: var(--muted); font-weight: 600; }
+.fase-obj { margin: 0; color: var(--ink-2); font-size: .93rem; }
+.fase-nota { margin: 0; font-size: .85rem; color: var(--buoy); }
+.fase-dias { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; margin-top: .2rem; }
+.dia-link {
+  display: grid;
+  gap: .05rem;
+  padding: .55rem .75rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  text-decoration: none;
+  color: var(--ink);
+  min-width: 0;
+}
+.dia-link:hover { border-color: var(--accent); }
+.dia-link b { font-family: var(--display); font-weight: 800; font-size: 1.1rem; text-transform: uppercase; color: var(--accent); }
+.dia-link span { font-weight: 600; font-size: .9rem; }
+.dia-link small { color: var(--muted); font-size: .8rem; }
+.fase-acoes { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .2rem; }

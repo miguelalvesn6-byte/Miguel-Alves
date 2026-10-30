@@ -71,14 +71,46 @@
           </div>
         </a>`;
     };
-    const completas = SESSOES.filter((s) => s.completa);
     const outras = SESSOES.filter((s) => !s.completa);
     $("listaSessoes").innerHTML = `
-      <h2 class="titulo-grupo">Sessões completas · até 1 h</h2>
-      <p class="muted-grupo">Mobilidade → Técnica de corrida → Pliometria → Força inferior → Força superior e core</p>
-      ${completas.map(cartao).join("")}
+      <h2 class="titulo-grupo">Planeamento por fases · 2 dias por semana</h2>
+      <p class="muted-grupo">Cada sessão (até 1 h): Mobilidade → Técnica de corrida → Pliometria → Força inferior → Força superior e core</p>
+      ${htmlPlaneamento(nivelAtual, (id) => "#s-" + id)}
       <h2 class="titulo-grupo">Sessões curtas e blocos</h2>
       ${outras.map(cartao).join("")}`;
+  }
+
+  // ---------- Planeamento por fases e níveis ----------
+  let nivelAtual = "basico";
+  try { nivelAtual = localStorage.getItem("nivelPlaneamento") || "basico"; } catch (_) { /* sem armazenamento */ }
+
+  function htmlPlaneamento(nivel, linkSessao) {
+    const P = window.PLANEAMENTO;
+    if (!P) return "";
+    const nv = P.niveis.find((n) => n.id === nivel) || P.niveis[0];
+    const porId = Object.fromEntries(SESSOES.map((s) => [s.id, s]));
+    return `
+      <div class="niveis" role="group" aria-label="Nível">
+        ${P.niveis.map((n) => `<button type="button" class="chip-nivel" data-nivel="${n.id}" aria-pressed="${n.id === nv.id}">${n.nome}</button>`).join("")}
+      </div>
+      <p class="nivel-desc">${esc(nv.descricao)}</p>
+      <ol class="fases">
+        ${P.fases.map((f) => `
+          <li class="fase">
+            <div class="fase-cab">
+              <h3>${esc(f.nome)}</h3>
+              <span class="fase-sem">${esc(f.semanas)} · RPE ${esc(f.rpe[P.niveis.indexOf(nv)])}</span>
+            </div>
+            <p class="fase-obj">${esc(f.objetivo)}</p>
+            ${f.nota ? `<p class="fase-nota">${esc(f.nota)}</p>` : ""}
+            <div class="fase-dias">
+              ${f.sessoes[nv.id].map((id) => {
+                const s = porId[id];
+                return `<a class="dia-link" href="${linkSessao(id)}"><b>Dia ${s.dia}</b><span>${esc(s.foco)}</span><small>${s.duracao} min</small></a>`;
+              }).join("")}
+            </div>
+          </li>`).join("")}
+      </ol>`;
   }
 
   function renderSessao(id) {
@@ -113,6 +145,7 @@
         <dl class="factos">
           <div><dt>Duração</dt><dd>${s.duracao} min</dd></div>
           <div><dt>Fase</dt><dd>${esc(s.fase)}</dd></div>
+          ${s.nivel ? `<div><dt>Nível · dia</dt><dd>${esc((window.PLANEAMENTO.niveis.find((n) => n.id === s.nivel) || {}).nome || s.nivel)} · Dia ${s.dia} (${esc(s.foco)})</dd></div>` : ""}
           <div><dt>Frequência</dt><dd>${esc(s.frequencia)}</dd></div>
           <div><dt>Onde</dt><dd>${esc(s.local)}</dd></div>
           <div><dt>RPE alvo</dt><dd><span class="rpe-alvo"><i style="background:${corRpe(rpeNum)}"></i>${esc(s.rpe)} / 10</span></dd></div>
@@ -292,6 +325,13 @@
 
   // ---------- Eventos ----------
   document.addEventListener("click", (ev) => {
+    const chipNivel = ev.target.closest(".chip-nivel");
+    if (chipNivel) {
+      nivelAtual = chipNivel.dataset.nivel;
+      try { localStorage.setItem("nivelPlaneamento", nivelAtual); } catch (_) { /* sem armazenamento */ }
+      renderSessoes();
+      return;
+    }
     const chip = ev.target.closest(".chip");
     if (chip) {
       filtros[chip.dataset.f] = chip.dataset.v || null;

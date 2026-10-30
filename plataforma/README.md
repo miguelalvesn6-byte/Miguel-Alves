@@ -29,7 +29,8 @@ Cada atleta só consegue ler os seus próprios treinos; isso é garantido na bas
 - **Duplicar:** dentro de um treino, "Duplicar" abre uma cópia para outro dia ou outro atleta.
 - **Copiar semana:** na página do atleta, copia todos os treinos desta semana para a semana seguinte.
 - **Hoje:** a página Atletas mostra os treinos de hoje de todos os atletas e quantos já registaram.
-- A biblioteca (169 exercícios, 29 sessões-modelo, incluindo técnica de corrida e pliometria) vem de `../treino-fisico/dados.js`, `exercicios-extra.js`, `tecnica-pliometria.js` e `sessoes-completas.js` (8 sessões completas de até 1 h: mobilidade → técnica de corrida → pliometria → força inferior → força superior e core). Se um exercício ou sessão com o mesmo `id` existir nas tabelas `exercicios`/`sessoes` do Supabase, essa versão é a que aparece (por exemplo, para pores o link de um vídeo teu no campo `video`).
+- **Planeamento por fases:** em Biblioteca escolhe o nível (Básico, Avançado, Elite) e, em cada fase (Preparatória geral, Preparatória específica, Pré-competitiva, Competitiva, Transição), carrega em **Atribuir esta fase**. Escolhes os atletas, a semana de início, os dois dias da semana e o número de semanas, e são criados todos os treinos da fase (com semana de descarga a cada 4.ª semana, opcional).
+- A biblioteca (169 exercícios, 29 sessões-modelo, incluindo técnica de corrida e pliometria) vem de `../treino-fisico/dados.js`, `exercicios-extra.js`, `tecnica-pliometria.js` `sessoes-completas.js` e `planeamento.js` (5 fases × 3 níveis × 2 dias = 30 sessões de até 1 h: mobilidade → técnica de corrida → pliometria → força inferior → força superior e core). Se um exercício ou sessão com o mesmo `id` existir nas tabelas `exercicios`/`sessoes` do Supabase, essa versão é a que aparece (por exemplo, para pores o link de um vídeo teu no campo `video`).
 
 ## Ficheiros
 
