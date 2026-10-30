@@ -884,3 +884,19 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 .dia-link small { color: var(--muted); font-size: .8rem; }
 .fase-acoes { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .2rem; }
 .resumo-plano { margin: 0; padding: .7rem .9rem; border-radius: 10px; background: var(--accent-soft); color: var(--ink); }
+
+/* ---------- Correções de QA ---------- */
+body { overflow-wrap: anywhere; }
+.passo { grid-template-columns: 2rem minmax(0, 1fr) minmax(0, 42%); }
+.passo .dose { white-space: normal; overflow-wrap: normal; }
+.chips { flex-wrap: wrap; overflow-x: visible; }
+@media (max-width: 30rem) {
+  .passo { grid-template-columns: 1.5rem minmax(0, 1fr) minmax(0, 45%); }
+}
+.bloco-edit-cab { flex-wrap: wrap; }
+.bloco-edit-cab input { flex: 1 1 14rem; }
+.form > .btn:not(.grande) { justify-self: start; }
+@media (max-width: 30rem) {
+  .rpe-botoes { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .rpe-op { padding: .7rem 0; font-size: 1.2rem; }
+}

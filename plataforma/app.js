@@ -113,11 +113,32 @@
     if (m.includes("invalid login")) return "Email ou palavra-passe errados.";
     if (m.includes("email not confirmed")) return "Ainda não confirmaste o email. Vê a tua caixa de correio.";
     if (m.includes("already registered")) return "Já existe uma conta com este email. Usa \"Entrar\".";
+    if (m.includes("different from the old")) return "A nova palavra-passe tem de ser diferente da anterior.";
     if (m.includes("password should be")) return "A palavra-passe tem de ter pelo menos 6 caracteres.";
     if (m.includes("rate limit")) return "Demasiadas tentativas. Espera uns minutos e tenta outra vez.";
     if (m.includes("failed to fetch")) return "Sem ligação. Verifica a internet.";
     return msg;
   }
+
+  // Mostra um erro a ocupar a página, com botão para tentar outra vez (ex.: sem rede ao arrancar).
+  function ecraErro(e, acao) {
+    console.error(e);
+    const msg = traduzirErro((e && (e.message || e.error_description)) || "Algo correu mal.");
+    app().innerHTML = `
+      <section class="auth">
+        <h1>Não foi possível carregar</h1>
+        <p>${esc(msg)}</p>
+        <button type="button" class="btn primario" data-tentar="${acao}">Tentar outra vez</button>
+      </section>`;
+  }
+
+  // "4 × 10/perna" → "3 × 10/perna" (semana de descarga: uma série a menos, mínimo 1).
+  function menosUmaSerie(dose) {
+    return String(dose || "").replace(/^(\d+)(\s*[×x])/, (m, n, resto) => `${Math.max(1, Number(n) - 1)}${resto}`);
+  }
+
+  // Inteiro entre min e max (para o campo de semanas).
+  const limitar = (v, min, max) => Math.min(max, Math.max(min, Math.round(Number(v)) || min));
 
   function tagsDisciplinas(lista) {
     return (lista || []).map((d) => `<span class="tag d-${d}">${DISCIPLINAS[d] || d}</span>`).join("");
@@ -242,6 +263,7 @@
         if (error) throw error;
       } else if (modo === "registar") {
         const nome = $("aNome").value.trim();
+        if (!nome) { toast("Escreve o teu nome."); return; }
         const { data, error } = await sb.auth.signUp({
           email,
           password: pass,
@@ -275,11 +297,11 @@
     }
   }
 
-  async function iniciarSessao() {
+  async function iniciarSessao(verificar) {
     try {
       await carregarPerfil();
     } catch (e) {
-      erro(e);
+      ecraErro(e, "sessao");
       return;
     }
     $("conta").hidden = false;
@@ -287,6 +309,7 @@
 
     if (!est.perfil || (!est.perfil.aprovado && !eTreinador())) {
       $("menu").hidden = true;
+      if (verificar) toast("A tua conta ainda está à espera de aprovação.");
       app().innerHTML = `
         <section class="auth">
           <h1>À espera de aprovação</h1>
@@ -300,7 +323,7 @@
       await carregarBiblioteca();
       if (eTreinador()) await carregarAtletas();
     } catch (e) {
-      erro(e);
+      ecraErro(e, "sessao");
       return;
     }
     desenharMenu();
@@ -327,7 +350,8 @@
     if (!est.utilizador || est.recuperacao || !est.perfil) return;
     if (!est.perfil.aprovado && !eTreinador()) return;
     const inicial = eTreinador() ? "atletas" : "treinos";
-    const h = decodeURIComponent(location.hash.slice(1)) || inicial;
+    let h;
+    try { h = decodeURIComponent(location.hash.slice(1)) || inicial; } catch (_) { h = inicial; }
     if (est.rascunhoRota !== h) est.rascunho = null;
     est.rascunhoRota = h;
 
@@ -339,12 +363,12 @@
       else if (h.startsWith("t-")) { marcarTab(eTreinador() ? "atletas" : "treinos"); await vistaTreino(h.slice(2)); }
       else if (eTreinador() && h.startsWith("a-")) { marcarTab("atletas"); await vistaAtleta(h.slice(2)); }
       else if (eTreinador() && (h === "novo" || h.startsWith("novo-"))) { marcarTab("atletas"); vistaFormTreino({ atletaId: h.slice(5) || null }); }
-      else if (eTreinador() && h.startsWith("plano-")) { marcarTab("atletas"); vistaPlano(h.slice(6)); }
+      else if (eTreinador() && h.startsWith("plano-")) { marcarTab("biblioteca"); vistaPlano(h.slice(6)); }
       else if (eTreinador() && h.startsWith("editar-")) { marcarTab("atletas"); await vistaFormTreino({ treinoId: h.slice(7) }); }
       else if (eTreinador()) { marcarTab("atletas"); await vistaAtletas(); }
       else { marcarTab("treinos"); await vistaMeusTreinos(); }
     } catch (e) {
-      erro(e);
+      ecraErro(e, "rota");
     }
     if (h !== ultimaRota) window.scrollTo(0, 0);
     ultimaRota = h;
@@ -366,10 +390,17 @@
             const desc = e ? `<span class="desc">${esc(e.musculos)}</span>` : "";
             const nota = i.nota ? `<span class="desc nota-item">${esc(i.nota)}</span>` : "";
             const descanso = i.descanso && i.descanso !== "—" ? `<small>desc. ${esc(i.descanso)}</small>` : "";
-            return `<li class="passo"><span class="n">${n}</span><div>${nome}${desc}${nota}</div><div class="dose">${esc(i.dose)}${descanso}</div></li>`;
+            const [dose, extra] = partirDose(i.dose);
+            return `<li class="passo"><span class="n">${n}</span><div>${nome}${desc}${nota}</div><div class="dose">${esc(dose)}${extra ? `<small>${esc(extra)}</small>` : ""}${descanso}</div></li>`;
           }).join("")}
         </ol>
       </div>`).join("");
+  }
+
+  // "4 × 10/perna (pausa em baixo)" → ["4 × 10/perna", "pausa em baixo"]
+  function partirDose(dose) {
+    const m = String(dose || "").match(/^(.*?)\s*\((.+)\)\s*$/);
+    return m ? [m[1], m[2]] : [String(dose || ""), ""];
   }
 
   function linhaTreino(t, mostrarAtleta) {
@@ -486,7 +517,9 @@
         ${t.notas_treinador ? `<p class="nota">${esc(t.notas_treinador)}</p>` : ""}
         ${eTreinador() ? resultado : ""}
         ${htmlBlocos(t.blocos)}
-        ${eTreinador() ? "" : formRegisto(t)}
+        ${eTreinador() ? "" : t.data > somarDias(hoje(), 1)
+          ? `<p class="vazio-caixa">Podes registar este treino a partir do dia ${esc(dataBonita(t.data))}.</p>`
+          : formRegisto(t)}
       </section>`;
   }
 
@@ -495,7 +528,7 @@
     const rpe = t.rpe ?? null;
     const dur = t.duracao_real ?? t.duracao_prevista ?? "";
     return `
-      <form class="registo" id="fRegisto" data-id="${t.id}">
+      <form class="registo" id="fRegisto" data-id="${t.id}" novalidate>
         <h3>Como correu?</h3>
         <p class="muted">Regista 15–30 min depois de acabares. ${t.estado !== "planeado" ? "Já registaste este treino; podes corrigir." : ""}</p>
         <div class="seg" role="radiogroup" aria-label="Fizeste o treino?">
@@ -526,6 +559,10 @@
     const dur = $("rDur").value === "" ? null : Number($("rDur").value);
     if (estado === "feito" && (rpe == null || !dur)) {
       toast("Indica o RPE e os minutos.");
+      return;
+    }
+    if (estado === "feito" && (!Number.isInteger(dur) || dur < 1 || dur > 600)) {
+      toast("Os minutos têm de ser um número inteiro entre 1 e 600.");
       return;
     }
     const btn = form.querySelector("button[type=submit]");
@@ -668,7 +705,9 @@
             <p class="muted">${esc(a.email)}</p>
           </div>
           <div class="acoes-linha">
-            <a class="btn primario" href="#novo-${a.id}">+ Atribuir treino</a>
+            ${a.aprovado || a.papel === "treinador"
+              ? `<a class="btn primario" href="#novo-${a.id}">+ Atribuir treino</a>`
+              : `<span class="pill e-pendente">À espera de aprovação</span>`}
             <button class="btn" type="button" data-copiar-semana="${a.id}">Copiar esta semana para a próxima</button>
           </div>
         </div>
@@ -679,7 +718,7 @@
             ${cargaSem.map((v, i) => `
               <div class="barra-col">
                 <span class="barra-val">${v || ""}</span>
-                <div class="barra" style="height:${Math.round((v / max) * 100)}%" ${i === 7 ? 'data-atual="1"' : ""}></div>
+                <div class="barra" style="height:${Math.round((v / max) * 82)}%" ${i === 7 ? 'data-atual="1"' : ""}></div>
                 <span class="barra-lab">${semanas[i].slice(8)}/${semanas[i].slice(5, 7)}</span>
               </div>`).join("")}
           </div>
@@ -812,7 +851,7 @@
                 </div>
                 ${b.itens.map((it, ii) => `
                   <div class="item-edit" data-ii="${ii}">
-                    <select class="i-ex" aria-label="Exercício">${opcoesEx(it.ex)}</select>
+                    <select class="i-ex" aria-label="Exercício" data-ex="${esc(it.ex)}">${opcoesEx(it.ex)}</select>
                     <input class="i-dose" type="text" value="${esc(it.dose)}" placeholder="3 × 8" aria-label="Séries × repetições" />
                     <input class="i-desc" type="text" value="${esc(it.descanso || "")}" placeholder="Descanso" aria-label="Descanso" />
                     <input class="i-nota" type="text" value="${esc(it.nota || "")}" placeholder="Nota (ex.: 12 kg)" aria-label="Nota" />
@@ -832,23 +871,27 @@
   }
 
   // Datas em que o treino vai ser criado (a partir da data escolhida).
+  // N semanas × dias escolhidos, a contar a partir da data de início (se o início for a meio
+  // da semana, os dias que já passaram são compensados na semana a seguir).
   function datasRepetir(r) {
-    if (r.id || !r.dias.length) return r.data ? [r.data] : [];
-    const semanas = Math.min(16, Math.max(1, Number(r.semanas) || 1));
+    if (!r.data) return [];
+    if (r.id || !r.dias.length) return [r.data];
+    const semanas = limitar(r.semanas, 1, 16);
     const inicio = segundaDe(r.data);
     const datas = [];
-    for (let w = 0; w < semanas; w++) {
-      r.dias.forEach((i) => {
+    for (let w = 0; w <= semanas; w++) {
+      [...r.dias].sort((a, b) => a - b).forEach((i) => {
         const dt = somarDias(inicio, w * 7 + i);
         if (dt >= r.data) datas.push(dt);
       });
     }
-    return datas.sort();
+    return datas.slice(0, semanas * r.dias.length);
   }
 
   function textoRepetir(r) {
     const datas = datasRepetir(r);
     const n = Math.max(1, r.atletas.length);
+    if (!r.data) return "Escolhe a data de início.";
     if (!r.dias.length) return "Sem repetição: só na data escolhida.";
     if (!datas.length) return "Nenhum dia a partir da data escolhida.";
     return `${datas.length} treino${datas.length === 1 ? "" : "s"} por atleta (de ${dataBonita(datas[0])} a ${dataBonita(datas[datas.length - 1])})` +
@@ -863,7 +906,8 @@
     r.data = $("tData").value;
     if (!r.id) {
       r.dias = [...document.querySelectorAll('input[name="dia"]:checked')].map((i) => Number(i.value));
-      r.semanas = $("tSemanas").value;
+      r.semanas = limitar($("tSemanas").value, 1, 16);
+      $("tSemanas").value = r.semanas;
     }
     r.sessao_id = $("tModelo").value;
     r.titulo = $("tTitulo").value;
@@ -889,11 +933,12 @@
     const s = est.sessoes.find((x) => x.id === id);
     const r = est.rascunho;
     if (!s) return;
-    r.sessao_id = s.id;
     r.titulo = s.nome;
     r.duracao_prevista = s.duracao;
     r.rpe_alvo = s.rpe;
-    if (!r.notas_treinador) r.notas_treinador = s.nota;
+    const anterior = est.sessoes.find((x) => x.id === r.sessao_id);
+    if (!r.notas_treinador || (anterior && r.notas_treinador === anterior.nota)) r.notas_treinador = s.nota || "";
+    r.sessao_id = s.id;
     r.blocos = structuredClone(s.blocos);
   }
 
@@ -999,17 +1044,37 @@
     return seg === hoje() ? seg : somarDias(seg, 7);
   }
 
+  // Alterna Dia 1 / Dia 2 a partir da data de início, até completar N semanas (2 treinos cada).
   function datasPlano(p) {
-    const semanas = Math.min(16, Math.max(1, Number(p.semanas) || 1));
+    if (!p.inicio || Number(p.dia1) === Number(p.dia2)) return [];
+    const semanas = limitar(p.semanas, 1, 16);
     const inicio = segundaDe(p.inicio);
-    const lista = [];
-    for (let w = 0; w < semanas; w++) {
-      [[p.dia1, 0], [p.dia2, 1]].forEach(([d, i]) => {
-        const data = somarDias(inicio, w * 7 + Number(d));
-        if (data >= p.inicio) lista.push({ data, dia: i, semana: w + 1 });
+    const dias = [Number(p.dia1), Number(p.dia2)].sort((a, b) => a - b);
+    const datas = [];
+    for (let w = 0; w <= semanas; w++) {
+      dias.forEach((d) => {
+        const data = somarDias(inicio, w * 7 + d);
+        if (data >= p.inicio) datas.push({ data, dia: d === Number(p.dia1) ? 0 : 1 });
       });
     }
-    return lista.sort((a, b) => a.data.localeCompare(b.data));
+    return datas.slice(0, semanas * 2).map((x, k) => ({ ...x, semana: Math.floor(k / 2) + 1 }));
+  }
+
+  function textoPlano(p) {
+    const datas = datasPlano(p);
+    const nAtl = p.atletas.length;
+    if (!nAtl) return "Escolhe pelo menos um atleta.";
+    if (!p.inicio) return "Escolhe a data de início.";
+    if (Number(p.dia1) === Number(p.dia2)) return "O Dia 1 e o Dia 2 têm de ser dias diferentes.";
+    return `<strong>${datas.length * nAtl}</strong> treinos: ${datas.length} por atleta, de ${esc(dataBonita(datas[0].data))} a ${esc(dataBonita(datas[datas.length - 1].data))}.`;
+  }
+
+  // Atualiza só o resumo e o botão (não redesenha o formulário, para não perder o foco).
+  function atualizarResumoPlano() {
+    const p = est.plano;
+    const ok = datasPlano(p).length && p.atletas.length;
+    $("resumoPlano").innerHTML = textoPlano(p);
+    document.querySelector('#fPlano button[type="submit"]').disabled = !ok;
   }
 
   function vistaPlano(chave) {
@@ -1056,9 +1121,7 @@
             <label class="campo"><span>Dia 2 (${esc(f.dias[1].foco)})</span>${sel("pDia2", p.dia2)}</label>
           </div>
           <label class="check"><input type="checkbox" id="pDescarga" ${p.descarga ? "checked" : ""} /> Semana de descarga a cada 4.ª semana (uma série a menos em cada exercício)</label>
-          <p class="resumo-plano">${datas.length && nAtl
-            ? `<strong>${datas.length * nAtl}</strong> treinos: ${datas.length} por atleta, de ${esc(dataBonita(datas[0].data))} a ${esc(dataBonita(datas[datas.length - 1].data))}.`
-            : !nAtl ? "Escolhe pelo menos um atleta." : "Nenhuma data a partir do início escolhido."}</p>
+          <p class="resumo-plano" id="resumoPlano">${textoPlano(p)}</p>
           <button class="btn primario grande" type="submit" ${datas.length && nAtl ? "" : "disabled"}>Criar treinos</button>
         </form>
       </section>`;
@@ -1068,8 +1131,8 @@
     const p = est.plano;
     if (!p || !$("fPlano")) return;
     p.atletas = [...document.querySelectorAll('input[name="pAtleta"]:checked')].map((i) => i.value);
-    p.inicio = $("pInicio").value || p.inicio;
-    p.semanas = $("pSemanas").value;
+    p.inicio = $("pInicio").value;
+    p.semanas = limitar($("pSemanas").value, 1, 16);
     p.dia1 = Number($("pDia1").value);
     p.dia2 = Number($("pDia2").value);
     p.descarga = $("pDescarga").checked;
@@ -1079,6 +1142,7 @@
     lerFormPlano();
     const p = est.plano;
     if (p.dia1 === p.dia2) return toast("Escolhe dois dias diferentes.");
+    if (!p.inicio) return toast("Escolhe a data de início.");
     const [faseId, nivelId] = p.chave.split("--");
     const f = window.PLANEAMENTO.fases.find((x) => x.id === faseId);
     const sessoes = f.sessoes[nivelId].map((id) => est.sessoes.find((s) => s.id === id));
@@ -1096,7 +1160,9 @@
           duracao_prevista: s.duracao,
           rpe_alvo: descarga ? String(Math.max(3, parseFloat(s.rpe) - 2)) : s.rpe,
           notas_treinador: (descarga ? "SEMANA DE DESCARGA: faz uma série a menos em cada exercício e não vás perto da falha. " : "") + (s.nota || ""),
-          blocos: s.blocos
+          blocos: descarga
+            ? s.blocos.map((b) => ({ ...b, itens: b.itens.map((it) => ({ ...it, dose: menosUmaSerie(it.dose) })) }))
+            : s.blocos
         });
       });
     });
@@ -1127,13 +1193,22 @@
       .gte("data", seg).lte("data", somarDias(seg, 6));
     if (error) { btn.disabled = false; return erro(error); }
     if (!data.length) { btn.disabled = false; return toast("Esta semana não tem treinos para copiar."); }
-    const novos = data.map((t) => ({
+    // Não duplica o que já existe na próxima semana (mesmo dia e mesmo título).
+    const prox = await sb.from("treinos").select("data, titulo").eq("atleta_id", atletaId)
+      .gte("data", somarDias(seg, 7)).lte("data", somarDias(seg, 13));
+    if (prox.error) { btn.disabled = false; return erro(prox.error); }
+    const existentes = new Set(prox.data.map((t) => t.data + "|" + t.titulo));
+    const aCopiar = data.filter((t) => !existentes.has(somarDias(t.data, 7) + "|" + t.titulo));
+    if (!aCopiar.length) { btn.disabled = false; return toast("A próxima semana já tem estes treinos."); }
+    const novos = aCopiar.map((t) => ({
       atleta_id: t.atleta_id, data: somarDias(t.data, 7), sessao_id: t.sessao_id, titulo: t.titulo,
       duracao_prevista: t.duracao_prevista, rpe_alvo: t.rpe_alvo, notas_treinador: t.notas_treinador, blocos: t.blocos
     }));
     const res = await sb.from("treinos").insert(novos).select("id");
     if (res.error) { btn.disabled = false; return erro(res.error); }
-    toast(`${novos.length} treino${novos.length === 1 ? "" : "s"} copiado${novos.length === 1 ? "" : "s"} para a próxima semana.`);
+    const saltados = data.length - novos.length;
+    toast(`${novos.length} treino${novos.length === 1 ? "" : "s"} copiado${novos.length === 1 ? "" : "s"} para a próxima semana` +
+      (saltados ? ` (${saltados} já lá estava${saltados === 1 ? "" : "m"}).` : "."));
     rota();
   }
 
@@ -1299,7 +1374,8 @@
     if (!el) return;
 
     if (el.dataset.modo) { vistaEntrar(el.dataset.modo); return; }
-    if (el.id === "btnRecarregar") { iniciarSessao(); return; }
+    if (el.id === "btnRecarregar") { iniciarSessao(true); return; }
+    if (el.dataset.tentar) { el.dataset.tentar === "rota" ? rota() : iniciarSessao(); return; }
     if (el.dataset.voltar) { ev.preventDefault(); history.length > 1 ? history.back() : (location.hash = "#biblioteca"); return; }
 
     // Filtros da biblioteca
@@ -1327,7 +1403,16 @@
 
     // Treinador
     if (el.dataset.aprovar) { aprovar(el.dataset.aprovar, true); return; }
-    if (el.dataset.recusar) { aprovar(el.dataset.recusar, false); return; }
+    if (el.dataset.recusar) {
+      if (el.dataset.confirmar !== "1") {
+        el.dataset.confirmar = "1";
+        el.textContent = "Confirmar recusa";
+        setTimeout(() => { if (el.isConnected) { el.dataset.confirmar = ""; el.textContent = "Recusar"; } }, 4000);
+        return;
+      }
+      aprovar(el.dataset.recusar, false);
+      return;
+    }
     if (el.dataset.duplicar && est.treinoAtual) {
       est.duplicarDe = est.treinoAtual;
       location.hash = "#novo";
@@ -1378,7 +1463,8 @@
     }
     if (el.closest && el.closest("#fPlano") && est.plano) {
       lerFormPlano();
-      vistaPlano(est.plano.chave);
+      if (el.id === "pSemanas") el.value = est.plano.semanas;
+      atualizarResumoPlano();
       return;
     }
     // Atualiza o resumo da repetição.
@@ -1386,11 +1472,14 @@
       lerFormTreino();
       $("resumoRepetir").textContent = textoRepetir(est.rascunho);
     }
-    // Ao escolher um exercício sem dose, sugere a dose habitual.
+    // Ao escolher um exercício, sugere a dose habitual (se a dose estiver vazia
+    // ou ainda for a dose sugerida do exercício anterior).
     if (el.classList.contains("i-ex")) {
       const dose = el.closest(".item-edit").querySelector(".i-dose");
       const e = est.exPorId[el.value];
-      if (e && !dose.value) dose.value = e.dose;
+      const antes = est.exPorId[el.dataset.ex];
+      if (e && (!dose.value || (antes && dose.value === antes.dose))) dose.value = e.dose;
+      el.dataset.ex = el.value;
     }
   });
 
@@ -1402,7 +1491,8 @@
   });
 
   $("btnSair").addEventListener("click", async () => {
-    await sb.auth.signOut();
+    const { error } = await sb.auth.signOut();
+    if (error) return erro(error);
   });
 
   window.addEventListener("hashchange", rota);
@@ -1420,8 +1510,11 @@
         return;
       }
       if (evento === "SIGNED_OUT" || !sessao) {
+        if (evento === "SIGNED_OUT" && location.hash) history.replaceState(null, "", location.pathname + location.search);
         est.utilizador = null;
         est.perfil = null;
+        est.rascunho = null;
+        est.plano = null;
         vistaEntrar("entrar");
         return;
       }

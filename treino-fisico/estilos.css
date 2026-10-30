@@ -543,3 +543,12 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 .dia-link span { font-weight: 600; font-size: .9rem; }
 .dia-link small { color: var(--muted); font-size: .8rem; }
 .fase-acoes { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .2rem; }
+
+/* ---------- Correções de QA ---------- */
+body { overflow-wrap: anywhere; }
+.passo { grid-template-columns: 2rem minmax(0, 1fr) minmax(0, 42%); }
+.passo .dose { white-space: normal; overflow-wrap: normal; }
+.chips { flex-wrap: wrap; overflow-x: visible; }
+@media (max-width: 30rem) {
+  .passo { grid-template-columns: 1.5rem minmax(0, 1fr) minmax(0, 45%); }
+}

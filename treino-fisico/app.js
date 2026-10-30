@@ -135,7 +135,9 @@
             const nome = e ? `<a class="nome" href="#ex-${e.id}">${esc(e.nome)}</a>` : `<span class="nome">${esc(i.ex)}</span>`;
             const desc = e ? `<span class="desc">${esc(e.musculos)}</span>` : "";
             const desc2 = i.descanso && i.descanso !== "—" ? `<small>desc. ${esc(i.descanso)}</small>` : "";
-            return `<li class="passo"><span class="n">${n}</span><div>${nome}${desc}</div><div class="dose">${esc(i.dose)}${desc2}</div></li>`;
+            const m = String(i.dose || "").match(/^(.*?)\s*\((.+)\)\s*$/);
+            const extra = m ? `<small>${esc(m[2])}</small>` : "";
+            return `<li class="passo"><span class="n">${n}</span><div>${nome}${desc}</div><div class="dose">${esc(m ? m[1] : i.dose)}${extra}${desc2}</div></li>`;
           }).join("")}
         </ol>
       </div>`).join("");

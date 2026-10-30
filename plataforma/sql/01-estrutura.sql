@@ -131,8 +131,20 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  if p_estado not in ('planeado', 'feito', 'nao_feito') then
+  if p_estado is null or p_estado not in ('planeado', 'feito', 'nao_feito') then
     raise exception 'Estado inválido';
+  end if;
+  if p_estado = 'feito' and (p_rpe is null or p_rpe not between 0 and 10) then
+    raise exception 'Indica o RPE (0 a 10).';
+  end if;
+  if p_estado = 'feito' and (p_duracao is null or p_duracao not between 1 and 600) then
+    raise exception 'Indica os minutos (1 a 600).';
+  end if;
+  if length(coalesce(p_comentario, '')) > 2000 then
+    raise exception 'O comentário é demasiado longo (máximo 2000 caracteres).';
+  end if;
+  if p_estado <> 'planeado' and exists (select 1 from public.treinos where id = p_id and data > current_date + 1) then
+    raise exception 'Ainda não podes registar um treino futuro.';
   end if;
   update public.treinos
      set estado = p_estado,
@@ -179,3 +191,6 @@ create policy treinos_gerir on public.treinos for all    to authenticated using 
 
 revoke execute on function public.registar_treino(uuid, text, integer, integer, text) from public, anon;
 grant  execute on function public.registar_treino(uuid, text, integer, integer, text) to authenticated;
+
+-- O utilizador sem sessão (anon) não escreve em nenhuma tabela (camada extra além do RLS).
+revoke insert, update, delete on public.perfis, public.exercicios, public.sessoes, public.treinos from anon;
