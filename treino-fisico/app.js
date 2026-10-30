@@ -71,11 +71,14 @@
           </div>
         </a>`;
     };
-    const outras = SESSOES.filter((s) => !s.completa);
+    const casa = SESSOES.filter((s) => s.casa);
+    const outras = SESSOES.filter((s) => !s.completa && !s.casa);
     $("listaSessoes").innerHTML = `
       <h2 class="titulo-grupo">Planeamento por fases · 2 dias por semana</h2>
       <p class="muted-grupo">Cada sessão (até 1 h): Mobilidade → Técnica de corrida → Pliometria → Força inferior → Força superior e core</p>
       ${htmlPlaneamento(nivelAtual, (id) => "#s-" + id)}
+      <h2 class="titulo-grupo">Em casa · só peso do corpo ou pouco material</h2>
+      ${casa.map(cartao).join("")}
       <h2 class="titulo-grupo">Sessões curtas e blocos</h2>
       ${outras.map(cartao).join("")}`;
   }

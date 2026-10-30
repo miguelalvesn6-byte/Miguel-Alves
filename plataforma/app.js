@@ -163,7 +163,8 @@
     const todas = [...sesPorId.values()];
     est.sessoes = [
       ...todas.filter((s) => s.completa),
-      ...todas.filter((s) => !s.completa).sort((x, y) => x.nome.localeCompare(y.nome, "pt"))
+      ...todas.filter((s) => s.casa).sort((x, y) => x.ordem - y.ordem),
+      ...todas.filter((s) => !s.completa && !s.casa).sort((x, y) => x.nome.localeCompare(y.nome, "pt"))
     ];
   }
 
@@ -771,7 +772,8 @@
               <select id="tModelo">
                 <option value="">— Em branco —</option>
                 ${[...(window.PLANEAMENTO ? window.PLANEAMENTO.niveis.map((n) => [`Planeamento · ${n.nome}`, (s) => s.nivel === n.id]) : []),
-                   ["Sessões curtas e blocos", (s) => !s.nivel]].map(([grupo, filtro]) => `
+                   ["Em casa", (s) => s.casa],
+                   ["Sessões curtas e blocos", (s) => !s.nivel && !s.casa]].map(([grupo, filtro]) => `
                   <optgroup label="${grupo}">
                     ${est.sessoes.filter(filtro)
                       .map((s) => `<option value="${esc(s.id)}" ${s.id === r.sessao_id ? "selected" : ""}>${esc(s.nivel ? `${s.fase} · Dia ${s.dia} (${s.foco})` : s.nome)} · ${s.duracao} min</option>`).join("")}
@@ -1155,10 +1157,10 @@
         <p class="muted-grupo">Cada sessão (até 1 h): Mobilidade → Técnica de corrida → Pliometria → Força inferior → Força superior e core</p>
         ${htmlPlaneamento()}
 
-        ${[["Sessões curtas e blocos", false]].map(([grupo, comp]) => `
+        ${[["Em casa · só peso do corpo ou pouco material", (s) => s.casa], ["Sessões curtas e blocos", (s) => !s.nivel && !s.casa]].map(([grupo, filtro]) => `
         <h2 class="titulo-secao">${grupo}</h2>
         <div class="lista-sessoes">
-          ${est.sessoes.filter((s) => !s.nivel).map((s) => `
+          ${est.sessoes.filter(filtro).map((s) => `
             <a class="cartao-sessao" href="#m-${esc(s.id)}">
               <div class="minutos"><div><b>${s.duracao}</b><br><span>min</span></div></div>
               <div>
