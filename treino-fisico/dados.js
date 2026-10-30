@@ -250,7 +250,7 @@ const EXERCICIOS = [
     erros: ["Encolher os ombros para as orelhas", "Levantar a cabeça", "Usar balanço"],
     regressao: "Sem peso, uma letra de cada vez.",
     progressao: "Halteres de 0,5–2 kg.",
-    dose: "2 × 8 de cada letra"
+    dose: "1–2 × 8 de cada letra"
   },
   {
     id: "face-pull",
@@ -496,7 +496,7 @@ const EXERCICIOS = [
     id: "pogo",
     nome: "Pogo jumps",
     nomeEn: "pogo jumps",
-    categoria: "ativacao",
+    categoria: "pliometria",
     material: ["peso-corporal"],
     disciplinas: ["corrida"],
     musculos: "Gémeos, tendão de Aquiles (rigidez/reatividade)",

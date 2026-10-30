@@ -51,7 +51,7 @@
     ["Passos longos", "Calcanhares a tocar"], "Mais lento.", "Saída em sprint a um sinal.", "4 × 8 s");
   ex("progressivos", "Progressivos (acelerações)", "running strides", "tecnica", ["peso-corporal"], "R", "Técnica a velocidade alta, economia",
     ["Corrida de 80–100 m a acelerar aos poucos até ~90% da velocidade máxima.", "Mantém a técnica solta: tronco alto, braços relaxados, passada rápida.", "Volta a andar ou a trote."],
-    ["Ficar tenso", "Ir ao máximo logo no início"], "60 m a 80%.", "Descalço em relva ou 120 m.", "6 × 80–100 m");
+    ["Ficar tenso", "Ir ao máximo logo no início"], "60 m a 80%.", "Descalço em relva ou 120 m.", "3–6 × 60–100 m");
   ex("subidas-curtas", "Subidas curtas rápidas", "short hill sprints", "tecnica", ["peso-corporal"], "R", "Potência, força específica, postura",
     ["Subida com 6–10% de inclinação.", "8–10 s quase no máximo, joelhos altos e braços fortes.", "Desce a andar; recuperação completa."],
     ["Encurvar o tronco", "Passos curtos sem impulso"], "Subida mais suave ou 6 s.", "Mais repetições.", "6–8 × 10 s");
@@ -73,7 +73,7 @@
     ["Saltos pequenos e rápidos de um lado para o outro de uma linha.", "Joelhos quase esticados, contacto curto na parte da frente do pé."],
     ["Dobrar os joelhos", "Contacto longo"], "Pogo no sítio.", "Uma perna.", "3 × 20 contactos");
   ex("pogo-frente", "Pogo a avançar", "forward pogo hops", "pliometria", ["peso-corporal"], "R", "Rigidez do tornozelo, reatividade",
-    ["Saltos de pogo a avançar uns 20–30 cm de cada vez.", "Corpo alto e direito, braços ritmados."],
+    ["Saltos de pogo a avançar uns 50–80 cm de cada vez.", "Corpo alto e direito, braços ritmados."],
     ["Aterrar com os calcanhares", "Saltos longos e lentos"], "Pogo no sítio.", "Uma perna.", "3 × 15 m");
   ex("saltos-linha", "Saltos sobre a linha (frente e trás)", "line hops forward backward", "pliometria", ["peso-corporal"], "R", "Reatividade, coordenação",
     ["Pés juntos, salta para a frente e para trás de uma linha.", "O mais rápido possível com contactos curtos."],
@@ -160,7 +160,7 @@
   // ================= SESSÕES — PLIOMETRIA (progressão) =================
   s("pliometria-iniciacao", "Pliometria — iniciação", "Preparatória geral", "Relva ou piso de borracha", 20,
     "1–2× por semana", "5",
-    "Introduzir os saltos com pouco impacto e aprender a aterrar bem. ~60–80 contactos.",
+    "Introduzir os saltos com pouco impacto e aprender a aterrar bem. ~80–100 contactos.",
     "Pré-requisito: conseguir 20 elevações de gémeos a uma perna e agachar bem. Para assim que a aterragem ficar pesada.",
     [{ titulo: "Aterragem e reatividade", itens: [
       i("saltar-corda", "3 × 30 s", "30 s"), i("pogo", "2 × 15", "60 s"), i("saltos-linha", "2 × 10 s", "60 s"),
@@ -169,7 +169,7 @@
 
   s("pliometria-intermedia", "Pliometria — intermédia", "Preparatória", "Relva, pista ou piso de borracha", 25,
     "1–2× por semana", "6",
-    "Aumentar a reatividade e introduzir saltos unilaterais. ~100 contactos.",
+    "Aumentar a reatividade e introduzir saltos unilaterais. ~150 contactos.",
     "Faz depois de 4–6 semanas de iniciação sem dores. Recuperação completa: o objetivo é qualidade, não cansaço.",
     [{ titulo: "Bilateral", itens: [
       i("pogo-frente", "3 × 15 m", "60 s"), i("pogo-lateral", "2 × 20", "60 s"), i("salto-caixa", "3 × 5", "90 s")
@@ -180,7 +180,7 @@
 
   s("pliometria-avancada", "Pliometria — avançada", "Preparatória específica", "Pista ou piso de borracha", 30,
     "1× por semana", "7",
-    "Máxima reatividade e rigidez para a economia de corrida. ~120 contactos.",
+    "Máxima reatividade e rigidez para a economia de corrida. ~160 contactos.",
     "Só para atletas com base de força e sem lesões recentes. Não fazer na semana de prova A.",
     [{ titulo: "Reatividade", itens: [
       i("pogo", "2 × 20", "60 s"), i("drop-jump", "3 × 5", "2 min"), i("saltos-barreiras", "4 × 5", "90 s")
@@ -191,7 +191,7 @@
 
   s("pliometria-complexo", "Força + pliometria (complexo)", "Preparatória específica", "Ginásio", 40,
     "1× por semana", "7–8",
-    "Juntar um exercício de força pesado com um salto logo a seguir para potenciar a potência.",
+    "Juntar um exercício de força pesado com um salto logo a seguir para potenciar o salto.",
     "Faz o exercício de força, descansa 60–90 s, faz o salto. Repete o par 3–4 vezes com 2–3 min entre pares.",
     [{ titulo: "Par 1", itens: [i("agachamento-barra", "4 × 4", "60–90 s"), i("salto-contramovimento", "4 × 4", "2–3 min")] },
      { titulo: "Par 2", itens: [i("split-squat-bulgaro", "3 × 5/perna", "60 s"), i("salto-afundo", "3 × 4/perna", "2 min")] },

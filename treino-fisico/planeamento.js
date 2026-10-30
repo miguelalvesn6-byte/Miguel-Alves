@@ -207,14 +207,14 @@
             ]),
             bloco(3, "Pliometria", 10, [
               it("pogo-frente", ["2 × 15 m", "3 × 15 m", "3 × 15 m"], "45 s"),
-              it(["saltos-patinador", "multisaltos", "multisaltos"], ["3 × 5/lado", "3 × 25 m", "4 × 30 m"], "90 s"),
+              it(["saltos-patinador", "multisaltos", "multisaltos"], ["3 × 5/lado", "3 × 20 m", "3 × 25 m"], "90 s"),
               it(["salto-comprimento", "triplo-salto", "triplo-salto"], ["3 × 3", "2 × 2/perna", "3 × 2/perna"], "90 s")
             ]),
             bloco(4, "Força inferior — agachamento e peso morto", 20, [
               it("peso-morto-trap-bar", ["3 × 5", "3 × 3 rápido", "4 × 3 rápido"], "2 min"),
               it("salto-agachamento", ["3 × 4", "3 × 4", "4 × 4"], "90 s"),
               it(["split-squat-bulgaro", "salto-afundo", "salto-afundo"], ["2 × 6/perna", "3 × 4/perna", "3 × 5/perna"], "90 s"),
-              it("kettlebell-swing", ["3 × 12", "3 × 15", "4 × 12"], "60 s")
+              it("kettlebell-swing", ["2 × 12", "2 × 12", "2 × 15"], "60 s")
             ]),
             bloco(5, "Força superior e core", 12, [
               it(["remada-haltere", "elevacoes", "elevacoes"], ["3 × 8/braço", "3 × 5 rápidas", "4 × 5 rápidas"], "90 s"),

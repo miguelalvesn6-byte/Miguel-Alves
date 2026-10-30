@@ -60,7 +60,7 @@
     ["Deitado de costas, calcanhares em cima da bola.", "Sobe a anca e puxa a bola para ti dobrando os joelhos.", "Estica devagar sem baixar a anca."],
     ["Anca a cair", "Ir depressa"], "Só a ponte com a bola.", "Uma perna.", "3 × 8–12");
   ex("good-morning", "Good morning", "good morning exercise", "forca", ["ginasio", "elastico"], "CR", "Isquiotibiais, glúteos, lombares",
-    ["Barra leve nas costas (ou elástico preso nos pés e no pescoço).", "Joelhos ligeiramente fletidos, leva a anca atrás.", "Desce o tronco com as costas neutras e volta."],
+    ["Barra leve nas costas (ou elástico preso debaixo dos pés e por trás dos ombros, no trapézio — nunca no pescoço).", "Joelhos ligeiramente fletidos, leva a anca atrás.", "Desce o tronco com as costas neutras e volta."],
     ["Arredondar as costas", "Carga a mais"], "Só com um bastão.", "Mais carga.", "3 × 8–10");
   ex("hip-thrust-unilateral", "Hip thrust a uma perna", "single leg hip thrust", "forca", ["peso-corporal", "halteres"], "CR", "Glúteo máximo",
     ["Costas num banco, um pé no chão, a outra perna dobrada no ar.", "Sobe a anca até alinhar com o tronco, sem rodar.", "Pausa 1 s em cima."],
@@ -75,7 +75,7 @@
     ["Pés bem afastados.", "Desce sobre uma perna, a outra estica com a ponta do pé para cima.", "Passa para o outro lado sem subir totalmente."],
     ["Calcanhar a levantar", "Costas arredondadas"], "Mãos apoiadas num banco.", "Com kettlebell à frente.", "2 × 6 por lado");
   ex("kettlebell-swing", "Kettlebell swing", "kettlebell swing", "forca", ["kettlebell"], "CR", "Glúteos, isquiotibiais (potência da anca)",
-    ["Kettlebell à frente, dobradiça da anca.", "Leva-a entre as pernas e projeta a anca à frente com força.", "A kettlebell sobe até ao peito; deixa-a cair e repete."],
+    ["Kettlebell à frente, dobradiça da anca.", "Leva-a entre as pernas e projeta a anca à frente com força.", "A kettlebell sobe até ao peito; acompanha-a na descida e só dobras a anca quando os antebraços tocam nas coxas."],
     ["Agachar em vez de dobrar a anca", "Levantar com os braços", "Arquear no topo"], "Peso morto com kettlebell.", "Kettlebell mais pesada ou a uma mão.", "4 × 15");
   ex("wall-sit", "Cadeira na parede", "wall sit", "forca", ["peso-corporal"], "C", "Quadríceps (isometria)",
     ["Costas na parede, desce até joelhos a 90°.", "Mantém a posição a respirar normalmente."],
@@ -246,7 +246,7 @@
     ["Rolar rápido", "Rolar sobre o tendão de Aquiles com dor"], "Sem cruzar pernas.", "Uma perna sobre a outra.", "60 s por perna");
   ex("rolo-quadriceps", "Rolo nos quadríceps", "foam roll quads", "mobilidade", ["rolo"], "CR", "Quadríceps",
     ["De barriga para baixo, rolo debaixo das coxas.", "Rola da anca ao joelho, roda ligeiramente para dentro e fora."],
-    ["Rolar o joelho"], "Duas pernas.", "Uma perna.", "60 s por perna");
+    ["Rolar sobre o joelho"], "Duas pernas.", "Uma perna.", "60 s por perna");
   ex("rolo-lateral-coxa", "Rolo na lateral da coxa", "foam roll lateral thigh", "mobilidade", ["rolo"], "CR", "Vasto lateral, tensor da fáscia lata",
     ["Deitado de lado com o rolo debaixo da coxa.", "Apoia a perna de cima à frente para controlar a pressão.", "Rola devagar entre a anca e o joelho."],
     ["Pressão excessiva", "Rolar sobre a anca óssea"], "Mais peso na perna de apoio.", "Menos apoio.", "60 s por lado");
@@ -278,7 +278,7 @@
     ["Ajoelhado, cotovelos num banco, mãos juntas atrás da cabeça.", "Leva o peito em direção ao chão."],
     ["Arquear a lombar"], "Menos amplitude.", "Com um bastão nas mãos.", "2 × 30 s");
   ex("bastao-ombros", "Rotação de ombros com bastão", "shoulder dislocates stick", "mobilidade", ["peso-corporal"], "N", "Ombros, peitoral",
-    ["Bastão com pega larga à frente das coxas.", "Leva-o por cima da cabeça até atrás das costas com os braços esticados.", "Volta. Aperta a pega com o tempo."],
+    ["Bastão com pega larga à frente das coxas.", "Leva-o por cima da cabeça até atrás das costas com os braços esticados.", "Volta. Estreita a pega aos poucos."],
     ["Dobrar os cotovelos", "Arquear a lombar"], "Pega mais larga.", "Pega mais estreita.", "2 × 10");
   ex("crianca-lateral", "Postura da criança lateral", "side child pose lat stretch", "mobilidade", ["peso-corporal"], "N", "Grande dorsal, quadrado lombar",
     ["Sentado nos calcanhares, braços esticados à frente.", "Leva as duas mãos para um lado e respira fundo.", "Troca de lado."],
@@ -307,7 +307,7 @@
     ["Apoiado numa parede, balança uma perna à frente e atrás.", "Aumenta a amplitude aos poucos, tronco direito."],
     ["Arredondar as costas", "Forçar logo de início"], "Amplitude menor.", "Mais amplitude.", "1 × 12 por perna");
   ex("balanco-pernas-lado", "Balanço de pernas lateral", "leg swings side to side", "ativacao", ["peso-corporal"], "R", "Adutores, abdutores",
-    ["De frente para a parede, balança uma perna para os lados por à frente do corpo."],
+    ["De frente para a parede, balança uma perna para os lados, pela frente do corpo."],
     ["Rodar o tronco"], "Amplitude menor.", "Mais amplitude.", "1 × 12 por perna");
   ex("skipping-a", "Skipping A", "a skip drill", "ativacao", ["peso-corporal"], "R", "Flexores da anca, técnica de corrida",
     ["Marcha saltitante subindo o joelho à altura da anca.", "Pé de apoio aterra debaixo do corpo, na parte da frente.", "Braços coordenados."],
@@ -334,7 +334,7 @@
   // ================= PLIOMETRIA / POTÊNCIA =================
   ex("saltar-corda", "Saltar à corda", "jump rope", "pliometria", ["peso-corporal"], "R", "Gémeos, tendão de Aquiles, coordenação",
     ["Saltos baixos na parte da frente do pé.", "Pulsos a rodar a corda, cotovelos junto ao corpo."],
-    ["Saltar alto demais", "Aterrar nos calcanhares"], "Saltar sem corda.", "Alternar pés ou duplos.", "5 × 1 min");
+    ["Saltar alto demais", "Aterrar nos calcanhares"], "Saltar sem corda.", "Alternar pés ou duplos.", "3–5 × 30 s–1 min");
   ex("salto-caixa", "Salto para a caixa", "box jump", "pliometria", ["peso-corporal"], "CR", "Glúteos, quadríceps (potência)",
     ["Em frente a uma caixa, balança os braços e salta.", "Aterra suave com os dois pés, joelhos alinhados.", "Desce a andar, não a saltar."],
     ["Aterrar com joelhos para dentro", "Caixa alta demais"], "Caixa baixa.", "Caixa mais alta ou a uma perna.", "4 × 5");
@@ -395,7 +395,7 @@
       id: "pliometria-corrida", nome: "Pliometria para a corrida", fase: "Preparatória específica", local: "Pista ou relva", duracao: 25,
       frequencia: "1–2× por semana", rpe: "6–7",
       objetivo: "Melhorar a reatividade e a rigidez do tendão para uma passada mais económica.",
-      nota: "Qualidade acima de tudo: contactos curtos e explosivos. Pára quando a técnica piorar. Faz antes de um treino de corrida fácil.",
+      nota: "Qualidade acima de tudo: contactos curtos e explosivos. Para quando a técnica piorar. Faz antes de um treino de corrida fácil.",
       blocos: [
         { titulo: "Aquecimento", itens: [
           { ex: "skipping-a", dose: "2 × 20 m", descanso: "—" },
@@ -498,7 +498,7 @@
       id: "core-avancado", nome: "Core avançado", fase: "Preparatória", local: "Ginásio", duracao: 20,
       frequencia: "1–2× por semana", rpe: "6–7",
       objetivo: "Core forte em anti-extensão, anti-rotação e transporte de carga.",
-      nota: "Qualidade acima de quantidade. Pára quando a lombar começar a compensar.",
+      nota: "Qualidade acima de quantidade. Para quando a lombar começar a compensar.",
       blocos: [
         { titulo: "Sequência", itens: [
           { ex: "rollout", dose: "3 × 8", descanso: "45 s" },
@@ -531,7 +531,7 @@
     {
       id: "joelho-forte", nome: "Joelhos fortes", fase: "Todo o ano", local: "Casa ou ginásio", duracao: 20,
       frequencia: "2× por semana", rpe: "5–6",
-      objetivo: "Prevenir dores no joelho (rotuliano e fascia lata) com força do quadríceps e controlo da anca.",
+      objetivo: "Prevenir dores no joelho (tendão rotuliano e síndrome da banda iliotibial) com força do quadríceps e controlo da anca.",
       nota: "Dor até 3/10 durante os isométricos é aceitável se não piorar no dia seguinte.",
       blocos: [
         { titulo: "Sequência", itens: [

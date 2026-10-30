@@ -13,7 +13,7 @@
   };
 
   const LOCAL_PC = "Casa — sem material (cadeira ou sofá, mesa resistente, 15 m de corredor ou rua)";
-  const NOTA_PC = "Não precisas de material. Split squat e agachamento a uma perna: usa uma cadeira ou o sofá. Remada invertida: deitado debaixo de uma mesa resistente, agarrado ao tampo. Técnica de corrida: num corredor, na rua ou no jardim.";
+  const NOTA_PC = "Não precisas de material. Split squat e agachamento a uma perna: usa uma cadeira ou o sofá. Remada invertida: deitado debaixo de uma mesa pesada e estável (encostada à parede, que não tombe), agarrado ao bordo do tampo entre as pernas da mesa. Técnica de corrida: num corredor, na rua ou no jardim.";
 
   s("casa-pc-basico", "Em casa · Só peso do corpo · Básico", "Qualquer fase", LOCAL_PC, "2× por semana", "5–6",
     "Treino completo em casa, sem material, para quem está a começar a força.",
