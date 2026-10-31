@@ -104,8 +104,10 @@
     biblioteca: '<path d="M4 4.5h5a3 3 0 0 1 3 3V20a2.5 2.5 0 0 0-2.5-2.5H4zM20 4.5h-5a3 3 0 0 0-3 3V20a2.5 2.5 0 0 1 2.5-2.5H20z"/>',
     feedback: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>',
     coment: '<path d="M5 5h14v10H10l-5 4z"/>',
+    cadeado: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
     escala: '<path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/><path d="M4 18h2M18 18h2M12 10V8"/>'
   };
+  const NOTA_PRIVACIDADE = "Os teus registos de treino (esforço, minutos, comentários, dores) só são vistos por ti e pelo treinador da CF Training. Usamo-los apenas para planear e ajustar o teu treino. Podes pedir a eliminação dos teus dados ao treinador a qualquer momento.";
   const icone = (n) => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${ICONES[n] || ""}</svg>`;
   const LOGO = '<svg class="logo-marca" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18"/><path d="M7 25c5-4 9 4 13 0s8 4 13 0"/></svg>';
   const carga = (t) => (t.estado === "feito" && t.rpe != null && t.duracao_real ? t.rpe * t.duracao_real : 0);
@@ -263,6 +265,7 @@
             ${campos[modo]}
             <button class="btn primario grande" type="submit">${botoes[modo]}</button>
           </form>
+          ${modo === "registar" ? `<p class="nota-privacidade">${icone("cadeado")}<span>${NOTA_PRIVACIDADE}</span></p>` : ""}
           ${links[modo] ? `<div class="auth-links">${links[modo]}</div>` : ""}
         </div>
       </section>`;
@@ -270,23 +273,62 @@
     if (primeiro) primeiro.focus();
   }
 
+  // Validação dos formulários de entrada, com mensagens em português junto a cada campo
+  // (as mensagens nativas do browser aparecem na língua do sistema e desaparecem sozinhas).
+  const EMAIL_OK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  function erroCampo(input, msg) {
+    const id = "erro-" + input.id;
+    let p = $(id);
+    if (!msg) {
+      if (p) p.remove();
+      input.removeAttribute("aria-invalid");
+      input.removeAttribute("aria-describedby");
+      return;
+    }
+    if (!p) {
+      p = document.createElement("p");
+      p.id = id;
+      p.className = "erro-campo";
+      input.closest(".campo").appendChild(p);
+    }
+    p.textContent = msg;
+    input.setAttribute("aria-invalid", "true");
+    input.setAttribute("aria-describedby", id);
+  }
+  function validarAuth(form, modo) {
+    const erros = [];
+    const nome = $("aNome"), email = $("aEmail"), pass = $("aPass");
+    if (nome) erros.push([nome, nome.value.trim() ? "" : "Escreve o teu nome."]);
+    if (email) {
+      const v = email.value.trim();
+      erros.push([email, !v ? "Escreve o teu email." : EMAIL_OK.test(v) ? "" : "Escreve um email válido (ex.: nome@exemplo.pt)."]);
+    }
+    if (pass) {
+      const v = pass.value;
+      const precisa6 = modo === "registar" || modo === "nova";
+      erros.push([pass, !v ? "Escreve a palavra-passe." : precisa6 && v.length < 6 ? "A palavra-passe tem de ter pelo menos 6 caracteres." : ""]);
+    }
+    erros.forEach(([i, m]) => erroCampo(i, m));
+    const primeiro = erros.find(([, m]) => m);
+    if (primeiro) primeiro[0].focus();
+    return !primeiro;
+  }
+
   async function submeterAuth(form) {
     const modo = form.dataset.modo;
     const email = $("aEmail") ? $("aEmail").value.trim() : "";
     const pass = $("aPass") ? $("aPass").value : "";
     const btn = form.querySelector("button[type=submit]");
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      return;
-    }
+    if (!validarAuth(form, modo)) return;
+    const rotuloBtn = btn.textContent;
     btn.disabled = true;
+    btn.textContent = "Aguarda…";
     try {
       if (modo === "entrar") {
         const { error } = await sb.auth.signInWithPassword({ email, password: pass });
         if (error) throw error;
       } else if (modo === "registar") {
         const nome = $("aNome").value.trim();
-        if (!nome) { toast("Escreve o teu nome."); return; }
         const { data, error } = await sb.auth.signUp({
           email,
           password: pass,
@@ -317,6 +359,7 @@
       erro(e);
     } finally {
       btn.disabled = false;
+      btn.textContent = rotuloBtn;
     }
   }
 
@@ -397,11 +440,16 @@
     est.rascunhoRota = h;
 
     // O atleta só vê os seus treinos: sem biblioteca, planeamento nem sessões-modelo.
-    if (!eTreinador() && (h === "biblioteca" || h.startsWith("m-") || h.startsWith("plano-"))) {
+    // Qualquer rota que não seja do atleta (biblioteca, modelos, planeamento, atletas, novo,
+    // editar, candidaturas…) volta a "Os meus treinos", com o endereço corrigido.
+    const rotaDoAtleta = h === "treinos" || h === "escala" || (h === "feedback" && est.fbAtivo) || h.startsWith("t-") || h.startsWith("ex-");
+    if (!eTreinador() && !rotaDoAtleta) {
       location.replace("#treinos");
       return;
     }
 
+    // Indicador de carregamento (só aparece se a vista demorar; ver estilos #app[aria-busy]).
+    app().setAttribute("aria-busy", "true");
     try {
       if (h === "biblioteca") { marcarTab("biblioteca"); vistaBiblioteca(); }
       else if (h === "escala") { marcarTab("escala"); vistaEscala(); }
@@ -409,7 +457,7 @@
       else if (h.startsWith("ex-") && !eTreinador()) {
         marcarTab("treinos");
         if (await exercicioNosMeusTreinos(h.slice(3))) vistaExercicio(h.slice(3));
-        else app().innerHTML = `<section class="vista"><a class="voltar" href="#treinos">← Os meus treinos</a><p class="vazio-caixa">Exercício não disponível. Só podes ver os exercícios que fazem parte dos teus treinos.</p></section>`;
+        else app().innerHTML = naoEncontrado("#treinos", "Os meus treinos", "Exercício não disponível.", "Só podes ver os exercícios que fazem parte dos teus treinos.");
       }
       else if (h.startsWith("ex-")) { marcarTab("biblioteca"); vistaExercicio(h.slice(3)); }
       else if (h.startsWith("m-")) { marcarTab("biblioteca"); vistaModelo(h.slice(2)); }
@@ -424,12 +472,20 @@
     } catch (e) {
       ecraErro(e, "rota");
     }
+    app().removeAttribute("aria-busy");
     if (h !== ultimaRota) window.scrollTo(0, 0);
     ultimaRota = h;
     // "Registar" no cartão de hoje: abre o treino já no formulário de registo.
     if (est.irParaRegisto && $("fRegisto")) $("fRegisto").scrollIntoView({ block: "start" });
     est.irParaRegisto = false;
   }
+
+  // Ecrã "não encontrado" com ligação de volta.
+  const naoEncontrado = (href, rotulo, titulo, texto) => `
+    <section class="vista">
+      <a class="voltar" href="${href}">← ${esc(rotulo)}</a>
+      <div class="vazio-caixa"><p><strong>${esc(titulo)}</strong></p>${texto ? `<p>${esc(texto)}</p>` : ""}</div>
+    </section>`;
 
   // O atleta só abre exercícios que estão nos seus treinos (a RLS já limita os treinos a si).
   async function exercicioNosMeusTreinos(id) {
@@ -440,7 +496,7 @@
 
   // Tabelas do 05-feedback-comentarios.sql ainda não criadas?
   const faltaTabela = (e) => /feedbacks|comentarios|schema cache|does not exist|relation/i.test((e && e.message) || "");
-  const AVISO_ATIVAR = `<div class="vazio-caixa aviso-ativar"><p><strong>Falta ativar:</strong> corre <code>plataforma/sql/05-feedback-comentarios.sql</code> no Supabase (SQL Editor → Run) e atualiza a página.</p></div>`;
+  const AVISO_ATIVAR = `<div class="vazio-caixa aviso-ativar"><p><strong>Falta ativar:</strong> corre <code>plataforma/sql/ativar-candidaturas-feedback.sql</code> no Supabase (SQL Editor → Run) e atualiza a página.</p></div>`;
 
   function tempoRelativo(iso) {
     const dt = new Date(iso);
@@ -649,7 +705,7 @@
     const { error } = await sb.from("feedbacks")
       .upsert({ atleta_id: atletaId, semana, texto, atualizado_em: new Date().toISOString() }, { onConflict: "atleta_id,semana" });
     btn.disabled = false;
-    if (error) return faltaTabela(error) ? toast("Falta ativar: corre plataforma/sql/05-feedback-comentarios.sql no Supabase.") : erro(error);
+    if (error) return faltaTabela(error) ? toast("Falta ativar: corre plataforma/sql/ativar-candidaturas-feedback.sql no Supabase.") : erro(error);
     toast("Feedback guardado. O atleta já o vê no separador Feedback.");
     await desenharFeedbacksAtleta(atletaId);
   }
@@ -817,7 +873,7 @@
       ? (t ? `#a-${t.atleta_id}` : "#atletas")
       : "#treinos";
     if (!t) {
-      app().innerHTML = `<a class="voltar" href="${voltar}">← Voltar</a><p class="vazio">Treino não encontrado.</p>`;
+      app().innerHTML = naoEncontrado(voltar, eTreinador() ? "Atletas" : "Os meus treinos", "Treino não encontrado.", eTreinador() ? "Pode ter sido apagado." : "Pode ter sido apagado ou não ser um dos teus treinos.");
       return;
     }
     const atleta = eTreinador() ? est.atletas.find((a) => a.id === t.atleta_id) : null;
@@ -910,7 +966,8 @@
           </div>
           <p class="carga-viva" id="rCarga" aria-live="polite">${textoCargaViva(rpe, dur)}</p>
         </div>
-        <label class="campo"><span>Comentário para o treinador (opcional)</span><textarea id="rComentario" rows="3" placeholder="Dores, cargas usadas, como te sentiste…">${esc(t.comentario_atleta)}</textarea></label>
+        <label class="campo"><span>Comentário para o treinador (opcional)</span><textarea id="rComentario" rows="3" maxlength="2000" placeholder="Dores, cargas usadas, como te sentiste…">${esc(t.comentario_atleta)}</textarea></label>
+        <p class="erro-campo" id="rErro" role="alert" hidden></p>
         <button class="btn primario grande" type="submit">Guardar registo</button>
       </form>`;
   }
@@ -930,14 +987,14 @@
     const estado = $("rEstado").value;
     const rpe = $("rRpe").value === "" ? null : Number($("rRpe").value);
     const dur = $("rDur").value === "" ? null : Number($("rDur").value);
-    if (estado === "feito" && (rpe == null || !dur)) {
-      toast("Indica o RPE e os minutos.");
-      return;
-    }
-    if (estado === "feito" && (!Number.isInteger(dur) || dur < 1 || dur > 600)) {
-      toast("Os minutos têm de ser um número inteiro entre 1 e 600.");
-      return;
-    }
+    const falha = (msg, foco) => {
+      $("rErro").textContent = msg;
+      $("rErro").hidden = false;
+      if (foco) foco.focus();
+    };
+    $("rErro").hidden = true;
+    if (estado === "feito" && rpe == null) return falha("Escolhe o esforço (RPE) de 0 a 10.", document.querySelector(".rpe-op"));
+    if (estado === "feito" && (!dur || !Number.isInteger(dur) || dur < 1 || dur > 600)) return falha("Indica os minutos que treinaste: um número inteiro entre 1 e 600.", $("rDur"));
     const btn = form.querySelector("button[type=submit]");
     btn.disabled = true;
     const { error } = await sb.rpc("registar_treino", {
@@ -1065,7 +1122,7 @@
   async function vistaAtleta(id) {
     const a = est.atletas.find((x) => x.id === id);
     if (!a) {
-      app().innerHTML = `<a class="voltar" href="#atletas">← Atletas</a><p class="vazio">Atleta não encontrado.</p>`;
+      app().innerHTML = naoEncontrado("#atletas", "Atletas", "Atleta não encontrado.", "Pode ter sido removido ou o link está incompleto.");
       return;
     }
     const h = hoje();
@@ -1161,7 +1218,7 @@
         const { data: t, error } = await sb.from("treinos").select("*").eq("id", treinoId).maybeSingle();
         if (error) throw error;
         if (!t) {
-          app().innerHTML = `<a class="voltar" href="#atletas">← Atletas</a><p class="vazio">Treino não encontrado.</p>`;
+          app().innerHTML = naoEncontrado("#atletas", "Atletas", "Treino não encontrado.", "Pode ter sido apagado.");
           return;
         }
         est.rascunho = {
@@ -1507,7 +1564,7 @@
     const f = P && P.fases.find((x) => x.id === faseId);
     const nv = P && P.niveis.find((x) => x.id === nivelId);
     if (!f || !nv) {
-      app().innerHTML = `<a class="voltar" href="#biblioteca">← Biblioteca</a><p class="vazio">Fase não encontrada.</p>`;
+      app().innerHTML = naoEncontrado("#biblioteca", "Biblioteca", "Fase não encontrada.");
       return;
     }
     if (!est.plano || est.plano.chave !== chave) {
@@ -1688,7 +1745,7 @@
           <h1>Candidaturas</h1>
           <div class="vazio-caixa">
             <p><strong>Falta ativar as candidaturas.</strong></p>
-            <p>No Supabase, abre o SQL Editor, cola o ficheiro <code>plataforma/sql/04-candidaturas.sql</code> e carrega em Run. Depois atualiza esta página.</p>
+            <p>No Supabase, abre o SQL Editor, cola o ficheiro <code>plataforma/sql/ativar-candidaturas-feedback.sql</code> e carrega em Run. Depois atualiza esta página.</p>
           </div>
         </section>`;
       return;
@@ -1838,7 +1895,7 @@
   function vistaModelo(id) {
     const s = est.sessoes.find((x) => x.id === id);
     if (!s) {
-      app().innerHTML = `<a class="voltar" href="#biblioteca">← Biblioteca</a><p class="vazio">Sessão não encontrada.</p>`;
+      app().innerHTML = naoEncontrado("#biblioteca", "Biblioteca", "Sessão não encontrada.");
       return;
     }
     app().innerHTML = `
@@ -1864,7 +1921,7 @@
   function vistaExercicio(id) {
     const e = est.exPorId[id];
     if (!e) {
-      app().innerHTML = `<a class="voltar" href="#biblioteca">← Biblioteca</a><p class="vazio">Exercício não encontrado.</p>`;
+      app().innerHTML = naoEncontrado(eTreinador() ? "#biblioteca" : "#treinos", eTreinador() ? "Biblioteca" : "Os meus treinos", "Exercício não encontrado.");
       return;
     }
     const video = e.video
@@ -1905,6 +1962,7 @@
         <ol class="escala">
           ${ESCALA_RPE.map(([n, nome, desc]) => `<li style="--c:${corRpe(n)}"><b>${n}</b><div><strong>${nome}</strong><span>${desc}</span></div></li>`).join("")}
         </ol>
+        ${eTreinador() ? "" : `<p class="nota-privacidade discreta">${icone("cadeado")}<span>${NOTA_PRIVACIDADE}</span></p>`}
       </section>`;
   }
 
@@ -1925,7 +1983,7 @@
     const el = ev.target.closest("button, a");
     if (!el) return;
 
-    if (el.dataset.modo) { vistaEntrar(el.dataset.modo); return; }
+    if (el.dataset.modo) { $("toast").hidden = true; vistaEntrar(el.dataset.modo); return; }
     if (el.id === "btnRecarregar") { iniciarSessao(true); return; }
     if (el.dataset.tentar) { el.dataset.tentar === "rota" ? rota() : iniciarSessao(); return; }
     if (el.dataset.voltar) { ev.preventDefault(); history.length > 1 ? history.back() : (location.hash = eTreinador() ? "#biblioteca" : "#treinos"); return; }
@@ -1943,6 +2001,7 @@
       $("rEstado").value = el.dataset.estado;
       document.querySelectorAll(".seg-op").forEach((b) => b.setAttribute("aria-pressed", String(b === el)));
       $("rCamposFeito").hidden = el.dataset.estado !== "feito";
+      $("rErro").hidden = true;
       return;
     }
     if (el.classList.contains("rpe-op")) {
@@ -1953,6 +2012,7 @@
       $("rpeNome").textContent = ESCALA_RPE[n][1];
       $("rpeLegenda").textContent = ESCALA_RPE[n][2];
       $("rpeVisor").style.setProperty("--c", corRpe(n));
+      $("rErro").hidden = true;
       atualizarCargaViva();
       return;
     }
@@ -2081,6 +2141,7 @@
   });
 
   document.addEventListener("input", (ev) => {
+    if (ev.target.closest && ev.target.closest("#fAuth") && ev.target.getAttribute("aria-invalid")) erroCampo(ev.target, "");
     if (ev.target.id === "rDur") { atualizarCargaViva(); return; }
     if (ev.target.id === "fPesquisa") {
       est.filtros.texto = ev.target.value;

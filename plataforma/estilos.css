@@ -13,11 +13,14 @@
   --sombra: 0 1px 2px rgb(14 26 20 / .06), 0 6px 20px -10px rgb(14 26 20 / .18);
   --topo-h: 60px;
   --barra-h: 64px;
+  /* O --muted da marca (#74857C) fica em 3,6–3,9:1 nas superfícies claras; aqui é usado em
+     texto pequeno (datas, doses, rótulos), por isso escurece-se até AA (≥ 4,5:1). */
+  --muted: #5C6D65;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --aviso-txt: #F2C46B; --alerta-txt: #FF8A94; --sombra: 0 1px 2px rgb(0 0 0 / .3); }
+  :root:not([data-theme="light"]) { --aviso-txt: #F2C46B; --alerta-txt: #FF8A94; --sombra: 0 1px 2px rgb(0 0 0 / .3); --muted: #93A89E; }
 }
-:root[data-theme="dark"] { --aviso-txt: #F2C46B; --alerta-txt: #FF8A94; --sombra: 0 1px 2px rgb(0 0 0 / .3); }
+:root[data-theme="dark"] { --aviso-txt: #F2C46B; --alerta-txt: #FF8A94; --sombra: 0 1px 2px rgb(0 0 0 / .3); --muted: #93A89E; }
 
 /* ---------- Base ---------- */
 * { box-sizing: border-box; }
@@ -133,13 +136,15 @@ h1 {
 .btn-sair {
   font: inherit;
   font-weight: 600;
-  min-height: 40px;
-  padding: .4rem .9rem;
+  min-height: var(--toque);
+  padding: .4rem .95rem;
   border-radius: var(--r-pill);
   border: 1px solid var(--night-line);
   background: transparent;
   color: var(--night-ink);
   cursor: pointer;
+  flex: none;
+  white-space: nowrap;
 }
 .btn-sair:hover { border-color: var(--night-ink-2); }
 
@@ -229,10 +234,10 @@ h1 {
 .btn.primario { background: var(--verde); border-color: var(--verde); color: var(--verde-ink); }
 .btn.primario:hover { background: color-mix(in srgb, var(--verde) 85%, var(--verde-ink)); border-color: transparent; }
 .btn.secundario { background: transparent; border-color: currentColor; }
-.btn.pequeno { min-height: 40px; padding: .35rem .85rem; font-size: .88rem; }
+.btn.pequeno { min-height: var(--toque); padding: .35rem .85rem; font-size: .88rem; }
 .btn.grande { min-height: 52px; padding: .8rem 1.3rem; font-size: 1.02rem; width: 100%; }
 .btn.perigo { color: var(--alerta-txt); border-color: color-mix(in srgb, var(--alerta-txt) 45%, transparent); }
-.btn.icone { min-width: 40px; padding: .35rem .6rem; }
+.btn.icone { min-width: var(--toque); padding: .35rem .6rem; }
 .btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
 .link {
   font: inherit;
@@ -455,10 +460,10 @@ h1 {
 .semana {
   list-style: none;
   margin: 1.1rem 0 0;
-  padding: 6px;
+  padding: 3px;
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 4px;
+  gap: 2px;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--r-l);
@@ -652,7 +657,7 @@ a.sd-hoje:hover { background: color-mix(in srgb, var(--verde) 85%, var(--verde-i
 .passo-txt { min-width: 0; }
 .passo .nome { font-weight: 650; color: var(--ink); text-decoration: none; line-height: 1.3; }
 .passo a.nome::after { content: ""; position: absolute; inset: 0; }  /* a linha inteira é o alvo de toque */
-.passo a.nome:hover { color: var(--accent); }
+.passo a.nome:hover { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: .2em; }
 .passo a.nome:focus-visible { outline: none; }
 .passo a.nome:focus-visible::after { outline: 3px solid var(--accent); outline-offset: -3px; border-radius: 4px; }
 .passo .desc { display: block; color: var(--muted); font-size: .84rem; line-height: 1.35; margin-top: .1rem; }
@@ -1138,7 +1143,7 @@ a.sd-hoje:hover { background: color-mix(in srgb, var(--verde) 85%, var(--verde-i
 .chips { display: flex; flex-wrap: wrap; gap: .35rem; }
 .chip {
   font: inherit;
-  min-height: 40px;
+  min-height: var(--toque);
   font-size: .88rem;
   font-weight: 600;
   padding: .3rem .85rem;
@@ -1313,7 +1318,7 @@ a.sd-hoje:hover { background: color-mix(in srgb, var(--verde) 85%, var(--verde-i
 .coment-cab strong { font-size: .9rem; }
 .coment-cab time { font-family: var(--mono); font-size: .74rem; color: var(--muted); }
 .coment p { margin: 0; white-space: pre-line; }
-.apagar-coment { justify-self: end; min-height: 36px; font-size: .84rem; color: var(--alerta-txt); }
+.apagar-coment { justify-self: end; min-height: var(--toque); padding-inline: .35rem; font-size: .84rem; color: var(--alerta-txt); }
 .coment-vazio { margin: 0 0 .75rem; font-size: .93rem; }
 .form-coment {
   display: grid;
@@ -1411,4 +1416,50 @@ a.sd-hoje:hover { background: color-mix(in srgb, var(--verde) 85%, var(--verde-i
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
   .btn:active, .rpe-op[aria-pressed="true"] { transform: none; }
+}
+
+/* ---------- Validação e privacidade ---------- */
+.erro-campo { margin: 0; font-size: .86rem; font-weight: 600; color: var(--alerta-txt); }
+.campo input[aria-invalid="true"] { border-color: var(--alerta-txt); }
+.nota-privacidade {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: .6rem;
+  align-items: start;
+  margin: .25rem 0 0;
+  padding: .75rem .85rem;
+  border-radius: var(--r-m);
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-size: .84rem;
+  line-height: 1.45;
+}
+.nota-privacidade .ico { width: 18px; height: 18px; margin-top: .1rem; color: var(--accent); }
+.nota-privacidade.discreta { margin-top: 1.25rem; background: transparent; padding-inline: .1rem; border-top: 1px solid var(--line); border-radius: 0; padding-top: 1rem; }
+
+/* ---------- Carregamento ---------- */
+.a-carregar { display: flex; flex-direction: column; align-items: center; gap: .8rem; padding-top: 4rem; }
+.spinner {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 3px solid var(--line); border-top-color: var(--accent);
+  animation: girar .8s linear infinite;
+}
+@keyframes girar { to { transform: rotate(360deg); } }
+/* Barra de progresso fina por baixo do topo enquanto uma vista carrega (só depois de 300 ms). */
+#app[aria-busy="true"]::before {
+  content: "";
+  position: fixed;
+  top: calc(var(--topo-h) + env(safe-area-inset-top, 0px));
+  left: 0;
+  z-index: 31;
+  width: 40%;
+  height: 3px;
+  background: var(--verde);
+  opacity: 0;
+  animation: progresso 1.1s var(--ease) .3s infinite;
+}
+@keyframes progresso { 0% { left: -40%; opacity: 1; } 100% { left: 100%; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  #app[aria-busy="true"]::before { display: none; }
+  .spinner { animation: none !important; border-top-color: var(--line); }
 }
