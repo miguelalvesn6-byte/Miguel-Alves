@@ -4,8 +4,6 @@
   const $ = (id) => document.getElementById(id);
   $("ano").textContent = new Date().getFullYear();
 
-  document.documentElement.classList.add("js");
-
   // ---------- Menu no telemóvel ----------
   const topo = $("topo");
   const menuBotao = topo.querySelector(".menu-botao");
@@ -26,6 +24,9 @@
   });
   document.addEventListener("click", (ev) => {
     if (topo.classList.contains("aberto") && !topo.contains(ev.target)) abrirMenu(false);
+  });
+  topo.addEventListener("focusout", (ev) => {
+    if (topo.classList.contains("aberto") && ev.relatedTarget && !topo.contains(ev.relatedTarget)) abrirMenu(false);
   });
   window.matchMedia("(min-width: 52.01rem)").addEventListener("change", (m) => { if (m.matches) abrirMenu(false); });
 
@@ -72,17 +73,40 @@
   });
 
   // ---------- Candidatura → Supabase (tabela candidaturas) ----------
+  // Os limites seguem as restrições da tabela (sql/04-candidaturas.sql).
   const form = $("fCandidatura");
   const estado = $("formEstado");
+  const btn = form.querySelector("button[type=submit]");
+  const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const TEL = /^[0-9+()\s.\-]+$/;
+  let enviando = false;
 
   function mostrar(msg, tipo) {
     estado.textContent = msg;
     estado.className = "form-estado " + (tipo || "");
   }
+  function erroCampo(id, msg) {
+    const campo = $(id);
+    const caixa = $(campo.getAttribute("aria-describedby").split(" ")[0]);
+    caixa.textContent = msg || "";
+    if (msg) campo.setAttribute("aria-invalid", "true"); else campo.removeAttribute("aria-invalid");
+  }
 
-  form.addEventListener("submit", async (ev) => {
-    ev.preventDefault();
-    const dados = {
+  // Contador da mensagem
+  const msgCampo = $("cMsg");
+  const conta = $("cMsgConta");
+  const atualizarConta = () => { conta.textContent = msgCampo.value.length + "/2000"; };
+  msgCampo.addEventListener("input", atualizarConta);
+
+  // Ao corrigir um campo, o erro desaparece.
+  ["cNome", "cEmail", "cTel", "cObj", "cMsg", "cConsent"].forEach((id) => {
+    $(id).addEventListener(id === "cConsent" ? "change" : "input", () => {
+      if ($(id).getAttribute("aria-invalid")) erroCampo(id, validar()[id]);
+    });
+  });
+
+  function lerDados() {
+    return {
       nome: $("cNome").value.trim(),
       email: $("cEmail").value.trim(),
       telefone: $("cTel").value.trim(),
@@ -94,15 +118,47 @@
       mensagem: $("cMsg").value.trim(),
       consentimento: $("cConsent").checked
     };
-    if (dados.nome.length < 2) return mostrar("Escreve o teu nome.", "erro");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dados.email)) return mostrar("Confirma o teu email.", "erro");
-    if (!dados.consentimento) return mostrar("Para te contactarmos, precisamos que aceites guardar estes dados.", "erro");
+  }
+  function validar() {
+    const d = lerDados();
+    const e = {};
+    if (d.nome.length < 2) e.cNome = "Escreve o teu nome (pelo menos 2 letras).";
+    else if (d.nome.length > 120) e.cNome = "O nome pode ter no máximo 120 caracteres.";
+    if (!d.email) e.cEmail = "Escreve o teu email.";
+    else if (d.email.length < 5 || d.email.length > 200 || !EMAIL.test(d.email)) e.cEmail = "Confirma o email (ex.: nome@exemplo.pt).";
+    if (d.telefone && (d.telefone.length > 30 || !TEL.test(d.telefone) || d.telefone.replace(/\D/g, "").length < 6)) e.cTel = "Confirma o número: só algarismos, espaços e o sinal +.";
+    if (d.objetivo.length > 300) e.cObj = "O objetivo pode ter no máximo 300 caracteres.";
+    if (d.mensagem.length > 2000) e.cMsg = "A mensagem pode ter no máximo 2000 caracteres.";
+    if (!d.consentimento) e.cConsent = "Para te contactarmos, precisamos que aceites guardar estes dados.";
+    return e;
+  }
 
-    const btn = form.querySelector("button[type=submit]");
+  form.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    if (enviando) return;
+    const erros = validar();
+    ["cNome", "cEmail", "cTel", "cObj", "cMsg", "cConsent"].forEach((id) => erroCampo(id, erros[id]));
+    const ids = Object.keys(erros);
+    if (ids.length) {
+      mostrar(ids.length === 1 ? "Falta corrigir um campo." : "Falta corrigir " + ids.length + " campos.", "erro");
+      $(ids[0]).focus();
+      return;
+    }
+    const dados = lerDados();
+    if (dados.modalidade !== "triatlo" && dados.modalidade !== "corrida") dados.modalidade = "triatlo";
+    dados.nivel = dados.nivel.slice(0, 60);
+    dados.plano = dados.plano.slice(0, 60);
+    dados.horas = dados.horas.slice(0, 30);
+
+    enviando = true;
     btn.disabled = true;
+    form.setAttribute("aria-busy", "true");
     mostrar("A enviar…");
+    const ctrl = "AbortController" in window ? new AbortController() : null;
+    const limite = ctrl ? setTimeout(() => ctrl.abort(), 15000) : 0;
     try {
       const cfg = window.CONFIG || {};
+      if (!cfg.supabaseUrl || !cfg.supabaseAnonKey) throw new Error("Configuração em falta");
       const r = await fetch(`${cfg.supabaseUrl}/rest/v1/candidaturas`, {
         method: "POST",
         headers: {
@@ -111,16 +167,22 @@
           "Content-Type": "application/json",
           Prefer: "return=minimal"
         },
-        body: JSON.stringify(dados)
+        body: JSON.stringify(dados),
+        signal: ctrl ? ctrl.signal : undefined
       });
-      if (!r.ok) throw new Error(String(r.status));
+      if (!r.ok) throw new Error("HTTP " + r.status);
       form.reset();
-      mostrar("Candidatura enviada. Entramos em contacto em até 48 horas.", "ok");
+      atualizarConta();
+      definirModalidade($("cMod").value, false);
+      mostrar("Candidatura enviada. Obrigado! Entramos em contacto no prazo de 48 horas.", "ok");
     } catch (e) {
-      console.error(e);
-      mostrar("Não foi possível enviar agora. Tenta outra vez dentro de alguns minutos.", "erro");
+      console.warn("Candidatura não enviada:", e && e.message);
+      mostrar("Não foi possível enviar agora. Os teus dados continuam no formulário: tenta outra vez dentro de alguns minutos.", "erro");
     } finally {
+      clearTimeout(limite);
+      enviando = false;
       btn.disabled = false;
+      form.removeAttribute("aria-busy");
     }
   });
 })();
