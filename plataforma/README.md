@@ -21,6 +21,10 @@ Cada atleta só consegue ler os seus próprios treinos; isso é garantido na bas
 4. **Publicar** — no GitHub: **Settings → Pages → Deploy from branch**, escolhe o ramo e a pasta `/ (root)`. O site fica em `https://<utilizador>.github.io/<repositório>/plataforma/`.
 5. **Links dos emails** — em **Authentication → URL Configuration** do Supabase, põe esse endereço em **Site URL** e em **Redirect URLs** (é para onde levam os emails de recuperar a palavra-passe).
 
+## Feedback e comentários
+
+Correr `sql/05-feedback-comentarios.sql` no SQL Editor do Supabase (e `sql/04-candidaturas.sql` para as candidaturas do site). Os atletas veem só os seus treinos, o feedback semanal e a escala RPE; a biblioteca e o planeamento são só do treinador.
+
 ## Uso
 
 - Envia o link do site aos atletas. Eles criam conta e aparecem em **Atletas → À espera de aprovação**.

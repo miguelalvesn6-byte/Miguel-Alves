@@ -88,10 +88,26 @@
   }
 
   function corRpe(n) {
-    if (n <= 3) return "var(--rpe-low)";
-    if (n <= 6) return "var(--rpe-mid)";
-    return "var(--rpe-high)";
+    if (n <= 3) return "var(--rpe-1)";
+    if (n <= 6) return "var(--rpe-2)";
+    if (n <= 8) return "var(--rpe-3)";
+    return "var(--rpe-4)";
   }
+  // Texto escuro ou claro por cima da cor da escala (contraste).
+  const tintaRpe = (n) => (n >= 9 ? "#fff" : "#0B1410");
+
+  // Ícones (traço) para o menu e botões.
+  const ICONES = {
+    treinos: '<path d="M4 7h16M4 7v12a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V7M4 7l1-3h14l1 3M9 12h6M9 16h4"/>',
+    atletas: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M15.5 4.8a3.3 3.3 0 0 1 0 6.4M18 14.8c1.9.7 3.1 2.4 3.5 5.2"/>',
+    candidaturas: '<path d="M3 13l2.5-8h13L21 13v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 13h5l1.5 2.5h5L16 13h5"/>',
+    biblioteca: '<path d="M4 4.5h5a3 3 0 0 1 3 3V20a2.5 2.5 0 0 0-2.5-2.5H4zM20 4.5h-5a3 3 0 0 0-3 3V20a2.5 2.5 0 0 1 2.5-2.5H20z"/>',
+    feedback: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>',
+    coment: '<path d="M5 5h14v10H10l-5 4z"/>',
+    escala: '<path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/><path d="M4 18h2M18 18h2M12 10V8"/>'
+  };
+  const icone = (n) => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${ICONES[n] || ""}</svg>`;
+  const LOGO = '<svg class="logo-marca" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18"/><path d="M7 25c5-4 9 4 13 0s8 4 13 0"/></svg>';
   const carga = (t) => (t.estado === "feito" && t.rpe != null && t.duracao_real ? t.rpe * t.duracao_real : 0);
 
   function toast(msg) {
@@ -234,14 +250,21 @@
     };
 
     app().innerHTML = `
-      <section class="auth">
-        <h1>${titulos[modo]}</h1>
-        <p class="muted">${ajuda[modo]}</p>
-        <form id="fAuth" class="form" data-modo="${modo}" novalidate>
-          ${campos[modo]}
-          <button class="btn primario grande" type="submit">${botoes[modo]}</button>
-        </form>
-        <div class="auth-links">${links[modo]}</div>
+      <section class="entrar">
+        <div class="entrar-hero">
+          ${LOGO}
+          <p class="sobre">Área de atleta</p>
+          <p class="entrar-frase">O teu treino de força, técnica e mobilidade — num só sítio.</p>
+        </div>
+        <div class="auth">
+          <h1>${titulos[modo]}</h1>
+          <p class="muted">${ajuda[modo]}</p>
+          <form id="fAuth" class="form" data-modo="${modo}" novalidate>
+            ${campos[modo]}
+            <button class="btn primario grande" type="submit">${botoes[modo]}</button>
+          </form>
+          ${links[modo] ? `<div class="auth-links">${links[modo]}</div>` : ""}
+        </div>
       </section>`;
     const primeiro = app().querySelector("input");
     if (primeiro) primeiro.focus();
@@ -326,6 +349,7 @@
       ecraErro(e, "sessao");
       return;
     }
+    if (!eTreinador()) await contarFeedbackPorLer();
     desenharMenu();
     rota();
   }
@@ -336,13 +360,30 @@
   function desenharMenu() {
     const itens = eTreinador()
       ? [["atletas", "Atletas"], ["candidaturas", "Candidaturas"], ["biblioteca", "Biblioteca"], ["escala", "Escala RPE"]]
-      : [["treinos", "Treinos"], ["biblioteca", "Biblioteca"], ["escala", "Escala RPE"]];
-    $("menu").innerHTML = itens.map(([h, t]) => `<a class="tab" href="#${h}" data-tab="${h}">${t}</a>`).join("");
+      : [["treinos", "Treinos"], ...(est.fbAtivo ? [["feedback", "Feedback"]] : []), ["escala", "Escala RPE"]];
+    $("menu").innerHTML = itens.map(([h, t]) => `<a class="tab" href="#${h}" data-tab="${h}">${icone(h)}<span>${t}</span>${h === "feedback" ? `<b class="badge" id="badgeFeedback" ${est.fbPorLer ? "" : "hidden"}>${est.fbPorLer}<span class="sr"> por ler</span></b>` : ""}</a>`).join("");
     $("menu").hidden = false;
   }
 
+  // Atleta: quantos feedbacks semanais estão por ler (e se a funcionalidade está ativa).
+  async function contarFeedbackPorLer() {
+    const { data, error } = await sb.from("feedbacks").select("id, lido_em");
+    est.fbAtivo = !error;
+    est.fbPorLer = error ? 0 : data.filter((f) => !f.lido_em).length;
+    if (error && !faltaTabela(error)) console.warn(error);
+  }
+  function atualizarBadgeFeedback() {
+    const b = $("badgeFeedback");
+    if (!b) return;
+    b.hidden = !est.fbPorLer;
+    b.innerHTML = `${est.fbPorLer}<span class="sr"> por ler</span>`;
+  }
+
   function marcarTab(tab) {
-    document.querySelectorAll("#menu .tab").forEach((t) => t.classList.toggle("ativo", t.dataset.tab === tab));
+    document.querySelectorAll("#menu .tab").forEach((t) => {
+      t.classList.toggle("ativo", t.dataset.tab === tab);
+      if (t.dataset.tab === tab) t.setAttribute("aria-current", "page"); else t.removeAttribute("aria-current");
+    });
   }
 
   let ultimaRota = "";
@@ -355,9 +396,21 @@
     if (est.rascunhoRota !== h) est.rascunho = null;
     est.rascunhoRota = h;
 
+    // O atleta só vê os seus treinos: sem biblioteca, planeamento nem sessões-modelo.
+    if (!eTreinador() && (h === "biblioteca" || h.startsWith("m-") || h.startsWith("plano-"))) {
+      location.replace("#treinos");
+      return;
+    }
+
     try {
       if (h === "biblioteca") { marcarTab("biblioteca"); vistaBiblioteca(); }
       else if (h === "escala") { marcarTab("escala"); vistaEscala(); }
+      else if (!eTreinador() && h === "feedback" && est.fbAtivo) { marcarTab("feedback"); await vistaFeedbackAtleta(); }
+      else if (h.startsWith("ex-") && !eTreinador()) {
+        marcarTab("treinos");
+        if (await exercicioNosMeusTreinos(h.slice(3))) vistaExercicio(h.slice(3));
+        else app().innerHTML = `<section class="vista"><a class="voltar" href="#treinos">← Os meus treinos</a><p class="vazio-caixa">Exercício não disponível. Só podes ver os exercícios que fazem parte dos teus treinos.</p></section>`;
+      }
       else if (h.startsWith("ex-")) { marcarTab("biblioteca"); vistaExercicio(h.slice(3)); }
       else if (h.startsWith("m-")) { marcarTab("biblioteca"); vistaModelo(h.slice(2)); }
       else if (h.startsWith("t-")) { marcarTab(eTreinador() ? "atletas" : "treinos"); await vistaTreino(h.slice(2)); }
@@ -373,6 +426,232 @@
     }
     if (h !== ultimaRota) window.scrollTo(0, 0);
     ultimaRota = h;
+    // "Registar" no cartão de hoje: abre o treino já no formulário de registo.
+    if (est.irParaRegisto && $("fRegisto")) $("fRegisto").scrollIntoView({ block: "start" });
+    est.irParaRegisto = false;
+  }
+
+  // O atleta só abre exercícios que estão nos seus treinos (a RLS já limita os treinos a si).
+  async function exercicioNosMeusTreinos(id) {
+    const { data, error } = await sb.from("treinos").select("blocos");
+    if (error) throw error;
+    return data.some((t) => (t.blocos || []).some((b) => (b.itens || []).some((i) => i.ex === id)));
+  }
+
+  // Tabelas do 05-feedback-comentarios.sql ainda não criadas?
+  const faltaTabela = (e) => /feedbacks|comentarios|schema cache|does not exist|relation/i.test((e && e.message) || "");
+  const AVISO_ATIVAR = `<div class="vazio-caixa aviso-ativar"><p><strong>Falta ativar:</strong> corre <code>plataforma/sql/05-feedback-comentarios.sql</code> no Supabase (SQL Editor → Run) e atualiza a página.</p></div>`;
+
+  function tempoRelativo(iso) {
+    const dt = new Date(iso);
+    const seg = Math.round((Date.now() - dt.getTime()) / 1000);
+    if (seg < 60) return "agora mesmo";
+    if (seg < 3600) return `há ${Math.floor(seg / 60)} min`;
+    if (seg < 86400) return `há ${Math.floor(seg / 3600)} h`;
+    const dias = Math.floor(seg / 86400);
+    if (dias === 1) return "ontem";
+    if (dias < 7) return `há ${dias} dias`;
+    return dt.toLocaleDateString("pt-PT", { day: "numeric", month: "short" });
+  }
+  const dm = (iso) => `${iso.slice(8)}/${iso.slice(5, 7)}`;
+  const rotuloSemana = (seg) => `Semana de ${dm(seg)} a ${dm(somarDias(seg, 6))}`;
+
+  // Treinador: comentários dos últimos 7 dias, por treino (para mostrar um contador nas linhas).
+  async function carregarComentRecentes() {
+    est.comentRecentes = {};
+    est.comentPorAutor = {};
+    const desde = new Date(Date.now() - 7 * 86400000).toISOString();
+    const { data, error } = await sb.from("comentarios").select("treino_id, autor_id, criado_em").gte("criado_em", desde);
+    if (error) { if (!faltaTabela(error)) console.warn(error); return; }
+    data.filter((c) => c.autor_id !== est.utilizador.id).forEach((c) => {
+      est.comentRecentes[c.treino_id] = (est.comentRecentes[c.treino_id] || 0) + 1;
+      est.comentPorAutor[c.autor_id] = (est.comentPorAutor[c.autor_id] || 0) + 1;
+    });
+  }
+  const badgeComent = (n, txt) => (n ? `<span class="badge-coment" title="${n} comentário${n === 1 ? "" : "s"} nos últimos 7 dias">${icone("coment")}${n}<span class="sr"> ${txt || "comentários recentes"}</span></span>` : "");
+
+  // ======================================================================
+  // Comentários num treino (atleta e treinador)
+  // ======================================================================
+  async function desenharComentarios(treinoId) {
+    const zona = $("comentariosZona");
+    if (!zona) return;
+    const { data, error } = await sb.from("comentarios").select("*").eq("treino_id", treinoId).order("criado_em");
+    if (error) {
+      if (!faltaTabela(error)) console.warn(error);
+      zona.innerHTML = eTreinador() ? `<h2 class="titulo-secao">Comentários</h2>${AVISO_ATIVAR}` : "";
+      return;
+    }
+    const autor = (c) => {
+      if (c.autor_id === est.utilizador.id) return "Tu";
+      if (!eTreinador()) return "Treinador";
+      const a = est.atletas.find((x) => x.id === c.autor_id);
+      return a ? (a.nome || a.email) : "Atleta";
+    };
+    zona.innerHTML = `
+      <section class="comentarios" aria-labelledby="tituloComent">
+        <h2 class="titulo-secao" id="tituloComent">Comentários${data.length ? ` · ${data.length}` : ""}</h2>
+        ${data.length ? `<ol class="lista-coment">${data.map((c) => `
+          <li class="coment${c.autor_id === est.utilizador.id ? " meu" : ""}">
+            <div class="coment-cab"><strong>${esc(autor(c))}</strong><time datetime="${esc(c.criado_em)}">${esc(tempoRelativo(c.criado_em))}</time></div>
+            <p>${esc(c.texto)}</p>
+            ${c.autor_id === est.utilizador.id ? `<button type="button" class="link apagar-coment" data-apagar-coment="${esc(c.id)}">Apagar</button>` : ""}
+          </li>`).join("")}</ol>`
+          : `<p class="muted coment-vazio">${eTreinador() ? "Ainda sem comentários. Escreve uma nota ao atleta sobre este treino." : "Ainda sem comentários. Tens uma dúvida sobre este treino? Pergunta aqui ao treinador."}</p>`}
+        <form id="fComentario" class="form-coment" data-treino="${esc(treinoId)}" novalidate>
+          <label class="sr" for="cTexto">Escrever comentário</label>
+          <textarea id="cTexto" rows="2" maxlength="2000" placeholder="Escreve um comentário…"></textarea>
+          <button class="btn primario" type="submit">Enviar</button>
+        </form>
+      </section>`;
+  }
+
+  async function enviarComentario(form) {
+    const texto = $("cTexto").value.trim();
+    if (!texto) return toast("Escreve o comentário.");
+    if (texto.length > 2000) return toast("O comentário é demasiado longo (máx. 2000 caracteres).");
+    const btn = form.querySelector("button[type=submit]");
+    btn.disabled = true;
+    const { error } = await sb.from("comentarios").insert({ treino_id: form.dataset.treino, autor_id: est.utilizador.id, texto });
+    btn.disabled = false;
+    if (error) return erro(error);
+    toast("Comentário enviado.");
+    await desenharComentarios(form.dataset.treino);
+  }
+
+  async function apagarComentario(btn) {
+    if (btn.dataset.confirmar !== "1") {
+      btn.dataset.confirmar = "1";
+      btn.textContent = "Carrega outra vez para apagar";
+      setTimeout(() => { if (btn.isConnected) { btn.dataset.confirmar = ""; btn.textContent = "Apagar"; } }, 4000);
+      return;
+    }
+    const treino = $("fComentario").dataset.treino;
+    const { error } = await sb.from("comentarios").delete().eq("id", btn.dataset.apagarComent);
+    if (error) return erro(error);
+    toast("Comentário apagado.");
+    await desenharComentarios(treino);
+  }
+
+  // ======================================================================
+  // Feedback semanal
+  // ======================================================================
+  async function vistaFeedbackAtleta() {
+    const { data, error } = await sb.from("feedbacks").select("*").order("semana", { ascending: false });
+    if (error) throw error;
+    est.fbPorLer = data.filter((f) => !f.lido_em).length;
+    atualizarBadgeFeedback();
+    app().innerHTML = `
+      <section class="vista">
+        <h1>Feedback</h1>
+        <p class="muted">O resumo semanal do teu treinador. ${est.fbPorLer ? `<strong>${est.fbPorLer} por ler.</strong>` : ""}</p>
+        ${data.length ? `<div class="lista-fb">${data.map((f, i) => `
+          <details class="fb${f.lido_em ? "" : " por-ler"}" data-fb="${esc(f.id)}">
+            <summary>
+              <span class="fb-cab">
+                <span class="sobre">${esc(rotuloSemana(f.semana))}</span>
+                ${f.lido_em ? "" : `<span class="chip-estado c-novo">Novo</span>`}
+                ${f.resposta ? `<span class="chip-estado c-ok">Respondido</span>` : ""}
+              </span>
+              <span class="fb-preview">${esc(String(f.texto).split("\n").find((l) => l.trim() && !/^Resumo da semana/.test(l)) || f.texto)}</span>
+            </summary>
+            <div class="fb-corpo">
+              <p class="fb-texto">${esc(f.texto)}</p>
+              <form class="form-resposta" data-responder="${esc(f.id)}" novalidate>
+                <label class="campo"><span>${f.resposta ? "A tua resposta" : "Responder ao treinador"}</span>
+                  <textarea id="fbResp-${esc(f.id)}" rows="3" maxlength="2000" placeholder="Como te sentiste, dúvidas, o que queres ajustar…">${esc(f.resposta || "")}</textarea>
+                </label>
+                <div class="acoes-linha">
+                  <button class="btn primario" type="submit">${f.resposta ? "Atualizar resposta" : "Enviar resposta"}</button>
+                  ${f.resposta_em ? `<span class="muted pequeno-txt">Respondeste ${esc(tempoRelativo(f.resposta_em))}</span>` : ""}
+                </div>
+              </form>
+            </div>
+          </details>`).join("")}</div>`
+        : `<div class="vazio-caixa"><p><strong>Ainda sem feedback.</strong></p><p>No fim de cada semana o treinador deixa-te aqui um resumo.</p></div>`}
+      </section>`;
+  }
+
+  async function marcarFeedbackLido(det) {
+    if (!det.classList.contains("por-ler")) return;
+    det.classList.remove("por-ler");
+    const novo = det.querySelector(".c-novo");
+    if (novo) novo.remove();
+    const { error } = await sb.rpc("marcar_feedback_lido", { p_id: det.dataset.fb });
+    if (error) return erro(error);
+    est.fbPorLer = Math.max(0, (est.fbPorLer || 0) - 1);
+    atualizarBadgeFeedback();
+  }
+
+  async function responderFeedback(form) {
+    const id = form.dataset.responder;
+    const txt = $("fbResp-" + id).value.trim();
+    if (!txt) return toast("Escreve a resposta.");
+    if (txt.length > 2000) return toast("A resposta é demasiado longa (máx. 2000 caracteres).");
+    const btn = form.querySelector("button[type=submit]");
+    btn.disabled = true;
+    const { error } = await sb.rpc("responder_feedback", { p_id: id, p_resposta: txt });
+    btn.disabled = false;
+    if (error) return erro(error);
+    toast("Resposta enviada ao treinador.");
+    await vistaFeedbackAtleta();
+    const det = document.querySelector(`.fb[data-fb="${CSS.escape(id)}"]`);
+    if (det) det.open = true;
+  }
+
+  // Treinador: lista de feedbacks de um atleta (na página do atleta).
+  async function desenharFeedbacksAtleta(atletaId) {
+    const zona = $("fbZona");
+    if (!zona) return;
+    const { data, error } = await sb.from("feedbacks").select("*").eq("atleta_id", atletaId).order("semana", { ascending: false });
+    est.feedbacksAtleta = error ? null : data;
+    if (error) {
+      if (!faltaTabela(error)) console.warn(error);
+      zona.innerHTML = `<h2 class="titulo-secao">Feedback enviado</h2>${AVISO_ATIVAR}`;
+      return;
+    }
+    zona.innerHTML = `
+      <h2 class="titulo-secao">Feedback enviado${data.length ? ` · ${data.length}` : ""}</h2>
+      ${data.length ? `<div class="lista-fb">${data.map((f) => `
+        <details class="fb">
+          <summary>
+            <span class="fb-cab">
+              <span class="sobre">${esc(rotuloSemana(f.semana))}</span>
+              ${f.lido_em ? `<span class="chip-estado c-ok">Lido</span>` : `<span class="chip-estado c-aviso">Por ler</span>`}
+              ${f.resposta ? `<span class="chip-estado c-novo">Com resposta</span>` : ""}
+            </span>
+            <span class="fb-preview">Atualizado ${esc(tempoRelativo(f.atualizado_em || f.criado_em))}${f.resposta ? ` · “${esc(f.resposta.slice(0, 80))}${f.resposta.length > 80 ? "…" : ""}”` : ""}</span>
+          </summary>
+          <div class="fb-corpo">
+            <p class="fb-texto">${esc(f.texto)}</p>
+            ${f.resposta ? `<div class="fb-resposta"><span class="sobre">Resposta do atleta · ${esc(tempoRelativo(f.resposta_em))}</span><p>${esc(f.resposta)}</p></div>` : `<p class="muted pequeno-txt">Ainda sem resposta.</p>`}
+            ${document.querySelector(`#rsSemana option[value="${f.semana}"]`) ? `<button type="button" class="btn pequeno" data-editar-feedback="${esc(f.id)}">Editar no resumo</button>` : ""}
+          </div>
+        </details>`).join("")}</div>`
+      : `<p class="vazio-caixa">Ainda não enviaste feedback a este atleta. Gera o rascunho acima, revê e carrega em “Guardar como feedback”.</p>`}`;
+    avisoFeedbackExistente();
+  }
+
+  function avisoFeedbackExistente() {
+    const el = $("rsExiste");
+    if (!el || !$("rsSemana")) return;
+    const f = (est.feedbacksAtleta || []).find((x) => x.semana === $("rsSemana").value);
+    el.hidden = !f;
+    if (f) el.textContent = `Já existe feedback para esta semana (${f.lido_em ? "lido" : "por ler"}). Guardar substitui o texto.`;
+  }
+
+  async function guardarFeedback(btn, atletaId) {
+    const texto = $("rsTexto").value.trim();
+    const semana = $("rsSemana").value;
+    if (!texto) return toast("O texto do feedback está vazio.");
+    if (texto.length > 5000) return toast("O feedback é demasiado longo (máx. 5000 caracteres).");
+    btn.disabled = true;
+    const { error } = await sb.from("feedbacks")
+      .upsert({ atleta_id: atletaId, semana, texto, atualizado_em: new Date().toISOString() }, { onConflict: "atleta_id,semana" });
+    btn.disabled = false;
+    if (error) return faltaTabela(error) ? toast("Falta ativar: corre plataforma/sql/05-feedback-comentarios.sql no Supabase.") : erro(error);
+    toast("Feedback guardado. O atleta já o vê no separador Feedback.");
+    await desenharFeedbacksAtleta(atletaId);
   }
 
   // ======================================================================
@@ -380,9 +659,20 @@
   // ======================================================================
   function htmlBlocos(blocos) {
     let n = 0;
-    return (blocos || []).map((b) => `
-      <div class="bloco">
-        <h3>${esc(b.titulo)}</h3>
+    return (blocos || []).map((b, bi) => {
+      // "1 · Mobilidade (8 min)" → número, nome e minutos
+      const m = String(b.titulo || "").match(/^\s*(\d+)\s*·\s*(.*?)\s*(?:\((\d+)\s*min\))?\s*$/);
+      const num = m ? m[1] : String(bi + 1);
+      const nomeBloco = m ? m[2] : String(b.titulo || "").replace(/\s*\((\d+)\s*min\)\s*$/, "");
+      const minM = m ? m[3] : (String(b.titulo || "").match(/\((\d+)\s*min\)/) || [])[1];
+      const nItens = (b.itens || []).length;
+      return `
+      <section class="bloco">
+        <header class="bloco-cab">
+          <span class="bloco-n" aria-hidden="true">${esc(num)}</span>
+          <h3>${esc(nomeBloco)}</h3>
+          <span class="bloco-min">${minM ? `${esc(minM)} min` : `${nItens} ex.`}</span>
+        </header>
         <ol class="passos">
           ${(b.itens || []).map((i) => {
             n += 1;
@@ -390,12 +680,13 @@
             const nome = e ? `<a class="nome" href="#ex-${esc(e.id)}">${esc(e.nome)}</a>` : `<span class="nome">${esc(i.ex)}</span>`;
             const desc = e ? `<span class="desc">${esc(e.musculos)}</span>` : "";
             const nota = i.nota ? `<span class="desc nota-item">${esc(i.nota)}</span>` : "";
-            const descanso = i.descanso && i.descanso !== "—" ? `<small>desc. ${esc(i.descanso)}</small>` : "";
+            const descanso = i.descanso && i.descanso !== "—" ? `<small class="descanso">desc. ${esc(i.descanso)}</small>` : "";
             const [dose, extra] = partirDose(i.dose);
-            return `<li class="passo"><span class="n">${n}</span><div>${nome}${desc}${nota}</div><div class="dose">${esc(dose)}${extra ? `<small>${esc(extra)}</small>` : ""}${descanso}</div></li>`;
+            return `<li class="passo${e ? " com-link" : ""}"><span class="n">${n}</span><div class="passo-txt">${nome}${desc}${nota}</div><div class="dose"><span class="dose-v">${esc(dose)}</span>${extra ? `<small>${esc(extra)}</small>` : ""}${descanso}</div></li>`;
           }).join("")}
         </ol>
-      </div>`).join("");
+      </section>`;
+    }).join("");
   }
 
   // "4 × 10/perna (pausa em baixo)" → ["4 × 10/perna", "pausa em baixo"]
@@ -404,21 +695,46 @@
     return m ? [m[1], m[2]] : [String(dose || ""), ""];
   }
 
+  // Estado "visual" de um treino (inclui "por registar" para os planeados que já passaram).
+  const estadoVisual = (t) => (t.estado === "planeado" && t.data < hoje() ? "pendente" : t.estado);
+
   function linhaTreino(t, mostrarAtleta) {
     const atleta = mostrarAtleta ? est.atletas.find((a) => a.id === t.atleta_id) : null;
     const rpe = t.estado === "feito" && t.rpe != null
       ? `<span class="rpe-mini"><i style="background:${corRpe(t.rpe)}"></i>RPE ${t.rpe}</span>`
       : "";
-    const cg = carga(t) ? `<span class="muted"> · ${carga(t)} UA</span>` : "";
+    const cg = carga(t) ? `<span class="carga-mini">${carga(t)} UA</span>` : "";
     return `
       <a class="linha-treino" href="#t-${t.id}">
-        <div>
-          <span class="data">${esc(dataBonita(t.data))}</span>
+        <i class="lt-ponto p-${estadoVisual(t)}" aria-hidden="true"></i>
+        <div class="lt-corpo">
           <strong>${esc(t.titulo)}</strong>
-          ${atleta ? `<span class="muted">${esc(atleta.nome || atleta.email)}</span>` : ""}
+          <span class="data">${esc(dataBonita(t.data))}${atleta ? ` · ${esc(atleta.nome || atleta.email)}` : ""}</span>
         </div>
-        <div class="lado">${pillEstado(t.estado, t.data)}${rpe}${cg}</div>
+        <div class="lado">${eTreinador() && est.comentRecentes ? badgeComent(est.comentRecentes[t.id]) : ""}${pillEstado(t.estado, t.data)}${rpe}${cg}</div>
       </a>`;
+  }
+
+  // Faixa da semana (segunda a domingo) com o estado de cada dia.
+  function faixaSemana(treinos) {
+    const h = hoje();
+    const seg = segundaDe(h);
+    const nomes = { feito: "feito", nao_feito: "não feito", pendente: "por registar", planeado: "planeado" };
+    return `
+      <ol class="semana" aria-label="Esta semana">
+        ${DIAS_SEMANA.map((nome, i) => {
+          const d = somarDias(seg, i);
+          const ts = treinos.filter((t) => t.data === d);
+          const estados = ts.map(estadoVisual);
+          const principal = ["pendente", "nao_feito", "planeado", "feito"].find((e) => estados.includes(e)) || "vazio";
+          const rotulo = `${nome} ${Number(d.slice(8))}: ${ts.length ? ts.map((t) => nomes[estadoVisual(t)]).join(", ") : "sem treino"}`;
+          const conteudo = `<span class="sd-nome">${nome}</span><span class="sd-num">${Number(d.slice(8))}</span><i class="sd-ponto p-${principal}"></i>`;
+          const cls = `sd${d === h ? " sd-hoje" : ""}`;
+          return `<li>${ts.length
+            ? `<a class="${cls}" href="#t-${ts[0].id}" aria-label="${esc(rotulo)}">${conteudo}</a>`
+            : `<span class="${cls}" aria-label="${esc(rotulo)}">${conteudo}</span>`}</li>`;
+        }).join("")}
+      </ol>`;
   }
 
   // ======================================================================
@@ -432,9 +748,30 @@
     const deHoje = data.filter((t) => t.data === h);
     const proximos = data.filter((t) => t.data > h);
     const anteriores = data.filter((t) => t.data < h).reverse();
+    const porRegistar = anteriores.filter((t) => t.estado === "planeado");
     const semana = data.filter((t) => t.data > somarDias(h, -7) && t.data <= h);
     const feitos = semana.filter((t) => t.estado === "feito").length;
     const cargaSemana = semana.reduce((s, t) => s + carga(t), 0);
+    const dataHoje = new Date().toLocaleDateString("pt-PT", { weekday: "long", day: "numeric", month: "long" });
+
+    const cartaoHoje = (t) => {
+      const feito = t.estado !== "planeado";
+      return `
+        <article class="cartao-hoje${feito ? " registado" : ""}">
+          <p class="sobre">Hoje · ${esc(dataHoje)}</p>
+          <h2>${esc(t.titulo)}</h2>
+          <dl class="hoje-num">
+            <div class="grande"><dt>Duração</dt><dd><b>${t.duracao_prevista || "–"}</b> min</dd></div>
+            <div><dt>RPE alvo</dt><dd><b>${t.rpe_alvo ? esc(t.rpe_alvo) : "–"}</b></dd></div>
+            <div><dt>Estado</dt><dd>${t.estado === "feito" && t.rpe != null ? `<span class="pill e-feito">Feito · RPE ${t.rpe}</span>` : pillEstado(t.estado)}</dd></div>
+          </dl>
+          ${t.notas_treinador ? `<p class="obj">${esc(t.notas_treinador)}</p>` : ""}
+          <div class="hoje-acoes">
+            <a class="btn primario grande" href="#t-${t.id}">Ver treino</a>
+            <a class="btn grande secundario" href="#t-${t.id}" data-registar="1">${feito ? "Corrigir registo" : "Registar"}</a>
+          </div>
+        </article>`;
+    };
 
     app().innerHTML = `
       <section class="vista">
@@ -443,24 +780,30 @@
           <p class="muted">Últimos 7 dias: <strong>${feitos}</strong> de ${semana.length} treinos feitos · carga <strong>${cargaSemana}</strong> UA</p>
         </div>
 
-        <h2 class="titulo-secao">Hoje</h2>
+        ${faixaSemana(data)}
+        <p class="semana-legenda" aria-hidden="true"><span><i class="sd-ponto p-feito"></i>Feito</span><span><i class="sd-ponto p-planeado"></i>Planeado</span><span><i class="sd-ponto p-pendente"></i>Por registar</span><span><i class="sd-ponto p-nao_feito"></i>Não feito</span></p>
+
+        <h2 class="titulo-secao sr">Hoje</h2>
         ${deHoje.length
-          ? `<div class="cartoes-hoje">${deHoje.map((t) => `
-              <a class="cartao-hoje" href="#t-${t.id}">
-                <div class="minutos"><div><b>${t.duracao_prevista || "–"}</b><br><span>min</span></div></div>
-                <div>
-                  <h3>${esc(t.titulo)}</h3>
-                  <p class="muted">${t.rpe_alvo ? `RPE alvo ${esc(t.rpe_alvo)} · ` : ""}${pillEstado(t.estado)}</p>
-                  ${t.notas_treinador ? `<p class="obj">${esc(t.notas_treinador)}</p>` : ""}
-                </div>
-              </a>`).join("")}</div>`
-          : `<p class="vazio-caixa">Hoje não tens treino físico marcado.</p>`}
+          ? `<div class="cartoes-hoje">${deHoje.map(cartaoHoje).join("")}</div>`
+          : `<div class="cartao-hoje descanso">
+              <p class="sobre">Hoje · ${esc(dataHoje)}</p>
+              <h2>Dia sem treino físico</h2>
+              <p class="obj">${proximos.length ? `Próximo: <strong>${esc(proximos[0].titulo)}</strong> · ${esc(dataBonita(proximos[0].data))}` : "Hoje não tens treino físico marcado."}</p>
+              ${proximos.length ? `<div class="hoje-acoes"><a class="btn grande secundario" href="#t-${proximos[0].id}">Ver próximo treino</a></div>` : ""}
+            </div>`}
+
+        ${porRegistar.length ? `
+          <div class="caixa-aviso">
+            <p><strong>${porRegistar.length} treino${porRegistar.length === 1 ? "" : "s"} por registar.</strong> Regista o esforço para o treinador poder ajustar.</p>
+            <div class="lista-treinos">${porRegistar.map((t) => linhaTreino(t)).join("")}</div>
+          </div>` : ""}
 
         <h2 class="titulo-secao">Próximos</h2>
         ${proximos.length ? `<div class="lista-treinos">${proximos.map((t) => linhaTreino(t)).join("")}</div>` : `<p class="vazio-caixa">Sem treinos marcados.</p>`}
 
         <h2 class="titulo-secao">Últimas 4 semanas</h2>
-        ${anteriores.length ? `<div class="lista-treinos">${anteriores.map((t) => linhaTreino(t)).join("")}</div>` : `<p class="vazio-caixa">Ainda sem histórico.</p>`}
+        ${anteriores.length ? `<div class="lista-treinos compacta">${anteriores.map((t) => linhaTreino(t)).join("")}</div>` : `<p class="vazio-caixa">Ainda sem histórico.</p>`}
       </section>`;
   }
 
@@ -483,8 +826,8 @@
     const factos = `
       <dl class="factos">
         <div><dt>Data</dt><dd>${esc(dataBonita(t.data, true))}</dd></div>
-        <div><dt>Duração prevista</dt><dd>${t.duracao_prevista ? t.duracao_prevista + " min" : "—"}</dd></div>
-        <div><dt>RPE alvo</dt><dd>${t.rpe_alvo ? esc(t.rpe_alvo) + " / 10" : "—"}</dd></div>
+        <div><dt>Duração</dt><dd><b class="num">${t.duracao_prevista || "—"}</b>${t.duracao_prevista ? " min" : ""}</dd></div>
+        <div><dt>RPE alvo</dt><dd><b class="num">${t.rpe_alvo ? esc(t.rpe_alvo) : "—"}</b>${t.rpe_alvo ? " / 10" : ""}</dd></div>
         <div><dt>Estado</dt><dd>${pillEstado(t.estado, t.data)}</dd></div>
       </dl>`;
 
@@ -493,7 +836,7 @@
         <h3>Registo do atleta</h3>
         ${t.estado === "feito" ? `
           <div class="numeros">
-            <div><span>RPE</span><b style="color:${corRpe(t.rpe ?? 0)}">${t.rpe ?? "—"}</b></div>
+            <div><span>RPE</span><b class="com-cor" style="--c:${corRpe(t.rpe ?? 0)}">${t.rpe ?? "—"}</b></div>
             <div><span>Minutos</span><b>${t.duracao_real ?? "—"}</b></div>
             <div><span>Carga (RPE × min)</span><b>${carga(t) || "—"}</b></div>
           </div>` : `<p>O atleta indicou que não fez este treino.</p>`}
@@ -511,6 +854,7 @@
       <section class="vista">
         <a class="voltar" href="${voltar}">← ${eTreinador() ? esc(atleta ? (atleta.nome || atleta.email) : "Atleta") : "Os meus treinos"}</a>
         <div class="det-cab">
+          <p class="sobre">${t.data === hoje() ? "Treino de hoje" : "Treino"}${(t.blocos || []).length ? ` · ${(t.blocos || []).length} blocos` : ""}</p>
           <h2>${esc(t.titulo)}</h2>
           ${factos}
           ${acoesTreinador}
@@ -521,7 +865,9 @@
         ${eTreinador() ? "" : t.data > somarDias(hoje(), 1)
           ? `<p class="vazio-caixa">Podes registar este treino a partir do dia ${esc(dataBonita(t.data))}.</p>`
           : formRegisto(t)}
+        <div id="comentariosZona"></div>
       </section>`;
+    await desenharComentarios(t.id);
   }
 
   function formRegisto(t) {
@@ -532,26 +878,52 @@
       <form class="registo" id="fRegisto" data-id="${t.id}" novalidate>
         <h3>Como correu?</h3>
         <p class="muted">Regista 15–30 min depois de acabares. ${t.estado !== "planeado" ? "Já registaste este treino; podes corrigir." : ""}</p>
-        <div class="seg" role="radiogroup" aria-label="Fizeste o treino?">
+        <div class="seg" role="group" aria-label="Fizeste o treino?">
           <button type="button" class="seg-op" data-estado="feito" aria-pressed="${estado === "feito"}">Fiz o treino</button>
           <button type="button" class="seg-op" data-estado="nao_feito" aria-pressed="${estado === "nao_feito"}">Não consegui fazer</button>
         </div>
         <input type="hidden" id="rEstado" value="${estado}" />
-        <div id="rCamposFeito" ${estado === "feito" ? "" : "hidden"}>
+        <div id="rCamposFeito" class="registo-campos" ${estado === "feito" ? "" : "hidden"}>
           <fieldset class="rpe-escolha">
-            <legend>Esforço da sessão (RPE 0–10)</legend>
+            <legend>Esforço da sessão inteira (RPE 0–10)</legend>
+            <div class="rpe-visor" id="rpeVisor" style="--c:${rpe != null ? corRpe(rpe) : "var(--line)"}">
+              <b id="rpeNum" aria-hidden="true">${rpe ?? "–"}</b>
+              <div>
+                <strong id="rpeNome">${rpe != null ? esc(ESCALA_RPE[rpe][1]) : "Escolhe o esforço"}</strong>
+                <span class="rpe-legenda" id="rpeLegenda">${rpe != null ? esc(ESCALA_RPE[rpe][2]) : "Toca num número de 0 a 10."}</span>
+              </div>
+            </div>
             <div class="rpe-botoes">
               ${ESCALA_RPE.map(([n, nome]) => `
-                <button type="button" class="rpe-op" data-rpe="${n}" aria-pressed="${rpe === n}" style="--c:${corRpe(n)}" title="${nome}">${n}</button>`).join("")}
+                <button type="button" class="rpe-op" data-rpe="${n}" aria-pressed="${rpe === n}" style="--c:${corRpe(n)};--ct:${tintaRpe(n)}" aria-label="${n} — ${nome}">${n}</button>`).join("")}
             </div>
-            <p class="rpe-legenda" id="rpeLegenda">${rpe != null ? esc(ESCALA_RPE[rpe][1] + " — " + ESCALA_RPE[rpe][2]) : "Toca num número."}</p>
+            <div class="rpe-extremos" aria-hidden="true"><span>Repouso</span><span>Máximo</span></div>
             <input type="hidden" id="rRpe" value="${rpe ?? ""}" />
           </fieldset>
-          <label class="campo curto"><span>Minutos que treinaste</span><input id="rDur" type="number" inputmode="numeric" min="1" max="600" value="${esc(dur)}" /></label>
+          <div class="campo">
+            <label for="rDur">Minutos que treinaste</label>
+            <div class="stepper">
+              <button type="button" class="btn passo-min" data-min="-5" aria-label="Menos 5 minutos">−5</button>
+              <input id="rDur" type="number" inputmode="numeric" min="1" max="600" value="${esc(dur)}" />
+              <button type="button" class="btn passo-min" data-min="5" aria-label="Mais 5 minutos">+5</button>
+            </div>
+          </div>
+          <p class="carga-viva" id="rCarga" aria-live="polite">${textoCargaViva(rpe, dur)}</p>
         </div>
         <label class="campo"><span>Comentário para o treinador (opcional)</span><textarea id="rComentario" rows="3" placeholder="Dores, cargas usadas, como te sentiste…">${esc(t.comentario_atleta)}</textarea></label>
         <button class="btn primario grande" type="submit">Guardar registo</button>
       </form>`;
+  }
+
+  function textoCargaViva(rpe, dur) {
+    const d = Number(dur);
+    const ok = rpe != null && rpe !== "" && d > 0;
+    return `<span>Carga = RPE × min</span><b>${ok ? `${rpe} × ${d} = <em>${Number(rpe) * d}</em> UA` : "—"}</b>`;
+  }
+  function atualizarCargaViva() {
+    if (!$("rCarga")) return;
+    const r = $("rRpe").value;
+    $("rCarga").innerHTML = textoCargaViva(r === "" ? null : Number(r), $("rDur").value);
   }
 
   async function submeterRegisto(form) {
@@ -586,6 +958,7 @@
   // ======================================================================
   async function vistaAtletas() {
     await carregarAtletas();
+    await carregarComentRecentes();
     const h = hoje();
     const { data: treinos, error } = await sb.from("treinos")
       .select("id, atleta_id, data, titulo, estado, rpe, duracao_real")
@@ -602,8 +975,15 @@
       const proximos = ts.filter((t) => t.data > h).length;
       const cg = semana.reduce((s, t) => s + carga(t), 0);
       const porRegistar = semana.filter((t) => t.estado === "planeado" && t.data < h).length;
-      return { semana: semana.length, feitos: feitos.length, proximos, cg, porRegistar };
+      const naoFeitos = semana.filter((t) => t.estado === "nao_feito").length;
+      return { semana: semana.length, feitos: feitos.length, proximos, cg, porRegistar, naoFeitos };
     };
+    const iniciais = (a) => String(a.nome || a.email || "?").trim().split(/\s+/).slice(0, 2).map((x) => x[0]).join("").toUpperCase();
+    const chipAtleta = (r) =>
+      r.porRegistar ? `<span class="chip-estado c-aviso">${r.porRegistar} por registar</span>`
+      : r.naoFeitos ? `<span class="chip-estado c-alerta">${r.naoFeitos} não feito${r.naoFeitos === 1 ? "" : "s"}</span>`
+      : !r.semana && !r.proximos ? `<span class="chip-estado c-neutro">Sem treinos</span>`
+      : `<span class="chip-estado c-ok">Em dia</span>`;
 
     app().innerHTML = `
       <section class="vista">
@@ -617,6 +997,7 @@
             <h2 class="titulo-secao">À espera de aprovação</h2>
             ${pendentes.map((a) => `
               <div class="linha-pendente">
+                <span class="avatar" aria-hidden="true">${esc(iniciais(a))}</span>
                 <div><strong>${esc(a.nome || "(sem nome)")}</strong><span class="muted">${esc(a.email)}</span></div>
                 <div class="acoes-linha">
                   <button class="btn primario pequeno" type="button" data-aprovar="${a.id}">Aprovar</button>
@@ -630,26 +1011,31 @@
           if (!deHoje.length) return "";
           const feitos = deHoje.filter((t) => t.estado !== "planeado").length;
           return `
-            <h2 class="titulo-secao">Hoje · ${feitos} de ${deHoje.length} registados</h2>
-            <div class="lista-treinos">${deHoje.map((t) => linhaTreino(t, true)).join("")}</div>`;
+            <div class="painel-hoje">
+              <div class="painel-num"><b>${feitos}<small>/${deHoje.length}</small></b><span>treinos de hoje registados</span></div>
+              <div class="lista-treinos">${deHoje.map((t) => linhaTreino(t, true)).join("")}</div>
+            </div>`;
         })()}
 
         ${ativos.length ? `
+          <h2 class="titulo-secao">Os teus atletas</h2>
           <p class="muted legenda-tabela">Últimos 7 dias · carga = soma de RPE × minutos (UA)</p>
           <div class="lista-atletas">
             ${ativos.map((a) => {
               const r = resumo(a);
               return `
                 <a class="linha-atleta" href="#a-${a.id}">
-                  <div>
+                  <span class="avatar" aria-hidden="true">${esc(iniciais(a))}</span>
+                  <div class="la-corpo">
                     <strong>${esc(a.nome || a.email)}</strong>
                     <span class="muted">${r.proximos} treino${r.proximos === 1 ? "" : "s"} nos próximos 14 dias</span>
                   </div>
                   <div class="numeros-mini">
                     <span><b>${r.feitos}/${r.semana}</b> feitos</span>
                     <span><b>${r.cg}</b> UA</span>
-                    ${r.porRegistar ? `<span class="aviso">${r.porRegistar} por registar</span>` : ""}
                   </div>
+                  <span class="la-chips">${badgeComent(est.comentPorAutor[a.id], "comentários do atleta nos últimos 7 dias")}${chipAtleta(r)}</span>
+                  <span class="seta" aria-hidden="true">›</span>
                 </a>`;
             }).join("")}
           </div>` : `
@@ -695,6 +1081,8 @@
     const max = Math.max(1, ...cargaSem);
 
     est.treinosAtleta = { id, data };
+    await carregarComentRecentes();
+    const comentAtleta = est.comentPorAutor[id] || 0;
     const proximos = data.filter((t) => t.data >= h);
     const anteriores = data.filter((t) => t.data < h).reverse();
 
@@ -704,7 +1092,7 @@
         <div class="cab-linha">
           <div>
             <h1>${esc(a.nome || a.email)}</h1>
-            <p class="muted">${esc(a.email)}</p>
+            <p class="muted">${esc(a.email)}${comentAtleta ? ` · ${badgeComent(comentAtleta, "comentários do atleta nos últimos 7 dias")} <span class="pequeno-txt">comentário${comentAtleta === 1 ? "" : "s"} esta semana</span>` : ""}</p>
           </div>
           <div class="acoes-linha">
             ${a.aprovado || a.papel === "treinador"
@@ -714,8 +1102,11 @@
           </div>
         </div>
 
-        <div class="grafico">
-          <h2 class="titulo-secao">Carga semanal (RPE × min)</h2>
+        <div class="grafico cartao">
+          <div class="grafico-cab">
+            <h2 class="titulo-secao">Carga semanal (RPE × min)</h2>
+            <p class="grafico-num"><b>${cargaSem[7]}</b> UA <span class="muted">esta semana</span></p>
+          </div>
           <div class="barras" role="img" aria-label="Carga semanal das últimas 8 semanas">
             ${cargaSem.map((v, i) => `
               <div class="barra-col">
@@ -727,7 +1118,7 @@
           <p class="muted pequeno-txt">Cada barra é uma semana, a começar à segunda-feira. A última é a semana atual.</p>
         </div>
 
-        <div class="resumo-semana">
+        <div class="resumo-semana cartao">
           <h2 class="titulo-secao">Resumo da semana</h2>
           <div class="acoes-linha">
             <select id="rsSemana" aria-label="Semana">
@@ -738,14 +1129,18 @@
             </select>
             <button type="button" class="btn primario pequeno" data-resumo="${a.id}">Gerar rascunho</button>
           </div>
+          <p class="aviso pequeno-txt" id="rsExiste" hidden></p>
           <div id="rsSaida" hidden>
-            <textarea id="rsTexto" rows="9" aria-label="Resumo da semana"></textarea>
+            <textarea id="rsTexto" rows="9" maxlength="5000" aria-label="Resumo da semana"></textarea>
             <div class="acoes-linha">
+              <button type="button" class="btn primario pequeno" data-guardar-feedback="${a.id}">Guardar como feedback</button>
               <button type="button" class="btn pequeno" data-copiar-resumo="1">Copiar texto</button>
               <span class="muted pequeno-txt">Revê e junta o que vês no TrainingPeaks (natação, bicicleta, corrida) antes de enviar.</span>
             </div>
           </div>
         </div>
+
+        <div id="fbZona"></div>
 
         <h2 class="titulo-secao">Próximos</h2>
         ${proximos.length ? `<div class="lista-treinos">${proximos.map((t) => linhaTreino(t)).join("")}</div>` : `<p class="vazio-caixa">Sem treinos marcados.</p>`}
@@ -753,6 +1148,7 @@
         <h2 class="titulo-secao">Anteriores (8 semanas)</h2>
         ${anteriores.length ? `<div class="lista-treinos">${anteriores.map((t) => linhaTreino(t)).join("")}</div>` : `<p class="vazio-caixa">Sem histórico.</p>`}
       </section>`;
+    await desenharFeedbacksAtleta(id);
   }
 
   // ======================================================================
@@ -827,6 +1223,8 @@
                 : `<p class="muted">Ainda não tens atletas aprovados.</p>`}
           </fieldset>
 
+          <fieldset class="grupo">
+          <legend>Quando e o quê</legend>
           <div class="linha-campos">
             <label class="campo"><span>Data</span><input id="tData" type="date" value="${esc(r.data)}" required /></label>
             <label class="campo"><span>Partir de uma sessão-modelo</span>
@@ -842,6 +1240,7 @@
               </select>
             </label>
           </div>
+          </fieldset>
 
           ${r.id ? "" : `
           <fieldset class="grupo">
@@ -856,12 +1255,15 @@
             <p class="muted pequeno-txt" id="resumoRepetir">${textoRepetir(r)}</p>
           </fieldset>`}
 
+          <fieldset class="grupo">
+          <legend>Detalhes</legend>
           <label class="campo"><span>Título</span><input id="tTitulo" type="text" value="${esc(r.titulo)}" placeholder="Ex.: Força base — semana 3" required /></label>
           <div class="linha-campos">
             <label class="campo"><span>Duração prevista (min)</span><input id="tDur" type="number" inputmode="numeric" min="0" max="600" value="${esc(r.duracao_prevista)}" /></label>
             <label class="campo"><span>RPE alvo</span><input id="tRpe" type="text" value="${esc(r.rpe_alvo)}" placeholder="Ex.: 6–7" /></label>
           </div>
           <label class="campo"><span>Notas para o atleta</span><textarea id="tNotas" rows="3" placeholder="Cargas, foco técnico, o que fazer se estiver cansado…">${esc(r.notas_treinador)}</textarea></label>
+          </fieldset>
 
           <h2 class="titulo-secao">Exercícios</h2>
           <div id="blocosEdit">
@@ -1134,6 +1536,8 @@
                  </div>`
               : `<p class="muted">Ainda não tens atletas aprovados.</p>`}
           </fieldset>
+          <fieldset class="grupo">
+          <legend>Calendário</legend>
           <div class="linha-campos">
             <label class="campo"><span>Começa na semana de</span><input id="pInicio" type="date" value="${esc(p.inicio)}" /></label>
             <label class="campo"><span>Semanas</span><input id="pSemanas" type="number" inputmode="numeric" min="1" max="16" value="${esc(p.semanas)}" /></label>
@@ -1143,6 +1547,7 @@
             <label class="campo"><span>Dia 2 (${esc(f.dias[1].foco)})</span>${sel("pDia2", p.dia2)}</label>
           </div>
           <label class="check"><input type="checkbox" id="pDescarga" ${p.descarga ? "checked" : ""} /> Semana de descarga a cada 4.ª semana (uma série a menos em cada exercício)</label>
+          </fieldset>
           <p class="resumo-plano" id="resumoPlano">${textoPlano(p)}</p>
           <button class="btn primario grande" type="submit" ${datas.length && nAtl ? "" : "disabled"}>Criar treinos</button>
         </form>
@@ -1512,6 +1917,8 @@
     else if (f.id === "fRegisto") { ev.preventDefault(); submeterRegisto(f); }
     else if (f.id === "fTreino") { ev.preventDefault(); guardarTreino(); }
     else if (f.id === "fPlano") { ev.preventDefault(); guardarPlano(); }
+    else if (f.id === "fComentario") { ev.preventDefault(); enviarComentario(f); }
+    else if (f.dataset && f.dataset.responder) { ev.preventDefault(); responderFeedback(f); }
   });
 
   document.addEventListener("click", (ev) => {
@@ -1521,7 +1928,7 @@
     if (el.dataset.modo) { vistaEntrar(el.dataset.modo); return; }
     if (el.id === "btnRecarregar") { iniciarSessao(true); return; }
     if (el.dataset.tentar) { el.dataset.tentar === "rota" ? rota() : iniciarSessao(); return; }
-    if (el.dataset.voltar) { ev.preventDefault(); history.length > 1 ? history.back() : (location.hash = "#biblioteca"); return; }
+    if (el.dataset.voltar) { ev.preventDefault(); history.length > 1 ? history.back() : (location.hash = eTreinador() ? "#biblioteca" : "#treinos"); return; }
 
     // Filtros da biblioteca
     if (el.classList.contains("chip")) {
@@ -1542,9 +1949,20 @@
       const n = Number(el.dataset.rpe);
       $("rRpe").value = n;
       document.querySelectorAll(".rpe-op").forEach((b) => b.setAttribute("aria-pressed", String(b === el)));
-      $("rpeLegenda").textContent = `${ESCALA_RPE[n][1]} — ${ESCALA_RPE[n][2]}`;
+      $("rpeNum").textContent = n;
+      $("rpeNome").textContent = ESCALA_RPE[n][1];
+      $("rpeLegenda").textContent = ESCALA_RPE[n][2];
+      $("rpeVisor").style.setProperty("--c", corRpe(n));
+      atualizarCargaViva();
       return;
     }
+    if (el.classList.contains("passo-min")) {
+      const atual = Number($("rDur").value) || 0;
+      $("rDur").value = Math.min(600, Math.max(1, atual + Number(el.dataset.min)));
+      atualizarCargaViva();
+      return;
+    }
+    if (el.dataset.registar) est.irParaRegisto = true;
 
     // Treinador
     if (el.dataset.aprovar) { aprovar(el.dataset.aprovar, true); return; }
@@ -1561,6 +1979,19 @@
     if (el.dataset.duplicar && est.treinoAtual) {
       est.duplicarDe = est.treinoAtual;
       location.hash = "#novo";
+      return;
+    }
+    if (el.dataset.apagarComent) { apagarComentario(el); return; }
+    if (el.dataset.guardarFeedback) { guardarFeedback(el, el.dataset.guardarFeedback); return; }
+    if (el.dataset.editarFeedback) {
+      const f = (est.feedbacksAtleta || []).find((x) => x.id === el.dataset.editarFeedback);
+      if (f) {
+        $("rsSemana").value = f.semana;
+        $("rsTexto").value = f.texto;
+        $("rsSaida").hidden = false;
+        avisoFeedbackExistente();
+        $("rsTexto").focus();
+      }
       return;
     }
     if (el.dataset.copiarSemana) { copiarSemana(el, el.dataset.copiarSemana); return; }
@@ -1620,6 +2051,7 @@
       el.closest(".cand").classList.toggle("cand-nova", el.value === "nova");
       return;
     }
+    if (el.id === "rsSemana") { avisoFeedbackExistente(); return; }
     if (el.id === "tModelo" && est.rascunho) {
       lerFormTreino();
       if (el.value) aplicarModelo(el.value);
@@ -1649,6 +2081,7 @@
   });
 
   document.addEventListener("input", (ev) => {
+    if (ev.target.id === "rDur") { atualizarCargaViva(); return; }
     if (ev.target.id === "fPesquisa") {
       est.filtros.texto = ev.target.value;
       desenharListaEx();
@@ -1659,6 +2092,12 @@
     const { error } = await sb.auth.signOut();
     if (error) return erro(error);
   });
+
+  // Abrir um feedback marca-o como lido.
+  document.addEventListener("toggle", (ev) => {
+    const d = ev.target;
+    if (d.open && d.classList && d.classList.contains("fb") && d.dataset.fb) marcarFeedbackLido(d);
+  }, true);
 
   window.addEventListener("hashchange", rota);
 

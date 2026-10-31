@@ -3,32 +3,32 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Plataforma Treino Físico</title>
-<meta name="theme-color" content="#0b6e7a" />
+<title>Área de atleta · CF Training</title>
+<meta name="theme-color" content="#0B1410" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Geist+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../marca/tokens.css" />
 <link rel="stylesheet" href="estilos.css" />
 </head>
 <body>
-<div class="wrap">
-  <header class="barra">
-    <a class="marca" href="#">
-      <span class="sobre">Swim · Bike · Run · <strong>Força</strong></span>
-      <span class="marca-nome">Treino Físico</span>
+<a class="saltar" href="#app">Saltar para o conteúdo</a>
+<header class="topo">
+  <div class="topo-in">
+    <a class="logo" href="../cftraining/" aria-label="CF Training — site">
+      <svg class="logo-marca" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18"/><path d="M7 25c5-4 9 4 13 0s8 4 13 0"/></svg><span>CF<b>Training</b></span>
     </a>
+    <nav class="tabs" id="menu" aria-label="Secções" hidden></nav>
     <div class="conta" id="conta" hidden>
       <span id="contaNome"></span>
-      <button class="btn pequeno" type="button" id="btnSair">Sair</button>
+      <button class="btn-sair" type="button" id="btnSair">Sair</button>
     </div>
-  </header>
+  </div>
+</header>
 
-  <nav class="tabs" id="menu" aria-label="Secções" hidden></nav>
-
-  <main id="app" aria-live="polite">
-    <p class="vazio">A carregar…</p>
-  </main>
-</div>
+<main id="app" class="wrap" aria-live="polite" tabindex="-1">
+  <p class="vazio">A carregar…</p>
+</main>
 
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
