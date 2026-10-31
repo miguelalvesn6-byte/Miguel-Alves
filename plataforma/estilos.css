@@ -900,3 +900,22 @@ body { overflow-wrap: anywhere; }
   .rpe-botoes { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .rpe-op { padding: .7rem 0; font-size: 1.2rem; }
 }
+
+/* ---------- Resumo da semana ---------- */
+.resumo-semana { margin-top: 1rem; display: grid; gap: .6rem; }
+.resumo-semana select { font: inherit; padding: .45rem .6rem; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); min-width: 0; max-width: 100%; }
+#rsSaida { display: grid; gap: .5rem; }
+#rsSaida[hidden] { display: none; }
+#rsTexto { width: 100%; font: inherit; font-size: .95rem; line-height: 1.5; padding: .75rem; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); resize: vertical; }
+
+/* ---------- Candidaturas ---------- */
+.lista-cand { display: grid; gap: .75rem; margin-top: 1rem; }
+.cand { padding: 1rem; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: .5rem; }
+.cand-nova { border-color: var(--buoy); box-shadow: inset 4px 0 0 var(--buoy); }
+.cand-cab { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; align-items: center; }
+.cand-cab > div { display: grid; min-width: 0; }
+.cand-cab select { font: inherit; padding: .4rem .6rem; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+.cand-dados { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: .4rem 1rem; margin: 0; }
+.cand-dados dt { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.cand-dados dd { margin: 0; font-weight: 600; }
+.cand p { margin: 0; }

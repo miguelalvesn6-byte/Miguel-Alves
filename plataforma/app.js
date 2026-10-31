@@ -335,7 +335,7 @@
   // ======================================================================
   function desenharMenu() {
     const itens = eTreinador()
-      ? [["atletas", "Atletas"], ["biblioteca", "Biblioteca"], ["escala", "Escala RPE"]]
+      ? [["atletas", "Atletas"], ["candidaturas", "Candidaturas"], ["biblioteca", "Biblioteca"], ["escala", "Escala RPE"]]
       : [["treinos", "Treinos"], ["biblioteca", "Biblioteca"], ["escala", "Escala RPE"]];
     $("menu").innerHTML = itens.map(([h, t]) => `<a class="tab" href="#${h}" data-tab="${h}">${t}</a>`).join("");
     $("menu").hidden = false;
@@ -361,6 +361,7 @@
       else if (h.startsWith("ex-")) { marcarTab("biblioteca"); vistaExercicio(h.slice(3)); }
       else if (h.startsWith("m-")) { marcarTab("biblioteca"); vistaModelo(h.slice(2)); }
       else if (h.startsWith("t-")) { marcarTab(eTreinador() ? "atletas" : "treinos"); await vistaTreino(h.slice(2)); }
+      else if (eTreinador() && h === "candidaturas") { marcarTab("candidaturas"); await vistaCandidaturas(); }
       else if (eTreinador() && h.startsWith("a-")) { marcarTab("atletas"); await vistaAtleta(h.slice(2)); }
       else if (eTreinador() && (h === "novo" || h.startsWith("novo-"))) { marcarTab("atletas"); vistaFormTreino({ atletaId: h.slice(5) || null }); }
       else if (eTreinador() && h.startsWith("plano-")) { marcarTab("biblioteca"); vistaPlano(h.slice(6)); }
@@ -693,6 +694,7 @@
     const cargaSem = semanas.map((s) => data.filter((t) => segunda(t.data) === s).reduce((acc, t) => acc + carga(t), 0));
     const max = Math.max(1, ...cargaSem);
 
+    est.treinosAtleta = { id, data };
     const proximos = data.filter((t) => t.data >= h);
     const anteriores = data.filter((t) => t.data < h).reverse();
 
@@ -723,6 +725,26 @@
               </div>`).join("")}
           </div>
           <p class="muted pequeno-txt">Cada barra é uma semana, a começar à segunda-feira. A última é a semana atual.</p>
+        </div>
+
+        <div class="resumo-semana">
+          <h2 class="titulo-secao">Resumo da semana</h2>
+          <div class="acoes-linha">
+            <select id="rsSemana" aria-label="Semana">
+              ${[0, 1, 2, 3].map((k) => {
+                const seg = somarDias(segundaDe(h), -7 * k);
+                return `<option value="${seg}">${k === 0 ? "Esta semana" : k === 1 ? "Semana passada" : "Semana de " + dataBonita(seg)} (${seg.slice(8)}/${seg.slice(5, 7)})</option>`;
+              }).join("")}
+            </select>
+            <button type="button" class="btn primario pequeno" data-resumo="${a.id}">Gerar rascunho</button>
+          </div>
+          <div id="rsSaida" hidden>
+            <textarea id="rsTexto" rows="9" aria-label="Resumo da semana"></textarea>
+            <div class="acoes-linha">
+              <button type="button" class="btn pequeno" data-copiar-resumo="1">Copiar texto</button>
+              <span class="muted pequeno-txt">Revê e junta o que vês no TrainingPeaks (natação, bicicleta, corrida) antes de enviar.</span>
+            </div>
+          </div>
         </div>
 
         <h2 class="titulo-secao">Próximos</h2>
@@ -1178,6 +1200,129 @@
     location.hash = p.atletas.length === 1 ? `#a-${p.atletas[0]}` : "#atletas";
   }
 
+  // ======================================================================
+  // Resumo da semana (rascunho gerado a partir dos registos do atleta)
+  // ======================================================================
+  const PALAVRAS_DOR = /\b(dor|dores|dói|doi|doeu|lesão|lesao|tendão|tendao|joelho|gémeo|gemeo|aquiles|canela|anca|lombar|ombro)\b/i;
+
+  function gerarResumo(atleta, treinos, seg) {
+    const fim = somarDias(seg, 6);
+    const daSemana = (ini) => treinos.filter((t) => t.data >= ini && t.data <= somarDias(ini, 6));
+    const sem = daSemana(seg);
+    const ant = daSemana(somarDias(seg, -7));
+    const prox = daSemana(somarDias(seg, 7));
+    const feitos = sem.filter((t) => t.estado === "feito");
+    const naoFeitos = sem.filter((t) => t.estado === "nao_feito");
+    const porRegistar = sem.filter((t) => t.estado === "planeado" && t.data <= hoje());
+    const minutos = feitos.reduce((x, t) => x + (t.duracao_real || 0), 0);
+    const cargaSem = sem.reduce((x, t) => x + carga(t), 0);
+    const cargaAnt = ant.reduce((x, t) => x + carga(t), 0);
+    const rpes = feitos.filter((t) => t.rpe != null).map((t) => t.rpe);
+    const rpeMed = rpes.length ? Math.round((rpes.reduce((a, b) => a + b, 0) / rpes.length) * 10) / 10 : null;
+    const alvoMax = (t) => { const n = String(t.rpe_alvo || "").match(/(\d+)(?!.*\d)/); return n ? Number(n[1]) : null; };
+    const acimaAlvo = feitos.filter((t) => alvoMax(t) != null && t.rpe != null && t.rpe >= alvoMax(t) + 2);
+    const comDor = sem.filter((t) => PALAVRAS_DOR.test(t.comentario_atleta || ""));
+    const nome = (atleta.nome || "").split(" ")[0] || "";
+    const dd = (iso) => `${iso.slice(8)}/${iso.slice(5, 7)}`;
+
+    const variacao = cargaAnt ? Math.round(((cargaSem - cargaAnt) / cargaAnt) * 100) : null;
+    const visao = sem.length
+      ? `${feitos.length}/${sem.length} sessões de força e técnica feitas · ${minutos} min · carga ${cargaSem} UA` +
+        (variacao != null ? ` (${variacao >= 0 ? "+" : ""}${variacao}% face à semana anterior)` : "") +
+        (rpeMed != null ? ` · RPE médio ${String(rpeMed).replace(".", ",")}` : "") + "."
+      : "Sem sessões de força e técnica planeadas esta semana.";
+
+    let destaque;
+    if (sem.length && feitos.length === sem.length) destaque = "Cumpriste todas as sessões da semana. Consistência é o que faz a diferença.";
+    else if (feitos.length) {
+      const melhor = feitos.slice().sort((a, b) => carga(b) - carga(a))[0];
+      destaque = `Boa sessão de ${melhor.titulo} (${dd(melhor.data)}): RPE ${melhor.rpe} em ${melhor.duracao_real} min.`;
+    } else destaque = "[Escreve aqui o ponto alto da semana — por exemplo uma sessão-chave no TrainingPeaks.]";
+
+    const atencao = [];
+    if (naoFeitos.length) atencao.push(`${naoFeitos.length} sessão(ões) não feita(s)${naoFeitos.some((t) => t.comentario_atleta) ? ` ("${naoFeitos.find((t) => t.comentario_atleta).comentario_atleta}")` : ""}.`);
+    if (porRegistar.length) atencao.push(`${porRegistar.length} sessão(ões) por registar — regista o RPE para eu poder ajustar.`);
+    if (acimaAlvo.length) atencao.push(`RPE bem acima do previsto em ${acimaAlvo.map((t) => dd(t.data)).join(", ")}: pode ser sinal de cansaço acumulado.`);
+    if (variacao != null && variacao > 10) atencao.push(`A carga subiu ${variacao}% — vamos controlar a progressão.`);
+    comDor.forEach((t) => atencao.push(`Referiste: "${t.comentario_atleta}" (${dd(t.data)}). Fica em vigilância.`));
+    if (!atencao.length) atencao.push("Nada a assinalar. Mantém o sono e a alimentação em dia.");
+
+    const proxTxt = prox.length
+      ? prox.map((t) => `${dataBonita(t.data)}: ${t.titulo}`).join("; ") + "."
+      : "[Ainda sem sessões atribuídas para a próxima semana.]";
+
+    const pergunta = comDor.length
+      ? "Como está essa dor hoje, de 0 a 10?"
+      : naoFeitos.length || acimaAlvo.length
+        ? "Como está a tua semana fora do treino (trabalho, sono)? Queres que ajuste o volume?"
+        : "De 1 a 10, como te sentiste no geral esta semana?";
+
+    return [
+      `Resumo da semana · ${dd(seg)} a ${dd(fim)}${nome ? " · " + nome : ""}`,
+      "",
+      `Visão geral: ${visao}`,
+      `Destaque: ${destaque}`,
+      `Atenção: ${atencao.join(" ")}`,
+      `Próxima semana: ${proxTxt}`,
+      `Pergunta: ${pergunta}`
+    ].join("\n");
+  }
+
+  // ======================================================================
+  // Candidaturas (formulário do site da marca)
+  // ======================================================================
+  const ESTADOS_CAND = { nova: "Nova", contactado: "Contactado", cliente: "Cliente", arquivada: "Arquivada" };
+
+  async function vistaCandidaturas() {
+    const { data, error } = await sb.from("candidaturas").select("*").order("criado_em", { ascending: false }).limit(200);
+    if (error) {
+      const falta = /candidaturas|schema cache|does not exist/i.test(error.message || "");
+      if (!falta) throw error;
+      app().innerHTML = `
+        <section class="vista">
+          <h1>Candidaturas</h1>
+          <div class="vazio-caixa">
+            <p><strong>Falta ativar as candidaturas.</strong></p>
+            <p>No Supabase, abre o SQL Editor, cola o ficheiro <code>plataforma/sql/04-candidaturas.sql</code> e carrega em Run. Depois atualiza esta página.</p>
+          </div>
+        </section>`;
+      return;
+    }
+    const novas = data.filter((c) => c.estado === "nova").length;
+    app().innerHTML = `
+      <section class="vista">
+        <div class="cab-linha">
+          <div>
+            <h1>Candidaturas</h1>
+            <p class="muted">${data.length} no total · ${novas} nova${novas === 1 ? "" : "s"}</p>
+          </div>
+        </div>
+        ${data.length ? `<div class="lista-cand">${data.map((c) => `
+          <article class="cand ${c.estado === "nova" ? "cand-nova" : ""}">
+            <div class="cand-cab">
+              <div>
+                <strong>${esc(c.nome)}</strong>
+                <span class="muted">${esc(new Date(c.criado_em).toLocaleString("pt-PT", { dateStyle: "short", timeStyle: "short" }))}</span>
+              </div>
+              <select data-cand="${c.id}" aria-label="Estado da candidatura">
+                ${Object.entries(ESTADOS_CAND).map(([v, l]) => `<option value="${v}" ${c.estado === v ? "selected" : ""}>${l}</option>`).join("")}
+              </select>
+            </div>
+            <dl class="cand-dados">
+              <div><dt>Email</dt><dd>${esc(c.email)}</dd></div>
+              ${c.telefone ? `<div><dt>Telemóvel</dt><dd>${esc(c.telefone)}</dd></div>` : ""}
+              <div><dt>Modalidade</dt><dd>${c.modalidade === "corrida" ? "Corrida" : "Triatlo"}</dd></div>
+              <div><dt>Plano</dt><dd>${esc(c.plano)}</dd></div>
+              <div><dt>Experiência</dt><dd>${esc(c.nivel)}</dd></div>
+              <div><dt>Horas/semana</dt><dd>${esc(c.horas)}</dd></div>
+            </dl>
+            ${c.objetivo ? `<p><b>Objetivo:</b> ${esc(c.objetivo)}</p>` : ""}
+            ${c.mensagem ? `<p class="comentario">${esc(c.mensagem)}</p>` : ""}
+          </article>`).join("")}</div>`
+        : `<div class="vazio-caixa"><p><strong>Ainda não há candidaturas.</strong></p><p>Quando alguém preencher o formulário no site da CF Training, aparece aqui.</p></div>`}
+      </section>`;
+  }
+
   async function copiarSemana(btn, atletaId) {
     if (btn.dataset.confirmar !== "1") {
       btn.dataset.confirmar = "1";
@@ -1419,6 +1564,19 @@
       return;
     }
     if (el.dataset.copiarSemana) { copiarSemana(el, el.dataset.copiarSemana); return; }
+    if (el.dataset.resumo && est.treinosAtleta) {
+      const a = est.atletas.find((x) => x.id === el.dataset.resumo) || {};
+      $("rsTexto").value = gerarResumo(a, est.treinosAtleta.data, $("rsSemana").value);
+      $("rsSaida").hidden = false;
+      return;
+    }
+    if (el.dataset.copiarResumo) {
+      const txt = $("rsTexto").value;
+      const falhou = () => { $("rsTexto").select(); toast("Seleciona e copia o texto (Ctrl+C)."); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(() => toast("Resumo copiado."), falhou);
+      else falhou();
+      return;
+    }
     if (el.classList.contains("chip-nivel")) {
       est.nivel = el.dataset.nivel;
       try { localStorage.setItem("nivelPlaneamento", est.nivel); } catch (_) { /* sem armazenamento */ }
@@ -1453,8 +1611,15 @@
     }
   });
 
-  document.addEventListener("change", (ev) => {
+  document.addEventListener("change", async (ev) => {
     const el = ev.target;
+    if (el.dataset && el.dataset.cand) {
+      const { error } = await sb.from("candidaturas").update({ estado: el.value }).eq("id", el.dataset.cand);
+      if (error) return erro(error);
+      toast("Estado atualizado.");
+      el.closest(".cand").classList.toggle("cand-nova", el.value === "nova");
+      return;
+    }
     if (el.id === "tModelo" && est.rascunho) {
       lerFormTreino();
       if (el.value) aplicarModelo(el.value);
