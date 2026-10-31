@@ -1,0 +1,85 @@
+/* =====================================================================
+   CF Training — tokens da marca (partilhados pelo site, plataforma e biblioteca)
+   Cor de referência: VERDE CLARO. Usar como PREENCHIMENTO (botões, destaques,
+   estado ativo) com texto escuro por cima. Para TEXTO/links em fundo claro usar
+   --accent (verde mais escuro, contraste AA). O laranja deixa de ser cor da marca;
+   só aparece na escala de esforço (RPE) com significado semântico.
+   Fontes (Google Fonts): Archivo (com eixo de largura) + Geist Mono.
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Geist+Mono:wght@400;500;600&display=swap">
+   ===================================================================== */
+:root {
+  color-scheme: light;
+  /* superfícies e texto (claro) */
+  --bg: #F4F7F5;
+  --surface: #FFFFFF;
+  --surface-2: #E9EFEB;
+  --line: #D5DED8;
+  --ink: #0E1A14;
+  --ink-2: #4A5A52;
+  --muted: #74857C;
+
+  /* marca */
+  --verde: #86EFAC;          /* verde claro — preenchimento de botões e destaques */
+  --verde-2: #BBF7D0;        /* verde muito claro — fundos suaves, chips ativos */
+  --verde-ink: #052E16;      /* texto em cima do verde claro */
+  --accent: #15803D;         /* verde para TEXTO e links em fundo claro (AA) */
+  --accent-soft: #DCFCE7;
+
+  /* zonas escuras (hero, rodapé, secções de contraste) — iguais nos dois temas */
+  --night: #0B1410;
+  --night-2: #121E19;
+  --night-line: #22332B;
+  --night-ink: #E8F2EC;
+  --night-ink-2: #9FB5A9;
+  --night-accent: #86EFAC;
+
+  /* semântica (estado, RPE) — não é cor da marca */
+  --ok: #16A34A;
+  --aviso: #B7791F;
+  --alerta: #C8102E;
+  --rpe-1: #2E9E8F;  /* 0–3 fácil */
+  --rpe-2: #E0A100;  /* 4–6 moderado */
+  --rpe-3: #E8590C;  /* 7–8 difícil */
+  --rpe-4: #C8102E;  /* 9–10 máximo */
+
+  /* tipografia */
+  --display: "Archivo", "Arial Narrow", system-ui, sans-serif;  /* usar com font-stretch: 75% e peso 700–800 */
+  --body: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;  /* números, doses, rótulos */
+
+  /* forma */
+  --r-s: 6px;
+  --r-m: 10px;
+  --r-l: 16px;
+  --r-pill: 999px;
+  --toque: 44px;            /* alvo de toque mínimo */
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0E1713;
+    --surface: #14211B;
+    --surface-2: #1A2A22;
+    --line: #24372D;
+    --ink: #E8F2EC;
+    --ink-2: #9FB5A9;
+    --muted: #7C9188;
+    --accent: #86EFAC;
+    --accent-soft: #163824;
+    --verde-2: #1E4A30;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0E1713;
+  --surface: #14211B;
+  --surface-2: #1A2A22;
+  --line: #24372D;
+  --ink: #E8F2EC;
+  --ink-2: #9FB5A9;
+  --muted: #7C9188;
+  --accent: #86EFAC;
+  --accent-soft: #163824;
+  --verde-2: #1E4A30;
+}
