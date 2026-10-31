@@ -3,47 +3,80 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>CF Training · Triatlo e corrida</title>
+<title>CF Training · Treino online de triatlo e corrida</title>
 <meta name="description" content="Treino online de triatlo e corrida com método: planeamento de natação, bicicleta e corrida, mais força, técnica de corrida e pliometria. Feedback todas as semanas, sem permanência." />
-<meta name="theme-color" content="#0A1214" />
+<meta name="theme-color" content="#0B1410" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Geist+Mono:wght@400;500;600&display=swap" />
+<script>document.documentElement.classList.add("js");</script>
+<link rel="stylesheet" href="../marca/tokens.css" />
 <link rel="stylesheet" href="estilos.css" />
 </head>
 <body>
 
+<a class="saltar" href="#conteudo">Saltar para o conteúdo</a>
+
 <header class="topo" id="topo">
   <div class="topo-in">
-    <a class="logo" href="#" aria-label="CF Training — início">
-      <svg class="logo-marca" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" /><path d="M7 25c5-4 9 4 13 0s8 4 13 0" /></svg>
-      <span>CF<b>Training</b></span>
+    <a class="logo" href="../cftraining/" aria-label="CF Training — início">
+      <svg class="logo-marca" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18"/><path d="M7 25c5-4 9 4 13 0s8 4 13 0"/></svg><span>CF<b>Training</b></span>
     </a>
-    <nav class="menu" aria-label="Principal">
+    <button class="menu-botao" type="button" aria-expanded="false" aria-controls="menuPrincipal">
+      <span class="menu-icone" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="menu-botao-txt">Menu</span>
+    </button>
+    <nav class="menu" id="menuPrincipal" aria-label="Principal">
       <a href="#metodo">Método</a>
-      <a href="#como">Como funciona</a>
       <a href="#planos">Planos</a>
       <a href="#faq">Perguntas</a>
-      <a href="../plataforma/" class="menu-atleta">Área de atleta</a>
+      <a href="../plataforma/" class="menu-atleta">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Área de atleta
+      </a>
+      <a class="btn btn-primario menu-cta" href="#candidatura">Candidata-te</a>
     </nav>
-    <a class="btn btn-boia" href="#candidatura">Candidata-te</a>
   </div>
 </header>
 
-<main>
+<main id="conteudo">
 
   <!-- HERO -->
-  <section class="hero">
-    <div class="hero-agua" aria-hidden="true">
-      <span></span><span></span><span></span><span></span><span></span>
-      <i class="boia"></i>
+  <section class="hero" aria-labelledby="heroTitulo">
+    <div class="hero-pista" aria-hidden="true">
+      <span class="corda"></span><span class="corda"></span><span class="corda corda-verde"></span><span class="corda"></span><span class="corda"></span>
+      <svg class="hero-boia" viewBox="0 0 240 260" focusable="false">
+        <defs>
+          <radialGradient id="boiaGrad" cx="36%" cy="30%" r="75%">
+            <stop offset="0" stop-color="#DCFCE7" />
+            <stop offset=".42" stop-color="#86EFAC" />
+            <stop offset="1" stop-color="#2F8F55" />
+          </radialGradient>
+          <clipPath id="boiaCorte"><rect x="0" y="0" width="240" height="206" /></clipPath>
+          <clipPath id="boiaEsfera"><circle cx="120" cy="124" r="88" /></clipPath>
+        </defs>
+        <g class="ondas">
+          <ellipse cx="120" cy="206" rx="118" ry="24" />
+          <ellipse cx="120" cy="206" rx="84" ry="16" />
+          <ellipse cx="120" cy="206" rx="52" ry="9" />
+        </g>
+        <g class="boia">
+          <g clip-path="url(#boiaCorte)">
+            <circle cx="120" cy="124" r="88" fill="url(#boiaGrad)" />
+            <g clip-path="url(#boiaEsfera)">
+              <rect class="boia-faixa" x="20" y="104" width="200" height="22" />
+            </g>
+          </g>
+          <path class="boia-onda" d="M84 160c10-8 18 8 26 0s16 8 26 0s14 6 20 2" />
+          <path class="boia-reflexo" d="M78 72c-12 12-20 28-22 44" />
+        </g>
+      </svg>
     </div>
     <div class="hero-in">
       <p class="sobretitulo">Triatlo · Corrida · Treino online</p>
-      <h1>Treino com<br />método.<br /><em>Não com sorte.</em></h1>
-      <p class="hero-texto">Planeamos a tua natação, bicicleta e corrida e juntamos o que quase todos esquecem: força, técnica de corrida e pliometria. Recebes um resumo da tua semana todos os domingos.</p>
+      <h1 id="heroTitulo">Treino com<br />método.<br /><em>Não com sorte.</em></h1>
+      <p class="hero-texto">Planeamos a tua natação, bicicleta e corrida e juntamos o que quase todos esquecem: força, técnica de corrida e pliometria. Recebes um resumo da tua semana todas as segundas-feiras.</p>
       <div class="hero-acoes">
-        <a class="btn btn-boia btn-grande" href="#candidatura">Candidata-te</a>
+        <a class="btn btn-primario btn-grande" href="#candidatura">Candidata-te</a>
         <a class="btn btn-linha btn-grande" href="#planos">Ver planos</a>
       </div>
       <ul class="selos">
@@ -53,33 +86,63 @@
         <li>TrainingPeaks</li>
       </ul>
     </div>
+    <div class="hero-numeros-in">
+      <dl class="hero-numeros">
+        <div><dt>Exercícios explicados</dt><dd>160+</dd></div>
+        <div><dt>Sessões prontas</dt><dd>60+</dd></div>
+        <div><dt>Níveis de treino</dt><dd>3</dd></div>
+        <div><dt>Plano pronto em</dt><dd>48 h</dd></div>
+      </dl>
+    </div>
   </section>
 
+  <!-- PORTAS DE ENTRADA -->
+  <nav class="portas" aria-label="Por onde começar">
+    <div class="secao-in portas-in portas-2">
+      <a class="porta porta-principal" href="#candidatura">
+        <span class="porta-etq">Novo atleta</span>
+        <b>Candidata-te ao acompanhamento</b>
+        <span class="porta-txt">3 minutos. Respondemos em até 48 horas.</span>
+        <span class="porta-seta" aria-hidden="true">→</span>
+      </a>
+      <a class="porta" href="../plataforma/">
+        <span class="porta-etq">Já és atleta?</span>
+        <b>Entra na Área de atleta</b>
+        <span class="porta-txt">O treino de hoje, registos e o resumo da semana.</span>
+        <span class="porta-seta" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </nav>
+
   <!-- MÉTODO -->
-  <section class="secao" id="metodo">
+  <section class="secao" id="metodo" aria-labelledby="tMetodo">
     <div class="secao-in">
       <header class="secao-cab">
-        <p class="sobretitulo">O método CF Training</p>
-        <h2>Quatro pilares.<br />Um só plano.</h2>
+        <p class="sobretitulo"><span class="num">01</span> O método CF Training</p>
+        <h2 id="tMetodo">Quatro pilares.<br />Um só plano.</h2>
         <p class="secao-lead">Um triatleta ou corredor não melhora só a somar quilómetros. O nosso plano junta o treino de resistência ao trabalho que te deixa mais forte, mais eficiente e menos tempo lesionado.</p>
       </header>
       <div class="pilares">
         <article class="pilar">
+          <span class="pilar-num" aria-hidden="true">01</span>
           <span class="pilar-tag">Resistência</span>
           <h3>Natação, bicicleta e corrida planeadas</h3>
           <p>Plano semanal no TrainingPeaks, por zonas e ritmos, organizado por fases da época até à tua prova principal.</p>
         </article>
         <article class="pilar">
+          <span class="pilar-num" aria-hidden="true">02</span>
           <span class="pilar-tag">Força e pliometria</span>
           <h3>Mais forte, mais reativo</h3>
           <p>Duas sessões por semana com agachamento, peso morto e saltos, ajustadas ao teu nível e à fase da época. Em casa ou no ginásio.</p>
         </article>
         <article class="pilar">
+          <span class="pilar-num" aria-hidden="true">03</span>
           <span class="pilar-tag">Técnica de corrida</span>
           <h3>Correr melhor, não só mais</h3>
           <p>Exercícios técnicos, cadência e progressivos em cada sessão, para uma passada mais económica e com menos impacto.</p>
         </article>
         <article class="pilar">
+          <span class="pilar-num" aria-hidden="true">04</span>
           <span class="pilar-tag">Dados e feedback</span>
           <h3>Decisões, não palpites</h3>
           <p>Registas o esforço (RPE) de cada treino. Juntamos a carga, o sono e as sensações para ajustar a semana seguinte.</p>
@@ -88,24 +151,42 @@
     </div>
   </section>
 
-  <!-- PLATAFORMA -->
-  <section class="secao secao-escura" id="plataforma">
-    <div class="secao-in duas-col">
+  <!-- ÁREA DE ATLETA -->
+  <section class="secao secao-escura" id="area-atleta" aria-labelledby="tArea">
+    <div class="secao-in duas-col area">
       <div>
-        <p class="sobretitulo">A plataforma</p>
-        <h2>O treino de hoje,<br />no teu telemóvel.</h2>
-        <p class="secao-lead">Além do TrainingPeaks, tens acesso à plataforma CF Training: as sessões de força, técnica e pliometria com cada exercício explicado, a ordem certa e as doses para o teu nível.</p>
-        <ul class="lista-check">
-          <li>Sessões de até 1 hora: mobilidade, técnica de corrida, pliometria, força inferior, força superior e core</li>
-          <li>Mais de 160 exercícios explicados, com erros comuns e progressões</li>
-          <li>Sessões em casa, só com o peso do corpo</li>
-          <li>Registo do esforço em 10 segundos</li>
+        <p class="sobretitulo"><span class="num">02</span> Área de atleta</p>
+        <h2 id="tArea">A tua área<br />de atleta.</h2>
+        <p class="secao-lead">Tudo o que precisas para treinar, num só sítio e no teu telemóvel. Vês só o teu plano: sem listas intermináveis, sem ter de escolher.</p>
+        <ul class="area-func">
+          <li>
+            <span class="area-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 8v8M18 8v8M3 10v4M21 10v4M6 12h12"/></svg></span>
+            <div><h3>A sessão de força de hoje</h3><p>Mobilidade, técnica de corrida, pliometria e força, com cada exercício explicado e as doses para o teu nível.</p></div>
+          </li>
+          <li>
+            <span class="area-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V14M9 20V10M14 20V7M19 20V4"/></svg></span>
+            <div><h3>Esforço e comentários em cada treino</h3><p>Registas o RPE em 10 segundos e deixas um comentário: como te sentiste, dores, o que mudou.</p></div>
+          </li>
+          <li>
+            <span class="area-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></span>
+            <div><h3>Feedback do treinador à segunda</h3><p>Todas as segundas-feiras recebes a análise da semana e o que muda a seguir.</p></div>
+          </li>
+          <li>
+            <span class="area-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></span>
+            <div><h3>Natação, bicicleta e corrida no TrainingPeaks</h3><p>O treino de resistência continua planeado no TrainingPeaks, por zonas e ritmos.</p></div>
+          </li>
         </ul>
+        <div class="entrada-atleta">
+          <a class="btn btn-primario btn-grande" href="../plataforma/">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Entrar na Área de atleta
+          </a>
+          <p>Já és atleta CF Training? Entra com o email da tua conta.<br />Ainda não? <a href="#candidatura">Candidata-te</a>.</p>
+        </div>
       </div>
-      <div class="telemovel" aria-label="Exemplo do ecrã do treino de hoje">
-        <div class="tel-ecra">
-          <p class="tel-meta">TER · SEMANA 3/8</p>
-          <p class="tel-titulo">Preparatória específica · Dia 1</p>
+      <figure class="telemovel">
+        <div class="tel-ecra" role="img" aria-label="Exemplo da Área de atleta: sessão de força de hoje com três exercícios, registo de esforço 7 em 10 e um comentário.">
+          <p class="tel-meta"><span>TER · SEMANA 3/8</span><span class="tel-ponto">Hoje</span></p>
+          <p class="tel-titulo">Força · Dia 1</p>
           <p class="tel-sub">5 blocos · 60 min · RPE alvo 7</p>
           <ol class="tel-lista">
             <li><span>4</span><b>Agachamento com barra</b><em>4×5</em></li>
@@ -113,38 +194,47 @@
             <li><span>6</span><b>Split squat búlgaro</b><em>3×6</em></li>
           </ol>
           <p class="tel-rpe-t">Como correu? <b>7 · Muito difícil</b></p>
-          <div class="tel-rpe" aria-hidden="true">
+          <div class="tel-rpe">
             <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i><i></i>
           </div>
+          <p class="tel-comentario">“Pernas pesadas no búlgaro, mas a técnica saiu limpa.”</p>
           <span class="tel-btn">Guardar registo</span>
         </div>
-        <p class="tel-legenda">Ecrã real da plataforma (exemplo)</p>
-      </div>
+        <div class="tel-feedback" aria-hidden="true">
+          <p class="tel-feedback-etq">Feedback do treinador · Segunda</p>
+          <p>Boa semana: 9 de 10 sessões. Na próxima, descarga de 35% e teste de natação na sexta.</p>
+        </div>
+        <figcaption class="tel-legenda">Área de atleta (exemplo)</figcaption>
+      </figure>
     </div>
   </section>
 
   <!-- COMO FUNCIONA -->
-  <section class="secao" id="como">
+  <section class="secao secao-clara" id="como" aria-labelledby="tComo">
     <div class="secao-in">
       <header class="secao-cab">
-        <p class="sobretitulo">Como funciona</p>
-        <h2>Do primeiro contacto<br />ao primeiro treino.</h2>
+        <p class="sobretitulo"><span class="num">03</span> Como funciona</p>
+        <h2 id="tComo">Do primeiro contacto<br />ao primeiro treino.</h2>
       </header>
       <ol class="passos">
         <li>
+          <span class="passo-tempo">3 min</span>
           <h3>Candidatura</h3>
           <p>Preenches o formulário com o teu historial, objetivos e tempo disponível. Leva 3 minutos.</p>
         </li>
         <li>
+          <span class="passo-tempo">Sem compromisso</span>
           <h3>Conversa de avaliação</h3>
           <p>Uma chamada para perceber a tua rotina, lesões e provas. Sem compromisso.</p>
         </li>
         <li>
+          <span class="passo-tempo">48 h</span>
           <h3>Plano em 48 horas</h3>
-          <p>Recebes o plano no TrainingPeaks e o acesso à plataforma CF Training, com a primeira semana pronta.</p>
+          <p>Recebes o plano no TrainingPeaks e o acesso à Área de atleta CF Training, com a primeira semana pronta.</p>
         </li>
         <li>
-          <h3>Resumo todos os domingos</h3>
+          <span class="passo-tempo">Segunda-feira</span>
+          <h3>Feedback todas as segundas</h3>
           <p>Analisamos a semana e ajustamos a seguinte. Tu treinas; nós pensamos no plano.</p>
         </li>
       </ol>
@@ -152,14 +242,14 @@
   </section>
 
   <!-- RESUMO DA SEMANA -->
-  <section class="secao secao-clara" id="resumo">
+  <section class="secao" id="resumo" aria-labelledby="tResumo">
     <div class="secao-in duas-col">
       <div>
-        <p class="sobretitulo">Feedback</p>
-        <h2>Um resumo da tua semana. Todos os domingos.</h2>
+        <p class="sobretitulo"><span class="num">04</span> Feedback</p>
+        <h2 id="tResumo">Um resumo da tua semana. Todas as segundas.</h2>
         <p class="secao-lead">A falta de feedback é a principal razão pela qual os atletas mudam de treinador. Por isso, cada semana termina com um resumo curto e concreto: o que correu bem, o que vigiar e o que muda a seguir.</p>
       </div>
-      <article class="resumo-cartao">
+      <article class="resumo-cartao" aria-label="Exemplo de resumo semanal">
         <header>
           <span class="resumo-etq">Exemplo</span>
           <h3>Semana 12 · Construção</h3>
@@ -180,18 +270,23 @@
   </section>
 
   <!-- PLANOS -->
-  <section class="secao" id="planos">
+  <section class="secao secao-clara" id="planos" aria-labelledby="tPlanos">
     <div class="secao-in">
-      <header class="secao-cab">
-        <p class="sobretitulo">Planos</p>
-        <h2>Escolhe o teu<br />acompanhamento.</h2>
-        <p class="secao-lead">Todos incluem plano no TrainingPeaks e acesso à plataforma CF Training. Sem permanência: cancelas quando quiseres.</p>
+      <header class="secao-cab secao-cab-linha">
+        <div>
+          <p class="sobretitulo"><span class="num">05</span> Planos</p>
+          <h2 id="tPlanos">Escolhe o teu<br />acompanhamento.</h2>
+          <p class="secao-lead">Todos incluem plano no TrainingPeaks e acesso à Área de atleta CF Training. Sem permanência: cancelas quando quiseres.</p>
+        </div>
+        <div class="modalidade-bloco">
+          <p class="modalidade-rot" id="rotModalidade">Preços para</p>
+          <div class="modalidade" role="group" aria-labelledby="rotModalidade">
+            <button type="button" aria-pressed="true" data-mod="triatlo">Triatlo</button>
+            <button type="button" aria-pressed="false" data-mod="corrida">Corrida</button>
+          </div>
+          <p class="sr-only" id="modalidadeEstado" aria-live="polite"></p>
+        </div>
       </header>
-
-      <div class="modalidade" role="tablist" aria-label="Modalidade">
-        <button type="button" role="tab" aria-selected="true" data-mod="triatlo">Triatlo</button>
-        <button type="button" role="tab" aria-selected="false" data-mod="corrida">Corrida</button>
-      </div>
 
       <div class="planos">
         <article class="plano">
@@ -215,13 +310,13 @@
           <p class="preco"><b data-preco-triatlo="99" data-preco-corrida="79">99</b><span>€/mês</span></p>
           <ul>
             <li>Tudo o que o Base inclui</li>
-            <li>Resumo da semana todos os domingos</li>
+            <li>Resumo da semana todas as segundas-feiras</li>
             <li>Ajustes sempre que precisares</li>
             <li>Chat com resposta em 24 h</li>
             <li>1 videochamada por mês</li>
             <li>Plano de prova (ritmos, abastecimento) e análise pós-prova</li>
           </ul>
-          <a class="btn btn-boia" href="#candidatura" data-plano="Performance">Escolher Performance</a>
+          <a class="btn btn-primario" href="#candidatura" data-plano="Performance">Escolher Performance</a>
         </article>
 
         <article class="plano">
@@ -239,9 +334,33 @@
         </article>
       </div>
 
+      <details class="comparar">
+        <summary>Comparar planos lado a lado</summary>
+        <div class="comparar-scroll" tabindex="0" role="region" aria-label="Tabela de comparação de planos">
+          <table>
+            <thead>
+              <tr><th scope="col"><span class="sr-only">Incluído</span></th><th scope="col">Base</th><th scope="col" class="col-destaque">Performance</th><th scope="col">Elite</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Preço por mês</th><td><b data-preco-triatlo="59" data-preco-corrida="45">59</b> €</td><td class="col-destaque"><b data-preco-triatlo="99" data-preco-corrida="79">99</b> €</td><td><b data-preco-triatlo="159" data-preco-corrida="129">159</b> €</td></tr>
+              <tr><th scope="row">Plano no TrainingPeaks</th><td><i class="sim">Sim</i></td><td class="col-destaque"><i class="sim">Sim</i></td><td><i class="sim">Sim</i></td></tr>
+              <tr><th scope="row">Força, técnica e pliometria</th><td><i class="sim">Sim</i></td><td class="col-destaque"><i class="sim">Sim</i></td><td><i class="sim">Sim</i></td></tr>
+              <tr><th scope="row">Ajustes ao plano</th><td>A cada 2 semanas</td><td class="col-destaque">Sempre que precisares</td><td>Sempre que precisares</td></tr>
+              <tr><th scope="row">Resposta no chat</th><td>48 h</td><td class="col-destaque">24 h</td><td>No próprio dia</td></tr>
+              <tr><th scope="row">Resumo</th><td>Mensal</td><td class="col-destaque">Todas as segundas</td><td>Todas as segundas</td></tr>
+              <tr><th scope="row">Videochamadas</th><td><i class="nao">Não</i></td><td class="col-destaque">1 por mês</td><td>2 por mês</td></tr>
+              <tr><th scope="row">Plano de prova e análise pós-prova</th><td><i class="nao">Não</i></td><td class="col-destaque"><i class="sim">Sim</i></td><td><i class="sim">Sim</i></td></tr>
+              <tr><th scope="row">Análise de cada treino</th><td><i class="nao">Não</i></td><td class="col-destaque"><i class="nao">Não</i></td><td><i class="sim">Sim</i></td></tr>
+              <tr><th scope="row">Testes trimestrais</th><td><i class="nao">Não</i></td><td class="col-destaque"><i class="nao">Não</i></td><td><i class="sim">Sim</i></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
       <div class="planos-extra">
         <article class="clube">
           <div>
+            <span class="clube-etq">Em grupo</span>
             <h3>Clube online</h3>
             <p>Plano de grupo por fases, todas as sessões de força e técnica na plataforma e comunidade CF Training.</p>
           </div>
@@ -263,11 +382,12 @@
   </section>
 
   <!-- FAQ -->
-  <section class="secao secao-clara" id="faq">
-    <div class="secao-in estreita">
+  <section class="secao" id="faq" aria-labelledby="tFaq">
+    <div class="secao-in faq-grelha">
       <header class="secao-cab">
-        <p class="sobretitulo">Perguntas frequentes</p>
-        <h2>Antes de começares.</h2>
+        <p class="sobretitulo"><span class="num">06</span> Perguntas frequentes</p>
+        <h2 id="tFaq">Antes de começares.</h2>
+        <p class="secao-lead">Tens outra dúvida? Escreve-a no campo final da candidatura e respondemos na conversa de avaliação.</p>
       </header>
       <div class="faq">
         <details>
@@ -299,12 +419,17 @@
   </section>
 
   <!-- CANDIDATURA -->
-  <section class="secao secao-escura" id="candidatura">
-    <div class="secao-in estreita">
+  <section class="secao secao-escura" id="candidatura" aria-labelledby="tCandidatura">
+    <div class="secao-in cand-grelha">
       <header class="secao-cab">
-        <p class="sobretitulo">Candidatura</p>
-        <h2>Vamos falar.</h2>
+        <p class="sobretitulo"><span class="num">07</span> Candidatura</p>
+        <h2 id="tCandidatura">Vamos falar.</h2>
         <p class="secao-lead">Responde a algumas perguntas. Entramos em contacto em até 48 horas para marcar a conversa de avaliação.</p>
+        <ul class="cand-garantias">
+          <li><b>3 min</b><span>para preencher</span></li>
+          <li><b>48 h</b><span>até te contactarmos</span></li>
+          <li><b>0 €</b><span>conversa de avaliação</span></li>
+        </ul>
       </header>
 
       <form id="fCandidatura" class="form" novalidate>
@@ -351,7 +476,7 @@
         </label>
         <label class="campo"><span>Mais alguma coisa? <small>(lesões, disponibilidade…)</small></span><textarea id="cMsg" name="mensagem" rows="4" maxlength="2000"></textarea></label>
         <label class="consent"><input id="cConsent" type="checkbox" required /> <span>Aceito que a CF Training guarde estes dados para me contactar sobre o acompanhamento. Podes pedir para os apagarmos a qualquer momento.</span></label>
-        <button class="btn btn-boia btn-grande" type="submit">Enviar candidatura</button>
+        <button class="btn btn-primario btn-grande" type="submit">Enviar candidatura</button>
         <p class="form-estado" id="formEstado" role="status" aria-live="polite"></p>
       </form>
     </div>
@@ -361,20 +486,38 @@
 
 <footer class="rodape">
   <div class="secao-in rodape-in">
-    <a class="logo" href="#" aria-label="CF Training — início">
-      <svg class="logo-marca" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" /><path d="M7 25c5-4 9 4 13 0s8 4 13 0" /></svg>
-      <span>CF<b>Training</b></span>
-    </a>
-    <p>Treino online de triatlo e corrida.</p>
-    <nav aria-label="Rodapé">
+    <div class="rodape-marca">
+      <a class="logo" href="../cftraining/" aria-label="CF Training — início">
+        <svg class="logo-marca" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18"/><path d="M7 25c5-4 9 4 13 0s8 4 13 0"/></svg><span>CF<b>Training</b></span>
+      </a>
+      <p>Treino online de triatlo e corrida. Sem permanência.</p>
+      <a class="btn btn-primario" href="../plataforma/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Área de atleta
+      </a>
+    </div>
+    <nav class="rodape-col" aria-label="Site">
+      <p class="rodape-tit">Site</p>
+      <a href="#metodo">Método</a>
+      <a href="#como">Como funciona</a>
       <a href="#planos">Planos</a>
+      <a href="#faq">Perguntas frequentes</a>
       <a href="#candidatura">Candidatura</a>
+    </nav>
+    <nav class="rodape-col" aria-label="Atletas">
+      <p class="rodape-tit">Atletas</p>
       <a href="../plataforma/">Área de atleta</a>
-      <a href="../treino-fisico/">Biblioteca de exercícios</a>
+      <a href="#area-atleta">O que tens na área</a>
+      <a href="#como">Como começar</a>
     </nav>
     <p class="rodape-legal">© <span id="ano">2026</span> CF Training</p>
   </div>
 </footer>
+
+<!-- Barra fixa no telemóvel (aparece depois do topo, esconde-se junto ao formulário) -->
+<div class="barra-cta" id="barraCta" aria-hidden="true">
+  <p><b>Sem permanência</b><span>desde 29 €/mês</span></p>
+  <a class="btn btn-primario" href="#candidatura" tabindex="-1">Candidata-te</a>
+</div>
 
 <script src="../plataforma/config.js"></script>
 <script src="site.js"></script>
