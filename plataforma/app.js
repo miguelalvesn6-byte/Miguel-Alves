@@ -4,6 +4,14 @@
   // ======================================================================
   // Configuração e constantes
   // ======================================================================
+  // Link do email "recuperar palavra-passe": lido antes de o cliente Supabase limpar o endereço.
+  const HASH_INICIAL = location.hash;
+  const VEIO_DE_RECUPERACAO = /(^|[#&])type=recovery(&|$)/.test(HASH_INICIAL);
+  const ERRO_DO_LINK = (() => {
+    const m = HASH_INICIAL.match(/error_description=([^&]+)/);
+    try { return m ? decodeURIComponent(m[1].replace(/\+/g, " ")) : ""; } catch (_) { return "erro"; }
+  })();
+
   const sb = window.supabase.createClient(window.CONFIG.supabaseUrl, window.CONFIG.supabaseAnonKey);
 
   const CATEGORIAS = { forca: "Força", core: "Core", mobilidade: "Mobilidade", prevencao: "Prevenção", ativacao: "Ativação", pliometria: "Pliometria", tecnica: "Técnica de corrida" };
@@ -37,7 +45,7 @@
     exPorId: {},
     sessoes: [],
     atletas: [],          // só treinador
-    recuperacao: false,   // a definir nova palavra-passe
+    recuperacao: VEIO_DE_RECUPERACAO,   // a definir nova palavra-passe
     filtros: { texto: "", categoria: null, disciplina: null, material: null },
     rascunho: null,       // formulário de treino em edição
     rascunhoRota: "",     // rota a que o rascunho pertence
@@ -352,6 +360,7 @@
         const { error } = await sb.auth.updateUser({ password: pass });
         if (error) throw error;
         est.recuperacao = false;
+        history.replaceState(null, "", location.pathname + location.search);
         toast("Palavra-passe alterada.");
         await iniciarSessao();
       }
@@ -364,6 +373,7 @@
   }
 
   async function iniciarSessao(verificar) {
+    if (est.recuperacao) return; // primeiro tem de definir a nova palavra-passe
     try {
       await carregarPerfil();
     } catch (e) {
@@ -2174,8 +2184,23 @@
         vistaEntrar("nova");
         return;
       }
+      if (est.recuperacao && sessao) {
+        // Chegou pelo link do email: mostra logo o formulário da nova palavra-passe.
+        est.utilizador = sessao.user;
+        if (!$("fAuth") || $("fAuth").dataset.modo !== "nova") vistaEntrar("nova");
+        return;
+      }
       if (evento === "SIGNED_OUT" || !sessao) {
+        if (ERRO_DO_LINK && !est.avisouLink) {
+          est.avisouLink = true;
+          est.recuperacao = false;
+          history.replaceState(null, "", location.pathname + location.search);
+          vistaEntrar("recuperar");
+          toast("O link do email expirou ou já foi usado. Pede um novo aqui.");
+          return;
+        }
         if (evento === "SIGNED_OUT" && location.hash) history.replaceState(null, "", location.pathname + location.search);
+        est.recuperacao = false;
         est.utilizador = null;
         est.perfil = null;
         est.rascunho = null;
