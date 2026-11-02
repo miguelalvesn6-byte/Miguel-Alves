@@ -1,0 +1,452 @@
+<title>Agenda de Jogos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: operations board. Weekly brief on top, task queue beside it, full fixture list below. */
+:root{
+  --bg:#f3f4f1; --surface:#ffffff; --sunk:#e8eae5; --line:#d6d9d2;
+  --fg:#1c2220; --muted:#5d6661; --accent:#d4561c; --accent-ink:#ffffff; --accent-soft:#fbe5d9;
+  --ok:#2f7a4b; --ok-soft:#ddefe2; --warn:#a26a00; --warn-soft:#f7ebcc; --bad:#b0352f;
+  --m-and:#2b6cb0; --m-bas:#c05621; --m-hoq:#2c7a7b; --m-fut:#6b46c1; --m-vol:#b83280;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141816; --surface:#1d2220; --sunk:#252b28; --line:#333a36;
+  --fg:#e9ece8; --muted:#9aa49e; --accent:#f07a3e; --accent-ink:#1a0e07; --accent-soft:#3a2418;
+  --ok:#6cc58c; --ok-soft:#1d3426; --warn:#e3b04b; --warn-soft:#3a2f14; --bad:#ec7a73;
+  --m-and:#74a8e6; --m-bas:#f0975a; --m-hoq:#5fc4c2; --m-fut:#a88bec; --m-vol:#e87bb8;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141816; --surface:#1d2220; --sunk:#252b28; --line:#333a36;
+  --fg:#e9ece8; --muted:#9aa49e; --accent:#f07a3e; --accent-ink:#1a0e07; --accent-soft:#3a2418;
+  --ok:#6cc58c; --ok-soft:#1d3426; --warn:#e3b04b; --warn-soft:#3a2f14; --bad:#ec7a73;
+  --m-and:#74a8e6; --m-bas:#f0975a; --m-hoq:#5fc4c2; --m-fut:#a88bec; --m-vol:#e87bb8;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.45}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:700;text-wrap:balance;margin:0;letter-spacing:.01em}
+h1{font-size:2.3rem;line-height:1}
+h2{font-size:1.5rem}
+.eyebrow{font-size:.74rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:600}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;margin-bottom:20px}
+.sync{font-size:.82rem;color:var(--muted);display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.dot.on{background:var(--ok)} .dot.off{background:var(--bad)}
+
+.grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:880px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;min-width:0}
+
+/* weekly brief */
+.week-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.week-nav{display:flex;gap:6px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:6px 11px;font-weight:600;font-size:.88rem}
+.btn:hover{background:var(--sunk)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.07)}
+.stats{display:flex;flex-wrap:wrap;gap:8px 18px;margin-bottom:14px;font-size:.9rem;color:var(--muted)}
+.stats b{color:var(--fg);font-family:var(--display);font-size:1.25rem;margin-right:4px}
+.day{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
+.day:first-of-type{border-top:0;margin-top:0;padding-top:0}
+.day-label{font-family:var(--display);font-weight:600;font-size:1.05rem;margin-bottom:6px;display:flex;gap:8px;align-items:baseline}
+.day-label.today{color:var(--accent)}
+.empty{color:var(--muted);padding:14px 0}
+
+.game{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:center;width:100%;text-align:left;background:transparent;border:0;border-radius:8px;padding:8px 8px;margin:0 -8px}
+.game:hover{background:var(--sunk)}
+.sport{width:30px;height:30px;border-radius:7px;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:.82rem;color:#fff;background:var(--c)}
+.g-main{min-width:0}
+.g-title{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g-sub{display:block;font-size:.82rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g-side{display:flex;gap:6px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+.pill{font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.pill.casa{background:var(--accent-soft);color:var(--accent)}
+.pill.fora,.pill.neutro{background:var(--sunk);color:var(--muted)}
+.pill.t-none{background:var(--warn-soft);color:var(--warn)}
+.pill.t-open{background:var(--sunk);color:var(--fg)}
+.pill.t-done{background:var(--ok-soft);color:var(--ok)}
+.res{font-family:var(--mono);font-size:.85rem}
+.res.w{color:var(--ok)} .res.l{color:var(--bad)} .res.d{color:var(--warn)}
+
+/* task queue */
+.tabs{display:flex;gap:4px;background:var(--sunk);padding:3px;border-radius:8px;margin:12px 0}
+.tabs button{flex:1;border:0;background:transparent;border-radius:6px;padding:6px 8px;font-weight:600;font-size:.88rem;color:var(--muted)}
+.tabs button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgb(0 0 0 / .08)}
+.q-item{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.q-item:first-child{border-top:0}
+.q-game{font-size:.8rem;color:var(--muted);background:none;border:0;padding:0;text-align:left;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.chk{width:20px;height:20px;accent-color:var(--ok);margin-top:2px}
+.who{font-size:.72rem;font-weight:700;border-radius:4px;padding:1px 6px;margin-left:6px;white-space:nowrap}
+.who.Miguel{background:var(--accent-soft);color:var(--accent)}
+.who.João{background:color-mix(in srgb,var(--m-and) 18%,transparent);color:var(--m-and)}
+.who.Ambos{background:var(--sunk);color:var(--fg)}
+.done-t{text-decoration:line-through;color:var(--muted)}
+
+/* all fixtures */
+.fixtures{margin-top:20px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+.filters select,.filters input{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:6px 9px;min-width:0}
+.filters input{flex:1 1 180px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 11px;font-size:.85rem;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.chip[aria-pressed="true"]{border-color:var(--fg);background:var(--fg);color:var(--bg)}
+.month{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:18px 0 4px;padding-bottom:4px;border-bottom:2px solid var(--fg);display:flex;justify-content:space-between;align-items:baseline}
+.month span{font-family:var(--body);font-size:.8rem;color:var(--muted);font-weight:500}
+.row-date{font-family:var(--mono);font-size:.78rem;color:var(--muted);width:46px;text-align:center;line-height:1.15}
+.row-date b{display:block;font-size:1.05rem;color:var(--fg)}
+.game.rowg{grid-template-columns:auto auto minmax(0,1fr) auto}
+.more{margin:14px auto 0;display:block}
+
+/* dialog */
+dialog{border:1px solid var(--line);border-radius:12px;padding:0;background:var(--surface);color:var(--fg);width:min(560px,calc(100vw - 24px));max-height:calc(100dvh - 32px)}
+dialog::backdrop{background:rgb(10 14 12 / .45)}
+.dlg-h{padding:18px 18px 12px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:flex-start}
+.dlg-b{padding:14px 18px 20px;display:grid;gap:14px}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:.88rem}
+.meta dt{color:var(--muted)} .meta dd{margin:0}
+.x{margin-left:auto;border:0;background:transparent;font-size:1.5rem;line-height:1;padding:2px 6px;color:var(--muted)}
+.tpl{display:flex;flex-wrap:wrap;gap:6px}
+.tpl button{border:1px dashed var(--line);background:transparent;border-radius:6px;padding:4px 9px;font-size:.84rem}
+.tpl button:hover{border-style:solid;border-color:var(--accent);color:var(--accent)}
+.tpl button:disabled{opacity:.4;cursor:default;border-style:solid;color:var(--muted)}
+.add{display:flex;flex-wrap:wrap;gap:6px}
+.add input{flex:1 1 200px;border:1px solid var(--line);background:var(--bg);border-radius:7px;padding:7px 10px;min-width:0}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:6px 10px;font-weight:600;font-size:.85rem;border-left:1px solid var(--line)}
+.seg button:first-child{border-left:0}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.task{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--line)}
+.task:first-child{border-top:0}
+.task select{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:3px 4px;font-size:.8rem}
+.del{border:0;background:transparent;color:var(--muted);font-size:1.1rem;padding:0 4px}
+.del:hover{color:var(--bad)}
+.note{font-size:.82rem;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-weight:600;font-size:.9rem;z-index:20}
+@media (prefers-reduced-motion:no-preference){.game,.btn,.chip{transition:background .12s,border-color .12s}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Formação e Séniores · 5 modalidades</div>
+      <h1>Agenda de Jogos</h1>
+    </div>
+    <div class="sync"><span class="dot" id="syncDot"></span><span id="syncTxt">A ligar às tarefas partilhadas…</span></div>
+  </header>
+
+  <div class="grid">
+    <section class="panel" aria-labelledby="wkTitle">
+      <div class="week-head">
+        <div>
+          <div class="eyebrow" id="wkEyebrow">Aviso semanal</div>
+          <h2 id="wkTitle">Esta semana</h2>
+        </div>
+        <div class="week-nav">
+          <button class="btn" id="wkPrev" aria-label="Semana anterior">‹</button>
+          <button class="btn" id="wkNow">Hoje</button>
+          <button class="btn" id="wkNext" aria-label="Semana seguinte">›</button>
+          <button class="btn primary" id="wkCopy">Copiar aviso</button>
+        </div>
+      </div>
+      <div class="stats" id="wkStats"></div>
+      <div id="wkList"></div>
+    </section>
+
+    <aside class="panel" aria-labelledby="qTitle">
+      <div class="eyebrow">Organização</div>
+      <h2 id="qTitle">Tarefas por fazer</h2>
+      <div class="tabs" role="group" aria-label="Pessoa">
+        <button data-q="Miguel" aria-pressed="false">Miguel <span id="cM"></span></button>
+        <button data-q="João" aria-pressed="false">João <span id="cJ"></span></button>
+        <button data-q="all" aria-pressed="true">Todas <span id="cA"></span></button>
+      </div>
+      <div id="qList"></div>
+    </aside>
+  </div>
+
+  <section class="panel fixtures" aria-labelledby="fxTitle">
+    <div class="eyebrow">Calendário completo</div>
+    <h2 id="fxTitle">Todos os jogos</h2>
+    <div class="chips" id="modChips" role="group" aria-label="Modalidade"></div>
+    <div class="filters">
+      <select id="fSeason" aria-label="Época"></select>
+      <select id="fTeam" aria-label="Escalão"></select>
+      <select id="fState" aria-label="Estado">
+        <option value="next">Próximos jogos</option>
+        <option value="past">Já realizados</option>
+        <option value="all">Todos</option>
+      </select>
+      <select id="fVenue" aria-label="Local">
+        <option value="">Casa e fora</option>
+        <option value="Casa">Só em casa</option>
+        <option value="Fora">Só fora</option>
+        <option value="Neutro">Neutro</option>
+      </select>
+      <input id="fSearch" type="search" placeholder="Procurar adversário ou competição">
+    </div>
+    <div class="note" id="fxCount"></div>
+    <div id="fxList"></div>
+    <button class="btn more" id="fxMore" hidden>Mostrar mais jogos</button>
+  </section>
+</div>
+
+<dialog id="dlg" aria-labelledby="dTitle">
+  <div class="dlg-h">
+    <span class="sport" id="dSport"></span>
+    <div style="min-width:0">
+      <div class="eyebrow" id="dEyebrow"></div>
+      <h2 id="dTitle"></h2>
+    </div>
+    <button class="x" id="dClose" aria-label="Fechar">×</button>
+  </div>
+  <div class="dlg-b">
+    <dl class="meta" id="dMeta"></dl>
+    <div>
+      <div class="eyebrow" style="margin-bottom:6px">Tarefas do jogo</div>
+      <div id="dTasks"></div>
+    </div>
+    <div>
+      <div class="eyebrow" style="margin-bottom:6px">Atribuir a</div>
+      <div class="seg" id="dWho" role="group" aria-label="Responsável">
+        <button data-w="Miguel" aria-pressed="true">Miguel</button>
+        <button data-w="João" aria-pressed="false">João</button>
+        <button data-w="Ambos" aria-pressed="false">Ambos</button>
+      </div>
+    </div>
+    <div>
+      <div class="eyebrow" style="margin-bottom:6px">Sugestões — toca para criar</div>
+      <div class="tpl" id="dTpl"></div>
+    </div>
+    <form class="add" id="dAdd">
+      <input id="dNew" placeholder="Outra tarefa, ex.: levar bolas extra" maxlength="120" autocomplete="off">
+      <button class="btn primary" type="submit">Adicionar</button>
+    </form>
+    <div class="note" id="dNote"></div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const RAW = __GAMES__;
+const G = RAW.map(r=>({id:r[0],mod:r[1],season:r[2],team:r[3],comp:r[4],phase:r[5],round:r[6],opp:r[7],date:r[8],venue:r[9],res:r[10],out:r[11],obs:r[12]}));
+const BY_ID = Object.fromEntries(G.map(g=>[g.id,g]));
+const MODS = {"Andebol":["AND","--m-and"],"Basquetebol":["BAS","--m-bas"],"Hóquei em Patins":["HÓQ","--m-hoq"],"Futsal":["FUT","--m-fut"],"Voleibol":["VOL","--m-vol"]};
+const TPL_HOME = ["Preparar pavilhão e bancada","Mesa de jogo e oficiais","Receber árbitros","Receber equipa adversária","Som e speaker","Bilheteira e acessos","Fotografia / vídeo","Redes sociais (antevisão e resultado)","Arrumar material no fim"];
+const TPL_AWAY = ["Confirmar transporte","Confirmar hora e local de encontro","Contactar clube visitado","Equipamentos e material","Redes sociais (antevisão e resultado)","Fotografia / vídeo"];
+const DOW = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
+const MON = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+const $ = s=>document.querySelector(s);
+const esc = s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function parse(s){const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)}
+function monday(d){const x=new Date(d);const k=(x.getDay()+6)%7;x.setDate(x.getDate()-k);x.setHours(0,0,0,0);return x}
+const TODAY = iso(new Date());
+let weekStart = monday(new Date());
+
+let tasks = [];           // {id, gameId, title, who, done, createdAt}
+let db = null, dbReady = false;
+const store = {get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let qWho = store.get("qWho") || "all";
+let curWho = store.get("curWho") || "Miguel";
+
+function tasksFor(id){return tasks.filter(t=>t.gameId===id)}
+function sportBadge(m){const [a,c]=MODS[m]||["?","--muted"];return `<span class="sport" style="--c:var(${c})">${a}</span>`}
+function venuePill(v){const k=(v||"").toLowerCase();return v?`<span class="pill ${k}">${esc(v)}</span>`:""}
+function taskPill(id){
+  const ts=tasksFor(id); if(!dbReady) return "";
+  if(!ts.length) return `<span class="pill t-none">Sem tarefas</span>`;
+  const open=ts.filter(t=>!t.done).length;
+  return open?`<span class="pill t-open">${ts.length-open}/${ts.length} feitas</span>`:`<span class="pill t-done">Tudo feito</span>`;
+}
+function resHtml(g){if(!g.res) return "";const c=g.out==="Vencedor"?"w":g.out==="Derrotado"?"l":"d";return `<span class="res ${c}">${esc(g.res)}</span>`}
+function title(g){return `${g.team} vs ${g.opp||"—"}`}
+function sub(g){return [g.mod,g.comp,g.round&&g.round!=="-"?"J"+g.round:g.phase].filter(Boolean).join(" · ")}
+function fmtDay(s){const d=parse(s);return `${DOW[d.getDay()]}, ${d.getDate()} de ${MON[d.getMonth()]}`}
+
+/* ---------- weekly brief ---------- */
+function weekGames(){const a=iso(weekStart);const e=new Date(weekStart);e.setDate(e.getDate()+6);const b=iso(e);return {a,b,list:G.filter(g=>g.date>=a&&g.date<=b).sort((x,y)=>x.date.localeCompare(y.date)||x.mod.localeCompare(y.mod))}}
+function renderWeek(){
+  const {a,b,list}=weekGames();
+  const da=parse(a),dbb=parse(b);
+  const cur=iso(monday(new Date()))===a;
+  $("#wkEyebrow").textContent = cur?"Aviso semanal · semana atual":"Aviso semanal";
+  $("#wkTitle").textContent = `${da.getDate()} ${MON[da.getMonth()].slice(0,3)} – ${dbb.getDate()} ${MON[dbb.getMonth()].slice(0,3)} ${dbb.getFullYear()}`;
+  const home=list.filter(g=>g.venue==="Casa").length;
+  const ids=new Set(list.map(g=>g.id));
+  const wt=tasks.filter(t=>ids.has(t.gameId));
+  const noTask=list.filter(g=>g.venue==="Casa"&&!tasksFor(g.id).length).length;
+  $("#wkStats").innerHTML = `<span><b>${list.length}</b>jogos</span><span><b>${home}</b>em casa</span>`+
+    (dbReady?`<span><b>${wt.filter(t=>!t.done).length}</b>tarefas por fazer</span>`+(noTask?`<span style="color:var(--warn)"><b style="color:var(--warn)">${noTask}</b>jogos em casa sem tarefas</span>`:""):"");
+  if(!list.length){$("#wkList").innerHTML=`<div class="empty">Não há jogos marcados nesta semana.</div>`;return}
+  const byDay={};list.forEach(g=>(byDay[g.date]??=[]).push(g));
+  $("#wkList").innerHTML = Object.entries(byDay).map(([d,gs])=>`<div class="day"><div class="day-label ${d===TODAY?"today":""}">${fmtDay(d)}${d===TODAY?' <span class="eyebrow" style="color:var(--accent)">hoje</span>':""}</div>`+
+    gs.map(g=>`<button class="game" data-g="${g.id}">${sportBadge(g.mod)}<span class="g-main"><span class="g-title">${esc(title(g))}</span><span class="g-sub">${esc(sub(g))}</span></span><span class="g-side">${resHtml(g)}${venuePill(g.venue)}${taskPill(g.id)}</span></button>`).join("")+`</div>`).join("");
+}
+function weekText(){
+  const {list}=weekGames();
+  let t=`📅 Jogos da semana — ${$("#wkTitle").textContent}\n`;
+  const byDay={};list.forEach(g=>(byDay[g.date]??=[]).push(g));
+  for(const [d,gs] of Object.entries(byDay)){
+    t+=`\n${fmtDay(d)}\n`;
+    gs.forEach(g=>{t+=`• ${g.mod} ${g.team} vs ${g.opp} (${g.venue||"—"}) — ${g.comp}\n`;
+      tasksFor(g.id).filter(x=>!x.done).forEach(x=>{t+=`   ☐ ${x.title} → ${x.who}\n`})});
+  }
+  if(!list.length) t+="\nSem jogos nesta semana.\n";
+  return t;
+}
+
+/* ---------- task queue ---------- */
+function renderQueue(){
+  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.q===qWho)));
+  if(!dbReady){$("#qList").innerHTML=`<div class="empty" id="qEmpty">${db===false?"As tarefas partilhadas não estão disponíveis nesta vista. Abre a página com sessão iniciada no claude.ai para criar e marcar tarefas.":"A carregar tarefas…"}</div>`;["#cM","#cJ","#cA"].forEach(s=>$(s).textContent="");return}
+  const open=tasks.filter(t=>!t.done&&BY_ID[t.gameId]);
+  const mine=w=>open.filter(t=>t.who===w||t.who==="Ambos");
+  $("#cM").textContent=`(${mine("Miguel").length})`;$("#cJ").textContent=`(${mine("João").length})`;$("#cA").textContent=`(${open.length})`;
+  const list=(qWho==="all"?open:mine(qWho)).sort((a,b)=>BY_ID[a.gameId].date.localeCompare(BY_ID[b.gameId].date)||a.createdAt-b.createdAt);
+  if(!list.length){$("#qList").innerHTML=`<div class="empty">Nada pendente. Abre um jogo da semana e toca numa sugestão para criar tarefas.</div>`;return}
+  $("#qList").innerHTML=list.slice(0,40).map(t=>{const g=BY_ID[t.gameId];const late=g.date<TODAY;return `<div class="q-item"><input type="checkbox" class="chk" data-done="${t.id}" aria-label="Marcar como feita: ${esc(t.title)}"><div style="min-width:0"><div>${esc(t.title)}<span class="who ${esc(t.who)}">${esc(t.who)}</span></div><button class="q-game" data-g="${g.id}">${late?'<span style="color:var(--bad)">Atrasada · </span>':""}${fmtDay(g.date)} · ${esc(g.mod)} ${esc(title(g))}</button></div></div>`}).join("")+(list.length>40?`<div class="note">+${list.length-40} tarefas mais à frente</div>`:"");
+}
+
+/* ---------- all fixtures ---------- */
+const F={mods:new Set(),season:"2026-2027",team:"",state:"next",venue:"",q:"",limit:120};
+function initFilters(){
+  $("#modChips").innerHTML=Object.entries(MODS).map(([m,[,c]])=>`<button class="chip" data-m="${m}" aria-pressed="false" style="--c:var(${c})"><i></i>${m}</button>`).join("");
+  const seasons=[...new Set(G.map(g=>g.season).filter(Boolean))].sort().reverse();
+  $("#fSeason").innerHTML=`<option value="">Todas as épocas</option>`+seasons.map(s=>`<option ${s===F.season?"selected":""}>${s}</option>`).join("");
+  fillTeams();
+}
+const TEAM_ORDER=t=>{if(t.startsWith("Sénior"))return "0"+t;const n=t.match(/\d+/);return n?"1"+String(99-+n[0]).padStart(2,"0")+t:"2"+t};
+function fillTeams(){
+  const teams=[...new Set(G.filter(g=>(!F.mods.size||F.mods.has(g.mod))).map(g=>g.team))].sort((a,b)=>TEAM_ORDER(a).localeCompare(TEAM_ORDER(b)));
+  if(!teams.includes(F.team)) F.team="";
+  $("#fTeam").innerHTML=`<option value="">Todos os escalões</option>`+teams.map(t=>`<option ${t===F.team?"selected":""}>${esc(t)}</option>`).join("");
+}
+function filtered(){
+  const q=F.q.trim().toLowerCase();
+  let l=G.filter(g=>(!F.mods.size||F.mods.has(g.mod))&&(!F.season||g.season===F.season)&&(!F.team||g.team===F.team)&&(!F.venue||g.venue===F.venue)
+    &&(F.state==="all"||(F.state==="next"?(g.date>=TODAY&&!g.res):(g.res||(g.date&&g.date<TODAY))))
+    &&(!q||(g.opp+" "+g.comp+" "+g.team).toLowerCase().includes(q)));
+  l.sort((a,b)=>F.state==="past"?(b.date||"").localeCompare(a.date||""):(a.date||"9").localeCompare(b.date||"9"));
+  return l;
+}
+function renderFixtures(){
+  document.querySelectorAll("#modChips .chip").forEach(b=>b.setAttribute("aria-pressed",String(F.mods.has(b.dataset.m))));
+  const l=filtered();
+  const homeN=l.filter(g=>g.venue==="Casa").length;
+  $("#fxCount").textContent=`${l.length} jogos · ${homeN} em casa`;
+  const show=l.slice(0,F.limit);
+  let h="",cur="";const counts={};
+  l.forEach(g=>{const k=g.date?g.date.slice(0,7):"sem";counts[k]=(counts[k]||0)+1});
+  for(const g of show){
+    const k=g.date?g.date.slice(0,7):"sem";
+    if(k!==cur){cur=k;const lab=k==="sem"?"Sem data":`${MON[+k.slice(5)-1]} ${k.slice(0,4)}`;h+=`<div class="month">${lab.charAt(0).toUpperCase()+lab.slice(1)}<span>${counts[k]} jogos</span></div>`}
+    const d=g.date?parse(g.date):null;
+    h+=`<button class="game rowg" data-g="${g.id}"><span class="row-date">${d?`<b>${d.getDate()}</b>${DOW[d.getDay()].slice(0,3)}`:"—"}</span>${sportBadge(g.mod)}<span class="g-main"><span class="g-title">${esc(title(g))}</span><span class="g-sub">${esc(sub(g))}</span></span><span class="g-side">${resHtml(g)}${venuePill(g.venue)}${g.res?"":taskPill(g.id)}</span></button>`;
+  }
+  $("#fxList").innerHTML=h||`<div class="empty">Nenhum jogo com estes filtros.</div>`;
+  $("#fxMore").hidden=l.length<=F.limit;
+}
+
+/* ---------- game dialog ---------- */
+let openId=null;
+function renderDialog(){
+  if(!openId) return; const g=BY_ID[openId];
+  const [a,c]=MODS[g.mod]||["?","--muted"];
+  const s=$("#dSport");s.textContent=a;s.style.setProperty("--c",`var(${c})`);
+  $("#dEyebrow").textContent=`${g.mod} · ${g.team}`;
+  $("#dTitle").textContent=`vs ${g.opp||"—"}`;
+  $("#dMeta").innerHTML=[["Data",g.date?fmtDay(g.date)+" "+g.date.slice(0,4):"Sem data"],["Local",g.venue||"—"],["Competição",g.comp],["Fase",[g.phase,g.round&&g.round!=="-"?"Jornada "+g.round:""].filter(Boolean).join(" · ")],["Época",g.season]]
+    .concat(g.res?[["Resultado",`${g.res} (${g.out||"—"})`]]:[]).concat(g.obs?[["Observações",g.obs]]:[])
+    .map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join("");
+  document.querySelectorAll("#dWho button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.w===curWho)));
+  const ts=tasksFor(g.id).sort((x,y)=>x.createdAt-y.createdAt);
+  const enabled=dbReady;
+  $("#dTasks").innerHTML=!enabled?`<div class="note">${db===false?"Tarefas indisponíveis nesta vista (é preciso sessão iniciada no claude.ai).":"A carregar…"}</div>`:
+    ts.length?ts.map(t=>`<div class="task"><input type="checkbox" class="chk" data-done="${t.id}" ${t.done?"checked":""} aria-label="Feita: ${esc(t.title)}"><span class="${t.done?"done-t":""}">${esc(t.title)}</span><select data-who="${t.id}" aria-label="Responsável">${["Miguel","João","Ambos"].map(w=>`<option ${w===t.who?"selected":""}>${w}</option>`).join("")}</select><button class="del" data-del="${t.id}" aria-label="Apagar tarefa">×</button></div>`).join(""):`<div class="note">Ainda sem tarefas. Escolhe uma sugestão abaixo.</div>`;
+  const have=new Set(ts.map(t=>t.title));
+  const tpl=g.venue==="Casa"?TPL_HOME:g.venue==="Fora"?TPL_AWAY:[...new Set([...TPL_AWAY,"Receber árbitros"])];
+  $("#dTpl").innerHTML=tpl.map(t=>`<button type="button" data-tpl="${esc(t)}" ${have.has(t)||!enabled?"disabled":""}>+ ${esc(t)}</button>`).join("");
+  $("#dNew").disabled=!enabled;
+  $("#dNote").textContent=enabled?(LOCAL?"Nesta versão as tarefas ficam guardadas só neste browser.":"As tarefas ficam guardadas e o Miguel e o João veem as mesmas."):"";
+}
+function openGame(id){openId=id;renderDialog();const d=$("#dlg");if(!d.open){try{d.showModal()}catch(e){d.setAttribute("open","")}}}
+$("#dClose").onclick=()=>{$("#dlg").close();openId=null};
+$("#dlg").addEventListener("close",()=>{openId=null});
+$("#dlg").addEventListener("click",e=>{if(e.target===$("#dlg")) $("#dlg").close()});
+
+/* ---------- db ---------- */
+function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2200)}
+function fail(e){toast(e&&e.code==="permission_denied"?"Não tens permissão para alterar tarefas nesta página.":"Não foi possível guardar. Tenta de novo.")}
+async function addTask(title){
+  title=title.trim(); if(!title||!openId||!db) return;
+  try{await db.collection("tarefas").add({gameId:openId,title,who:curWho,done:false,createdAt:Date.now()});toast(`Tarefa criada para ${curWho}`)}catch(e){fail(e)}
+}
+async function setDone(id,v){try{await db.doc("tarefas/"+id).update({done:v,doneAt:v?Date.now():null})}catch(e){fail(e)}}
+async function setWho(id,w){try{await db.doc("tarefas/"+id).update({who:w})}catch(e){fail(e)}}
+async function delTask(id){try{await db.doc("tarefas/"+id).delete();toast("Tarefa apagada")}catch(e){fail(e)}}
+
+/* Fora do claude.ai (ex.: GitHub Pages): guarda as tarefas no próprio browser. */
+let LOCAL=false;
+function localDb(){
+  const K="agenda-tarefas";let subs=[];
+  const load=()=>{try{return JSON.parse(localStorage.getItem(K)||"{}")}catch(e){return {}}};
+  const save=o=>{try{localStorage.setItem(K,JSON.stringify(o))}catch(e){};emit()};
+  const emit=()=>{const o=load();const snap={docs:Object.entries(o).map(([id,v])=>({id,data:()=>v}))};subs.forEach(f=>f(snap))};
+  const ref=id=>({update:async d=>{const o=load();if(o[id]){Object.assign(o[id],d);save(o)}},delete:async()=>{const o=load();delete o[id];save(o)}});
+  return {collection:()=>({add:async d=>{const o=load();o["t"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)]=d;save(o)},onSnapshot:f=>{subs.push(f);setTimeout(emit,0);return()=>{}}}),doc:p=>ref(p.split("/")[1])};
+}
+function renderAll(){renderWeek();renderQueue();renderFixtures();renderDialog()}
+function setSync(state,txt){$("#syncDot").className="dot "+state;$("#syncTxt").textContent=txt}
+
+(async()=>{
+  const c=window.claude;
+  const timer=setTimeout(()=>{if(!dbReady){db=false;setSync("off","Tarefas partilhadas indisponíveis");renderAll()}},10000);
+  try{
+    db=c&&c.use?await c.use("db"):null;
+  }catch(e){db=null}
+  if(!db){db=localDb();LOCAL=true}
+  db.collection("tarefas").onSnapshot(snap=>{
+    clearTimeout(timer);
+    tasks=snap.docs.map(d=>({id:d.id,...d.data()})).filter(t=>t.gameId&&t.title);
+    dbReady=true;setSync("on",LOCAL?"Tarefas guardadas neste browser":"Tarefas sincronizadas");renderAll();
+  },err=>{clearTimeout(timer);db=false;dbReady=false;setSync("off","Não foi possível ler as tarefas");renderAll()});
+})();
+
+/* ---------- events ---------- */
+document.addEventListener("click",e=>{
+  const g=e.target.closest("[data-g]"); if(g){openGame(g.dataset.g);return}
+  const t=e.target.closest("[data-tpl]"); if(t&&!t.disabled){addTask(t.dataset.tpl);return}
+  const d=e.target.closest("[data-del]"); if(d){delTask(d.dataset.del);return}
+  const w=e.target.closest("#dWho button"); if(w){curWho=w.dataset.w;store.set("curWho",curWho);renderDialog();return}
+  const q=e.target.closest(".tabs button"); if(q){qWho=q.dataset.q;store.set("qWho",qWho);renderQueue();return}
+  const m=e.target.closest("#modChips .chip"); if(m){const k=m.dataset.m;F.mods.has(k)?F.mods.delete(k):F.mods.add(k);F.limit=120;fillTeams();renderFixtures();return}
+});
+document.addEventListener("change",e=>{
+  if(e.target.dataset.done){setDone(e.target.dataset.done,e.target.checked)}
+  else if(e.target.dataset.who){setWho(e.target.dataset.who,e.target.value)}
+});
+$("#dAdd").addEventListener("submit",e=>{e.preventDefault();const i=$("#dNew");addTask(i.value);i.value=""});
+$("#wkPrev").onclick=()=>{weekStart.setDate(weekStart.getDate()-7);renderWeek()};
+$("#wkNext").onclick=()=>{weekStart.setDate(weekStart.getDate()+7);renderWeek()};
+$("#wkNow").onclick=()=>{weekStart=monday(new Date());renderWeek()};
+$("#wkCopy").onclick=async()=>{const txt=weekText();try{await navigator.clipboard.writeText(txt);toast("Aviso copiado — cola no WhatsApp")}catch(e){const ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");toast("Aviso copiado")}catch(_){toast("Não foi possível copiar")}ta.remove()}};
+$("#fSeason").onchange=e=>{F.season=e.target.value;F.limit=120;renderFixtures()};
+$("#fTeam").onchange=e=>{F.team=e.target.value;F.limit=120;renderFixtures()};
+$("#fState").onchange=e=>{F.state=e.target.value;F.limit=120;renderFixtures()};
+$("#fVenue").onchange=e=>{F.venue=e.target.value;F.limit=120;renderFixtures()};
+$("#fSearch").oninput=e=>{F.q=e.target.value;F.limit=120;renderFixtures()};
+$("#fxMore").onclick=()=>{F.limit+=200;renderFixtures()};
+
+initFilters();renderAll();
+</script>
