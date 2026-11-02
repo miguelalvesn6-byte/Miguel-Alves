@@ -1,3 +1,11 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
 <title>Agenda de Jogos</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -378,7 +386,7 @@ function renderDialog(){
   const tpl=g.venue==="Casa"?TPL_HOME:g.venue==="Fora"?TPL_AWAY:[...new Set([...TPL_AWAY,"Receber árbitros"])];
   $("#dTpl").innerHTML=tpl.map(t=>`<button type="button" data-tpl="${esc(t)}" ${have.has(t)||!enabled?"disabled":""}>+ ${esc(t)}</button>`).join("");
   $("#dNew").disabled=!enabled;
-  $("#dNote").textContent=enabled?"As tarefas ficam guardadas e o Miguel e o João veem as mesmas.":"";
+  $("#dNote").textContent=enabled?(LOCAL?"Nesta versão as tarefas ficam guardadas só neste browser.":"As tarefas ficam guardadas e o Miguel e o João veem as mesmas."):"";
 }
 function openGame(id){openId=id;renderDialog();const d=$("#dlg");if(!d.open){try{d.showModal()}catch(e){d.setAttribute("open","")}}}
 $("#dClose").onclick=()=>{$("#dlg").close();openId=null};
@@ -396,6 +404,16 @@ async function setDone(id,v){try{await db.doc("tarefas/"+id).update({done:v,done
 async function setWho(id,w){try{await db.doc("tarefas/"+id).update({who:w})}catch(e){fail(e)}}
 async function delTask(id){try{await db.doc("tarefas/"+id).delete();toast("Tarefa apagada")}catch(e){fail(e)}}
 
+/* Fora do claude.ai (ex.: GitHub Pages): guarda as tarefas no próprio browser. */
+let LOCAL=false;
+function localDb(){
+  const K="agenda-tarefas";let subs=[];
+  const load=()=>{try{return JSON.parse(localStorage.getItem(K)||"{}")}catch(e){return {}}};
+  const save=o=>{try{localStorage.setItem(K,JSON.stringify(o))}catch(e){};emit()};
+  const emit=()=>{const o=load();const snap={docs:Object.entries(o).map(([id,v])=>({id,data:()=>v}))};subs.forEach(f=>f(snap))};
+  const ref=id=>({update:async d=>{const o=load();if(o[id]){Object.assign(o[id],d);save(o)}},delete:async()=>{const o=load();delete o[id];save(o)}});
+  return {collection:()=>({add:async d=>{const o=load();o["t"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)]=d;save(o)},onSnapshot:f=>{subs.push(f);setTimeout(emit,0);return()=>{}}}),doc:p=>ref(p.split("/")[1])};
+}
 function renderAll(){renderWeek();renderQueue();renderFixtures();renderDialog()}
 function setSync(state,txt){$("#syncDot").className="dot "+state;$("#syncTxt").textContent=txt}
 
@@ -405,11 +423,11 @@ function setSync(state,txt){$("#syncDot").className="dot "+state;$("#syncTxt").t
   try{
     db=c&&c.use?await c.use("db"):null;
   }catch(e){db=null}
-  if(!db){clearTimeout(timer);db=false;setSync("off","Tarefas partilhadas indisponíveis nesta vista");renderAll();return}
+  if(!db){db=localDb();LOCAL=true}
   db.collection("tarefas").onSnapshot(snap=>{
     clearTimeout(timer);
     tasks=snap.docs.map(d=>({id:d.id,...d.data()})).filter(t=>t.gameId&&t.title);
-    dbReady=true;setSync("on","Tarefas sincronizadas");renderAll();
+    dbReady=true;setSync("on",LOCAL?"Tarefas guardadas neste browser":"Tarefas sincronizadas");renderAll();
   },err=>{clearTimeout(timer);db=false;dbReady=false;setSync("off","Não foi possível ler as tarefas");renderAll()});
 })();
 
@@ -440,3 +458,6 @@ $("#fxMore").onclick=()=>{F.limit+=200;renderFixtures()};
 
 initFilters();renderAll();
 </script>
+
+</body>
+</html>
