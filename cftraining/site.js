@@ -30,24 +30,6 @@
   });
   window.matchMedia("(min-width: 52.01rem)").addEventListener("change", (m) => { if (m.matches) abrirMenu(false); });
 
-  // ---------- Preços: triatlo / corrida ----------
-  const botoesMod = document.querySelectorAll(".modalidade button");
-  function definirModalidade(mod, anunciar) {
-    botoesMod.forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.mod === mod)));
-    document.querySelectorAll("[data-preco-triatlo]").forEach((el) => {
-      el.textContent = el.dataset["preco" + (mod === "corrida" ? "Corrida" : "Triatlo")];
-    });
-    if (anunciar) $("modalidadeEstado").textContent = "Preços de " + (mod === "corrida" ? "corrida" : "triatlo");
-  }
-  botoesMod.forEach((b) => {
-    b.addEventListener("click", () => {
-      definirModalidade(b.dataset.mod, true);
-      $("cMod").value = b.dataset.mod;
-    });
-  });
-  // Mudar a modalidade no formulário também atualiza os preços.
-  $("cMod").addEventListener("change", (ev) => definirModalidade(ev.target.value, false));
-
   // ---------- Barra fixa "Candidata-te" (telemóvel) ----------
   const barra = $("barraCta");
   const hero = document.querySelector(".hero");
@@ -173,7 +155,6 @@
       if (!r.ok) throw new Error("HTTP " + r.status);
       form.reset();
       atualizarConta();
-      definirModalidade($("cMod").value, false);
       mostrar("Candidatura enviada. Obrigado! Entramos em contacto no prazo de 48 horas.", "ok");
     } catch (e) {
       console.warn("Candidatura não enviada:", e && e.message);

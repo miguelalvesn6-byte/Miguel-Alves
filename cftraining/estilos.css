@@ -389,12 +389,6 @@ h3 { font-size: 1.35rem; line-height: 1.15; font-weight: 700; }
 
 /* ---------- Planos ---------- */
 .secao-cab-linha { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.5rem 2rem; }
-.modalidade-bloco { display: grid; gap: .4rem; }
-.modalidade-rot { margin: 0; font-family: var(--mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-2); }
-.modalidade { display: inline-grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: var(--r-pill); background: var(--surface); border: 1px solid var(--line); }
-.modalidade button { font: inherit; font-weight: 650; border: 0; border-radius: var(--r-pill); padding: .55rem 1.5rem; min-height: var(--toque); background: transparent; color: var(--ink-2); cursor: pointer; transition: background-color .15s, color .15s; }
-.modalidade button:hover { color: var(--ink); }
-.modalidade button[aria-pressed="true"] { background: var(--verde); color: var(--verde-ink); }
 
 .planos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: stretch; }
 .plano { position: relative; display: flex; flex-direction: column; gap: .8rem; padding: 1.75rem 1.5rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-l); min-width: 0; }
@@ -454,7 +448,6 @@ h3 { font-size: 1.35rem; line-height: 1.15; font-weight: 700; }
 .extras li { display: flex; justify-content: space-between; gap: 1rem; padding: .65rem 0; border-bottom: 1px solid var(--line); font-size: .95rem; }
 .extras li b { font-family: var(--mono); font-weight: 600; white-space: nowrap; }
 .extras-nota { margin: .9rem 0 0; font-size: .88rem; color: var(--ink-2); }
-.extras-nota::before { content: "−10%"; display: inline-block; margin-right: .5rem; padding: 0 .45rem; border-radius: var(--r-pill); background: var(--verde); color: var(--verde-ink); font-family: var(--mono); font-weight: 600; font-size: .78rem; }
 
 /* ---------- FAQ ---------- */
 .faq-grelha { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(2rem, 6vw, 5rem); align-items: start; }
