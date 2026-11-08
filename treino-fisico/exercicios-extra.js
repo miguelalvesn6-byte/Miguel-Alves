@@ -626,3 +626,68 @@
     ["Saltar à corda alternando os pés, como uma corrida no sítio.", "Contacto curto debaixo da anca, joelhos ligeiramente altos.", "Ritmo constante, ombros relaxados."],
     ["Aterrar com o calcanhar", "Inclinar para trás"], "Saltos com os dois pés.", "Mais rápido ou joelhos altos.", "2 × 30 contactos");
 })();
+
+// ================= CONDICIONAMENTO HÍBRIDO II (Plano Miguel — variedade) =================
+(function () {
+  const D = { N: "natacao", C: "ciclismo", R: "corrida" };
+  const ex = (id, nome, nomeEn, categoria, material, disc, musculos, execucao, erros, regressao, progressao, dose) => {
+    if (EXERCICIOS.some((e) => e.id === id)) return;
+    EXERCICIOS.push({
+      id, nome, nomeEn, categoria, material, musculos, execucao, erros, regressao, progressao, dose,
+      disciplinas: disc.split("").map((c) => D[c]),
+      video: ""
+    });
+  };
+
+  ex("air-bike", "Air bike (Assault/Echo)", "assault bike technique", "forca", ["ginasio"], "CR", "Quadríceps, glúteos, ombros, braços (motor de corpo inteiro)",
+    ["Selim à altura da anca, joelho ligeiramente fletido em baixo.", "Empurra e puxa os braços ao mesmo tempo que pedalas; o tronco fica estável.", "Controla o esforço pelos watts ou calorias por minuto, não pela sensação inicial (a resistência sobe com a velocidade)."],
+    ["Arrancar a fundo e \"morrer\" a meio", "Só pernas ou só braços", "Selim baixo demais"], "Bicicleta estática normal ou remo.", "Intervalos curtos a watts altos.", "6 × 30 s forte : 90 s");
+  ex("treno-empurrar", "Empurrar trenó (prowler)", "sled push", "forca", ["ginasio"], "CR", "Quadríceps, glúteos, gémeos, core",
+    ["Mãos nas barras altas ou baixas, braços quase esticados, corpo inclinado a ~45°.", "Passos curtos e potentes, empurrando o chão para trás com a parte da frente do pé.", "Costas neutras, cabeça alinhada com o tronco."],
+    ["Anca alta e costas arredondadas", "Passos longos", "Carga que te obriga a parar"], "Sem trenó: empurrar um prato pesado em relva sintética ou um carro em ponto morto.", "Mais carga ou percursos mais longos.", "4 × 15–20 m");
+  ex("treno-puxar", "Puxar trenó (para trás ou mão sobre mão)", "sled drag backwards", "forca", ["ginasio"], "CR", "Quadríceps (para trás), dorsal e braços (mão sobre mão), core",
+    ["Para trás: corda ou arnês, braços esticados, andar de costas em meio agachamento.", "Mão sobre mão: de pé e parado, puxa a corda até o trenó chegar.", "Tronco firme, sem dar esticões à lombar."],
+    ["Arredondar as costas", "Esticões em vez de força contínua"], "Sem trenó: remada invertida ou elástico forte a puxar.", "Mais carga.", "4 × 20 m");
+  ex("sandbag-carry", "Transporte de sandbag ao ombro/abraço", "sandbag carry", "forca", ["ginasio"], "NCR", "Core (anti-flexão lateral), parte superior das costas, pernas",
+    ["Sandbag ao ombro (troca a meio) ou em abraço junto ao peito.", "Tronco direito, passos curtos e rápidos.", "Respira curto mantendo o abdómen firme."],
+    ["Inclinar para o lado do saco", "Prender a respiração muito tempo"], "Saco mais leve ou kettlebell em goblet.", "Saco mais pesado ou distância maior.", "40–60 m");
+  ex("sandbag-clean", "Sandbag ao ombro (clean)", "sandbag to shoulder", "forca", ["ginasio"], "NCR", "Glúteos, isquiotibiais, costas, core",
+    ["Saco no chão entre os pés, agarra-o por baixo.", "Levanta até às coxas (como um peso morto), ajeita-o no colo e explode com a anca para o pôr ao ombro.", "Pousa controlado e alterna o ombro."],
+    ["Puxar só com os braços e as costas arredondadas", "Saco longe do corpo"], "Saco mais leve ou kettlebell swing.", "Saco mais pesado.", "5–8 reps");
+  ex("burpee", "Burpee", "burpee", "forca", ["peso-corporal"], "CR", "Peitoral, ombros, pernas, core",
+    ["Mãos no chão, pés para trás até à prancha.", "Peito ao chão (ou flexão) e volta à prancha.", "Pés à frente debaixo do corpo, levanta-te e salta com as mãos acima da cabeça."],
+    ["Lombar a cair na prancha", "Aterrar pesado"], "Sem salto e sem peito ao chão.", "Burpee com salto à caixa.", "8–12 reps");
+  ex("burpee-salto-comprimento", "Burpee com salto em comprimento", "burpee broad jump", "pliometria", ["peso-corporal"], "CR", "Pernas, ombros, core",
+    ["Burpee normal e, ao subir, salto em comprimento com os dois pés.", "Aterra com os joelhos alinhados e começa o burpee seguinte onde aterraste.", "Cada salto conta como contacto de pliometria."],
+    ["Aterrar com os joelhos para dentro", "Saltos curtos e arrastados"], "Burpee + passo à frente.", "Saltos mais longos.", "Máximo em 2 min");
+  ex("kettlebell-snatch", "Arranco com kettlebell", "kettlebell snatch", "forca", ["kettlebell"], "NCR", "Glúteos, isquiotibiais, ombro, core",
+    ["Swing a uma mão com o kettlebell junto ao corpo.", "Quando a anca estende, puxa o cotovelo para cima e \"enfia\" a mão para o kettlebell rodar sem bater no antebraço.", "Termina com o braço esticado em cima, bíceps junto à orelha; desce em arco."],
+    ["Bater com o kettlebell no antebraço", "Puxar só com o braço", "Arquear a lombar em cima"], "Swing a uma mão ou high pull.", "Kettlebell mais pesado.", "10–20 alternados");
+  ex("kettlebell-clean-press", "Clean & press com kettlebell", "kettlebell clean and press", "forca", ["kettlebell"], "NCR", "Glúteos, ombro, tríceps, core",
+    ["Clean: do meio das pernas, a anca projeta o kettlebell para a posição de rack (junto ao peito, punho direito).", "Press: aperta glúteos e abdómen e empurra para cima, braço junto à orelha.", "Desce ao rack e depois entre as pernas."],
+    ["Kettlebell a bater no antebraço", "Inclinar o tronco para trás no press"], "Só press a partir do rack.", "Kettlebell mais pesado ou 2 kettlebells.", "5/braço");
+  ex("haltere-snatch", "Arranco com haltere", "dumbbell snatch", "forca", ["halteres"], "NCR", "Glúteos, isquiotibiais, trapézio, ombro",
+    ["Haltere no chão entre os pés, costas neutras.", "Empurra o chão e estende a anca; o haltere sobe junto ao corpo.", "Recebe-o em cima com o braço esticado e de pé; troca de mão em baixo."],
+    ["Arredondar as costas no chão", "Press no fim em vez de receber esticado"], "Haltere a partir do joelho (hang).", "Haltere mais pesado.", "8–12 alternados");
+  ex("thruster-halteres", "Thruster com halteres", "dumbbell thruster", "forca", ["halteres"], "CR", "Quadríceps, glúteos, ombros, tríceps",
+    ["Halteres aos ombros, cotovelos à frente.", "Agachamento abaixo do paralelo.", "Sobe explosivo e usa o impulso para empurrar os halteres acima da cabeça num só movimento."],
+    ["Agachamento curto", "Empurrar só com os braços", "Lombar a arquear em cima"], "Halteres mais leves ou agachamento + press separados.", "Mais carga.", "8–12 reps");
+  ex("devil-press", "Devil press", "dumbbell devil press", "forca", ["halteres"], "NCR", "Peitoral, glúteos, isquiotibiais, ombros",
+    ["Mãos nos halteres, burpee com o peito a tocar no chão.", "Volta aos pés ao lado dos halteres, costas neutras.", "Num movimento de swing, leva os dois halteres do chão até acima da cabeça."],
+    ["Costas arredondadas no swing", "Halteres a bater na cabeça"], "Burpee + snatch com um haltere.", "Halteres mais pesados.", "6–10 reps");
+  ex("subida-corda", "Subida à corda", "rope climb", "forca", ["ginasio"], "N", "Dorsal, bíceps, antebraços, core",
+    ["Agarra a corda, prende-a entre os pés (trava em J ou S).", "Levanta-te com as pernas, volta a subir as mãos e repete.", "Desce controlado com as mãos e os pés — nunca escorregues."],
+    ["Subir só com os braços", "Descer a escorregar (queimaduras)"], "Sem corda: elevações com toalha ou remada com corda deitado (subir da posição sentado).", "Sem pernas (legless).", "3–5 subidas");
+  ex("battle-rope", "Battle rope", "battle rope waves", "forca", ["ginasio"], "NCR", "Ombros, braços, core",
+    ["Meio agachamento, uma ponta da corda em cada mão.", "Ondas alternadas ou duplas, rápidas e com a mesma amplitude.", "Tronco estável, as pernas não descansam."],
+    ["Ondas pequenas", "Tronco a balançar"], "Ondas mais lentas.", "Slams ou ondas laterais.", "30 s");
+  ex("toes-to-bar", "Toes to bar", "strict toes to bar", "core", ["ginasio"], "NCR", "Reto abdominal, flexores da anca, dorsal",
+    ["Suspenso na barra, ombros ativos.", "Leva as pontas dos pés à barra com as pernas quase esticadas.", "Desce controlado, sem balanço excessivo."],
+    ["Balanço sem controlo", "Dobrar muito os joelhos"], "Elevação de joelhos suspenso.", "Estrito e lento na descida.", "3 × 8–12");
+  ex("turkish-get-up", "Turkish get-up", "turkish get up", "core", ["kettlebell"], "NCR", "Ombro (estabilidade), core (anti-rotação), anca",
+    ["Deitado, kettlebell no braço esticado na vertical, joelho do mesmo lado dobrado.", "Cotovelo → mão → ponte da anca → perna por baixo → joelho → de pé, sempre com o olhar no kettlebell.", "Desce invertendo os passos, devagar."],
+    ["Braço a dobrar ou a sair da vertical", "Pressa entre posições"], "Só até ao apoio da mão (half get-up) ou sem peso.", "Kettlebell mais pesado.", "2–3/lado");
+  ex("gatinhar-urso", "Gatinhar em urso (bear crawl)", "bear crawl", "core", ["peso-corporal"], "NCR", "Core (anti-extensão e anti-rotação), ombros, quadríceps",
+    ["Quatro apoios com os joelhos 2–3 cm do chão.", "Avança mão e pé contrários ao mesmo tempo, passos curtos.", "Anca baixa e quieta — imagina um copo de água nas costas."],
+    ["Anca alta", "Anca a rodar de um lado para o outro"], "Prancha do urso estática.", "Para trás ou com elástico de resistência.", "15–20 m");
+})();
