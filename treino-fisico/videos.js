@@ -202,6 +202,23 @@
     "multisaltos-subida": "https://www.youtube.com/watch?v=afk4ANyXgAM", // "Hill bounding" — Health & Performance 3
     "snap-down": "https://www.youtube.com/watch?v=F1jUC-KIC0E", // "How to Perform a Snap Down for Landing Mechanics" — PRO+ Sports Medicine Education
     "salto-trap-bar": "https://www.youtube.com/watch?v=V9RvKRNr6wQ", // "How To Do Trap Bar Jumps The Right Way" — Swain_Performance
+    "air-bike": "https://www.youtube.com/watch?v=3suAxCsGRj4", // "How to Get Better at The Assault Bike Part 1" — CrossFit Federal Hill
+    "treno-empurrar": "https://www.youtube.com/watch?v=TcvidmCkGS4", // "Sled Push HYROX Technique: How to Push Harder, Faster and Without Burning Out" — Velites
+    "treno-puxar": "https://www.youtube.com/watch?v=1pNjZiU4fhs", // "How to Perform Backward Sled Drags Backward Sled Drags (Loaded Mobility Tutorial)" — BBB Gyms - Body By Brando 
+    "sandbag-carry": "https://www.youtube.com/watch?v=yu_i4ClKHlU", // "How to: Sandbag Carry" — Core Blend Training
+    "sandbag-clean": "https://www.youtube.com/watch?v=p15o4R2LNMQ", // "Sandbag Shouldering" — GORUCK
+    "burpee": "https://www.youtube.com/watch?v=auBLPXO8Fww", // "The Burpee" — CrossFit
+    "burpee-salto-comprimento": "https://www.youtube.com/watch?v=W5gc1Inyha0", // "HYROX Burpee Broad Jump Technique" — Rox Lyfe
+    "kettlebell-snatch": "https://www.youtube.com/watch?v=AR6E01ABoHk", // "Proper Path of the Kettlebell Snatch | StrongFirst" — StrongFirst
+    "kettlebell-clean-press": "https://www.youtube.com/watch?v=sAtZ4yAsQnI", // "Kettlebell Clean And Press" — Men's Health
+    "haltere-snatch": "https://www.youtube.com/watch?v=3mlhF3dptAo", // "The Dumbbell Power Snatch" — CrossFit
+    "thruster-halteres": "https://www.youtube.com/watch?v=u3wKkZjE8QM", // "The Dumbbell Thruster" — CrossFit
+    "devil-press": "https://www.youtube.com/watch?v=Cwxmji-3k40", // "How to do a Dumbbell Devil Press with Jason Khalipa" — Jason Khalipa
+    "subida-corda": "https://www.youtube.com/watch?v=nI4MijQJ_No", // "The Rope Climb (J-Hook)" — CrossFit
+    "battle-rope": "https://www.youtube.com/watch?v=z4ySEjuaYh8", // "How To Do Battle Rope Waves | The Gym Group" — TheGymGroup
+    "toes-to-bar": "https://www.youtube.com/watch?v=xX9Hzi7Onnw", // "The Strict Toes-To-Bar" — CrossFit
+    "turkish-get-up": "https://www.youtube.com/watch?v=0bWRPC49-KI", // "Turkish Get-Up Basics" — StrongFirst
+    "gatinhar-urso": "https://www.youtube.com/watch?v=Ee1BQNI6zN4", // "Bear Crawl" — BSR Physical Therapy
   };
   if (typeof EXERCICIOS === 'undefined') return;
   EXERCICIOS.forEach(e => { if (V[e.id] && !e.video) e.video = V[e.id]; });
