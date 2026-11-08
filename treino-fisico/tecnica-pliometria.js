@@ -100,6 +100,24 @@
     ["Sobe uma escada a saltar a pés juntos, um ou dois degraus de cada vez.", "Desce a andar."],
     ["Joelhos para dentro", "Contacto longo"], "Um degrau de cada vez.", "Uma perna ou dois degraus.", "4 × 8 degraus");
 
+
+  // ================= NOVOS (revisão 2026): técnica e pliometria =================
+  ex("dribles", "Dribles (dribbling)", "running dribbles drill", "tecnica", ["peso-corporal"], "R", "Ciclo da passada, contacto ativo, rigidez do tornozelo",
+    ["Como os tornozelos, mas o calcanhar sobe ao longo da perna de apoio: altura do tornozelo → meio da canela → abaixo do joelho.", "O pé desce \"a pique\" debaixo da anca e sai logo do chão (contacto curto).", "Joelho da perna livre à frente, tronco alto, braços curtos e rápidos.", "Avança devagar: o objetivo é frequência, não velocidade."],
+    ["Pé a aterrar à frente do corpo", "Sentar (anca baixa)", "Calcanhar a ir para trás em vez de subir"], "Altura do tornozelo, devagar.", "Mais alto (abaixo do joelho) ou a sair em progressivo.", "2–3 × 20 m");
+  ex("wickets", "Corrida com mini-barreiras (wickets)", "wicket runs sprint drill", "tecnica", ["peso-corporal"], "R", "Postura, frequência e amplitude da passada a velocidade alta",
+    ["8–12 mini-barreiras, cones baixos ou paus (10–15 cm) em linha, distâncias iguais (início ~1,6–1,8 m; ajusta à tua passada).", "Entra com 10–15 m de balanço e corre por cima a 80–90%, um passo entre cada barreira.", "Joelho sobe à frente, pé desce debaixo da anca, tronco alto.", "Volta a andar; recuperação completa."],
+    ["Distâncias longas demais (passada a esticar)", "Olhar para os pés", "Inclinar para trás ou sentar"], "Barreiras mais juntas, a 70%.", "Mais barreiras e maior distância entre elas.", "3–6 × 1 passagem");
+  ex("multisaltos-subida", "Multisaltos em subida (hill bounds)", "uphill bounding", "pliometria", ["peso-corporal"], "R", "Glúteos, gémeos, potência específica de corrida",
+    ["Subida suave a moderada (4–8%), 20–40 m.", "Passadas exageradas para cima e para a frente, joelho alto e braços fortes.", "Aterra debaixo da anca e empurra logo o chão para trás.", "Desce a andar (recuperação completa). A subida reduz o impacto na aterragem."],
+    ["Subida inclinada demais (passos curtos)", "Fazer com fadiga", "Perder a postura (tronco a dobrar)"], "Skipping em altura (power skip) a subir.", "Mais repetições ou 40 m.", "4–8 × 20–40 m");
+  ex("snap-down", "Snap-down (aterragem rápida)", "snap down landing drill", "pliometria", ["peso-corporal"], "CR", "Mecânica de aterragem, glúteos, quadríceps",
+    ["De pé, braços em cima, sobe nas pontas dos pés.", "Puxa os braços para baixo e \"cai\" rapidamente para a posição de aterragem (meio agachamento), sem saltar.", "Pés à largura da anca, peso no pé inteiro, joelhos alinhados, tronco inclinado, fica 2 s."],
+    ["Joelhos para dentro", "Aterrar só nos calcanhares ou só nas pontas", "Tronco vertical (sem dobrar a anca)"], "Mais lento.", "Pequeno salto antes da aterragem ou a uma perna.", "2–3 × 5");
+  ex("salto-trap-bar", "Salto com trap bar", "trap bar jump", "pliometria", ["ginasio"], "CR", "Potência das pernas (força-velocidade)",
+    ["Trap bar com 20–30% do teu peso morto máximo.", "Desce a um quarto de agachamento e salta o mais alto possível.", "Aterra suave, joelhos alinhados, e para antes da próxima repetição."],
+    ["Carga alta demais (salto lento)", "Aterrar com as pernas esticadas", "Arredondar as costas"], "Salto com contramovimento sem carga.", "Carga até 40% ou séries de contraste com o peso morto.", "3–4 × 3–5");
+
   // ================= SESSÕES — TÉCNICA DE CORRIDA =================
   const s = (id, nome, fase, local, duracao, frequencia, rpe, objetivo, nota, blocos) =>
     SESSOES.push({ id, nome, fase, local, duracao, frequencia, rpe, objetivo, nota, blocos });
@@ -157,13 +175,31 @@
       i("pes-rapidos", "2 × 6 s"), i("progressivos", "3 × 60 m")
     ] }]);
 
+
+  // ================= SESSÕES — NOVAS (revisão 2026) =================
+  s("capacidade-gemeos-aquiles", "Gémeos, sóleo e Aquiles (capacidade)", "Todo o ano", "Ginásio", 25,
+    "2× por semana (1× em competição)", "6–7",
+    "Aumentar a capacidade do complexo gémeos–sóleo–Aquiles, o que mais trabalha a correr (o sóleo suporta várias vezes o peso do corpo em cada passada).",
+    "Carga pesada lenta: 3 s a subir, 3 s a descer. Monitorização da dor: até 3/10 durante (máx. 5/10) e sem piorar na manhã seguinte. Se tiveres tendinopatia ativa, começa pelas isometrias.",
+    [{ titulo: "Sequência", itens: [
+      i("isometria-gemeos", "3 × 30 s", "60 s"), i("gemeos-pesado", "4 × 6–8", "2 min"), i("gemeos-sentado", "3 × 8–10 (pesado)", "90 s"),
+      i("soleo-isometrico-parede", "3 × 45 s", "45 s"), i("tibial-raise", "2 × 15", "30 s")
+    ] }]);
+
+  s("pliometria-subidas", "Multisaltos em subida", "Pré-competitiva", "Subida de 4–8% (relva ou terra)", 25,
+    "1× por semana", "7",
+    "Potência específica de corrida com menos impacto na aterragem do que em plano. ~90 contactos.",
+    "Aquece 15 min a correr e faz os dribles. Desce a andar (recuperação completa). Não fazer nas 72 h antes de uma prova.",
+    [{ titulo: "Técnica", itens: [i("dribles", "2 × 20 m"), i("skipping-altura", "2 × 20 m")] },
+     { titulo: "Subidas", itens: [i("multisaltos-subida", "6 × 30 m", "descer a andar"), i("subidas-curtas", "4 × 8 s", "descer a andar")] }]);
+
   // ================= SESSÕES — PLIOMETRIA (progressão) =================
   s("pliometria-iniciacao", "Pliometria — iniciação", "Preparatória geral", "Relva ou piso de borracha", 20,
     "1–2× por semana", "5",
-    "Introduzir os saltos com pouco impacto e aprender a aterrar bem. ~80–100 contactos.",
+    "Introduzir os saltos com pouco impacto e aprender a aterrar bem. ~100 contactos (a corda é aquecimento e não conta).",
     "Pré-requisito: conseguir 20 elevações de gémeos a uma perna e agachar bem. Para assim que a aterragem ficar pesada.",
     [{ titulo: "Aterragem e reatividade", itens: [
-      i("saltar-corda", "3 × 30 s", "30 s"), i("pogo", "2 × 15", "60 s"), i("saltos-linha", "2 × 10 s", "60 s"),
+      i("saltar-corda", "3 × 30 s", "30 s"), i("snap-down", "2 × 5", "45 s"), i("pogo", "2 × 15", "60 s"), i("saltos-linha", "2 × 10 s", "60 s"),
       i("salto-contramovimento", "3 × 4", "60 s"), i("salto-comprimento", "3 × 3", "60 s")
     ] }]);
 
@@ -172,27 +208,27 @@
     "Aumentar a reatividade e introduzir saltos unilaterais. ~150 contactos.",
     "Faz depois de 4–6 semanas de iniciação sem dores. Recuperação completa: o objetivo é qualidade, não cansaço.",
     [{ titulo: "Bilateral", itens: [
-      i("pogo-frente", "3 × 15 m", "60 s"), i("pogo-lateral", "2 × 20", "60 s"), i("salto-caixa", "3 × 5", "90 s")
+      i("pogo-frente", "2 × 15 m", "60 s"), i("pogo-lateral", "2 × 15", "60 s"), i("salto-caixa", "3 × 5", "90 s")
     ] },
     { titulo: "Unilateral", itens: [
-      i("saltos-unipodais", "3 × 10/perna", "60 s"), i("saltos-patinador", "3 × 6/lado", "60 s"), i("salto-comprimento-unipodal", "2 × 4/perna", "60 s")
+      i("saltos-unipodais", "2 × 8/perna", "60 s"), i("saltos-patinador", "2 × 5/lado", "60 s"), i("salto-comprimento-unipodal", "2 × 3/perna", "60 s")
     ] }]);
 
   s("pliometria-avancada", "Pliometria — avançada", "Preparatória específica", "Pista ou piso de borracha", 30,
     "1× por semana", "7",
-    "Máxima reatividade e rigidez para a economia de corrida. ~160 contactos.",
-    "Só para atletas com base de força e sem lesões recentes. Não fazer na semana de prova A.",
+    "Máxima reatividade e rigidez para a economia de corrida. ~170 contactos (alta intensidade).",
+    "Só para atletas com base de força (agachamento ≥1,5× o peso do corpo é uma boa referência) e sem lesões recentes. Não fazer na semana de prova A nem nas 48 h antes de séries.",
     [{ titulo: "Reatividade", itens: [
       i("pogo", "2 × 20", "60 s"), i("drop-jump", "3 × 5", "2 min"), i("saltos-barreiras", "4 × 5", "90 s")
     ] },
     { titulo: "Unilateral e horizontal", itens: [
-      i("triplo-salto", "3 × 2/perna", "90 s"), i("saltos-zigzag", "2 × 8/perna", "60 s"), i("multisaltos", "4 × 30 m", "2 min")
+      i("triplo-salto", "2 × 2/perna", "2 min"), i("saltos-zigzag", "2 × 6/perna", "60 s"), i("multisaltos", "3 × 30 m", "2 min")
     ] }]);
 
   s("pliometria-complexo", "Força + pliometria (complexo)", "Preparatória específica", "Ginásio", 40,
     "1× por semana", "7–8",
     "Juntar um exercício de força pesado com um salto logo a seguir para potenciar o salto.",
-    "Faz o exercício de força, descansa 60–90 s, faz o salto. Repete o par 3–4 vezes com 2–3 min entre pares.",
+    "Faz o exercício de força, descansa 60–90 s, faz o salto. Repete o par 3–4 vezes com 2–3 min entre pares. ~85 contactos.",
     [{ titulo: "Par 1", itens: [i("agachamento-barra", "4 × 4", "60–90 s"), i("salto-contramovimento", "4 × 4", "2–3 min")] },
      { titulo: "Par 2", itens: [i("split-squat-bulgaro", "3 × 5/perna", "60 s"), i("salto-afundo", "3 × 4/perna", "2 min")] },
      { titulo: "Par 3", itens: [i("gemeos-em-pe", "3 × 8/perna", "60 s"), i("pogo", "3 × 15", "90 s")] }]);
@@ -200,7 +236,7 @@
   s("pliometria-unilateral", "Pliometria unilateral e estabilidade", "Todo o ano", "Relva ou piso de borracha", 20,
     "1× por semana", "5–6",
     "Melhorar a estabilidade do tornozelo, joelho e anca em apoio unipodal, como na corrida.",
-    "Cada aterragem tem de ser controlada. Se o joelho fugir para dentro, reduz a distância.",
+    "~90 contactos. Cada aterragem tem de ser controlada. Se o joelho fugir para dentro, reduz a distância.",
     [{ titulo: "Sequência", itens: [
       i("equilibrio-unipodal", "2 × 30 s/perna"), i("saltos-unipodais", "3 × 8/perna", "60 s"), i("salto-comprimento-unipodal", "3 × 3/perna", "60 s"),
       i("saltos-zigzag", "2 × 6/perna", "60 s"), i("hip-airplane", "2 × 5/perna")

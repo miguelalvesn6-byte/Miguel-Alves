@@ -279,7 +279,7 @@
     ["Arquear a lombar"], "Menos amplitude.", "Com um bastão nas mãos.", "2 × 30 s");
   ex("bastao-ombros", "Rotação de ombros com bastão", "shoulder dislocates stick", "mobilidade", ["peso-corporal"], "N", "Ombros, peitoral",
     ["Bastão com pega larga à frente das coxas.", "Leva-o por cima da cabeça até atrás das costas com os braços esticados.", "Volta. Estreita a pega aos poucos."],
-    ["Dobrar os cotovelos", "Arquear a lombar"], "Pega mais larga.", "Pega mais estreita.", "2 × 10");
+    ["Dobrar os cotovelos", "Arquear a lombar", "Forçar com dor à frente do ombro"], "Pega mais larga (ou elástico).", "Pega mais estreita.", "2 × 10");
   ex("crianca-lateral", "Postura da criança lateral", "side child pose lat stretch", "mobilidade", ["peso-corporal"], "N", "Grande dorsal, quadrado lombar",
     ["Sentado nos calcanhares, braços esticados à frente.", "Leva as duas mãos para um lado e respira fundo.", "Troca de lado."],
     ["Levantar o rabo"], "Almofada debaixo do rabo.", "Mais tempo.", "2 × 30 s por lado");
@@ -307,18 +307,18 @@
     ["Apoiado numa parede, balança uma perna à frente e atrás.", "Aumenta a amplitude aos poucos, tronco direito."],
     ["Arredondar as costas", "Forçar logo de início"], "Amplitude menor.", "Mais amplitude.", "1 × 12 por perna");
   ex("balanco-pernas-lado", "Balanço de pernas lateral", "leg swings side to side", "ativacao", ["peso-corporal"], "R", "Adutores, abdutores",
-    ["De frente para a parede, balança uma perna para os lados, pela frente do corpo."],
+    ["De frente para a parede, mãos apoiadas.", "Balança uma perna para os lados, pela frente do corpo, aumentando a amplitude aos poucos."],
     ["Rodar o tronco"], "Amplitude menor.", "Mais amplitude.", "1 × 12 por perna");
-  ex("skipping-a", "Skipping A", "a skip drill", "ativacao", ["peso-corporal"], "R", "Flexores da anca, técnica de corrida",
+  ex("skipping-a", "Skipping A", "a skip drill", "tecnica", ["peso-corporal"], "R", "Flexores da anca, técnica de corrida",
     ["Marcha saltitante subindo o joelho à altura da anca.", "Pé de apoio aterra debaixo do corpo, na parte da frente.", "Braços coordenados."],
     ["Inclinar para trás", "Aterrar à frente do corpo"], "Marcha A (sem saltar).", "Mais rápido.", "2 × 20 m");
-  ex("skipping-b", "Skipping B", "b skip drill", "ativacao", ["peso-corporal"], "R", "Isquiotibiais, técnica de corrida",
+  ex("skipping-b", "Skipping B", "b skip drill", "tecnica", ["peso-corporal"], "R", "Isquiotibiais, técnica de corrida",
     ["Como o skipping A, mas a perna estica à frente e puxa o pé para baixo e para trás.", "Contacto ativo debaixo do corpo."],
     ["Pontapé à frente sem puxar"], "Marcha B.", "Mais rápido.", "2 × 20 m");
-  ex("calcanhares-gluteos", "Calcanhares aos glúteos", "butt kicks drill", "ativacao", ["peso-corporal"], "R", "Isquiotibiais, técnica de corrida",
+  ex("calcanhares-gluteos", "Calcanhares aos glúteos", "butt kicks drill", "tecnica", ["peso-corporal"], "R", "Isquiotibiais, técnica de corrida",
     ["Corrida curta trazendo o calcanhar ao glúteo.", "Joelhos apontados para baixo, cadência alta."],
     ["Inclinar o tronco"], "Mais lento.", "Mais rápido.", "2 × 20 m");
-  ex("carioca", "Carioca", "carioca drill", "ativacao", ["peso-corporal"], "R", "Rotação da anca, coordenação",
+  ex("carioca", "Carioca", "carioca drill", "tecnica", ["peso-corporal"], "R", "Rotação da anca, coordenação",
     ["Desloca-te de lado cruzando a perna de trás à frente e atrás alternadamente.", "Roda a anca, ombros virados à frente."],
     ["Rodar os ombros com a anca"], "Mais lento.", "Mais rápido.", "2 × 20 m por lado");
   ex("inchworm", "Lagarta (inchworm)", "inchworm exercise", "ativacao", ["peso-corporal"], "NCR", "Isquiotibiais, ombros, core",
@@ -327,7 +327,7 @@
   ex("circulos-bracos", "Círculos e balanços de braços", "arm circles swings", "ativacao", ["peso-corporal"], "N", "Ombros",
     ["Círculos de braços grandes para a frente e para trás.", "Depois abraços (cruzar e abrir os braços à frente do peito)."],
     ["Encolher os ombros"], "Círculos pequenos.", "Mais rápido.", "1 × 10 de cada");
-  ex("marcha-joelhos", "Marcha com joelhos altos", "high knee march", "ativacao", ["peso-corporal"], "R", "Flexores da anca, equilíbrio",
+  ex("marcha-joelhos", "Marcha com joelhos altos", "high knee march", "tecnica", ["peso-corporal"], "R", "Flexores da anca, equilíbrio",
     ["Marcha devagar subindo o joelho acima da anca.", "Pausa 1 s em cada passo na ponta do pé de apoio."],
     ["Inclinar para trás"], "Sem ponta do pé.", "Skipping A.", "2 × 20 m");
 
@@ -345,8 +345,8 @@
     ["Em afundo, salta e troca as pernas no ar.", "Aterra em afundo controlado."],
     ["Joelho da frente a cair para dentro", "Perder o equilíbrio"], "Afundo a andar.", "Mais rápido.", "3 × 6 por perna");
   ex("multisaltos", "Multisaltos (bounding)", "bounding drill", "pliometria", ["peso-corporal"], "R", "Glúteos, gémeos (potência de corrida)",
-    ["Corrida com passadas exageradas, longas e altas.", "Empurra o chão para trás e para cima, braços fortes."],
-    ["Aterrar com o calcanhar à frente do corpo"], "Skipping longo.", "Mais distância.", "4 × 20–30 m");
+    ["Corrida com passadas exageradas, longas e altas.", "Empurra o chão para trás e para cima, braços fortes.", "Aterra com o pé ativo debaixo da anca, a \"puxar\" o chão."],
+    ["Aterrar com o calcanhar à frente do corpo", "Fazer com fadiga (é um exercício de alta intensidade)"], "Skipping em altura (power skip).", "Mais distância ou em subida suave.", "3–4 × 20–30 m");
   ex("saltos-patinador", "Saltos de patinador", "skater jumps", "pliometria", ["peso-corporal"], "CR", "Glúteo médio, estabilidade lateral",
     ["Salta para o lado aterrando numa perna.", "Mantém o equilíbrio 1 s e salta para o outro lado."],
     ["Joelho para dentro na aterragem"], "Passos laterais sem salto.", "Mais distância.", "3 × 8 por lado");
@@ -355,9 +355,9 @@
     ["Joelho para dentro", "Contacto longo"], "Pogo a duas pernas.", "Para a frente e para os lados.", "3 × 10 por perna");
   ex("drop-jump", "Drop jump", "drop jump", "pliometria", ["peso-corporal"], "R", "Rigidez/reatividade das pernas",
     ["Em cima de uma caixa baixa (20–30 cm), dá um passo para fora.", "Ao tocar no chão, salta logo o mais alto possível com contacto curto."],
-    ["Aterrar e afundar", "Caixa alta demais"], "Pogo jumps.", "Caixa um pouco mais alta.", "3 × 5");
+    ["Aterrar e afundar (contacto longo = caixa alta demais)", "Caixa alta demais", "Fazer com fadiga ou sem base de pliometria"], "Pogo jumps ou snap-down.", "Caixa um pouco mais alta (máx. 40 cm) ou drop jump para salto horizontal.", "3 × 4–5 (só avançado/elite, com 4–6 semanas de pliometria sem dor)");
   ex("saltos-barreiras", "Saltos sobre barreiras", "hurdle hops", "pliometria", ["peso-corporal"], "R", "Reatividade, coordenação",
-    ["Barreiras baixas em linha.", "Salta sobre elas a pés juntos com contacto curto."],
+    ["Barreiras baixas (15–30 cm) em linha, a 0,8–1 m umas das outras.", "Salta sobre elas a pés juntos com contacto curto e reativo, sem pausas.", "Joelhos sobem, braços ritmados."],
     ["Pausas entre saltos", "Joelhos para dentro"], "Linhas no chão.", "Barreiras mais altas.", "4 × 5 barreiras");
   ex("salto-comprimento", "Salto em comprimento a pés juntos", "standing broad jump", "pliometria", ["peso-corporal"], "CR", "Glúteos, isquiotibiais (potência)",
     ["Balança os braços e salta o mais longe possível.", "Aterra suave e fica parado 2 s."],
@@ -372,13 +372,58 @@
     ["De lado para a parede, bola à anca.", "Roda a anca e o tronco e lança a bola contra a parede.", "Apanha e repete."],
     ["Lançar só com os braços"], "Bola leve.", "Mais peso ou passo antes.", "3 × 8 por lado");
 
+
+  // ================= NOVOS (revisão 2026): força pesada, isometria, tendões, anca =================
+  ex("imtp", "Puxada isométrica a meio da coxa (IMTP)", "isometric mid thigh pull", "forca", ["ginasio"], "CR", "Cadeia posterior, quadríceps, glúteos (força máxima isométrica)",
+    ["Barra presa nos pinos do rack (ou corda/cinto fixo) à altura do meio da coxa.", "Posição do 2.º puxão: joelhos a ~130°, anca a ~140°, tronco direito, ombros sobre a barra.", "Puxa e empurra o chão com a máxima força durante 3–5 s, aumentando a força em 1 s.", "Relaxa; recuperação completa entre repetições."],
+    ["Arredondar as costas", "Dar um esticão em vez de aumentar a força de forma progressiva", "Barra a mexer (não está bem presa)"], "Esforço a 70–80% durante 5 s.", "Esforço máximo de 5 s com pausa curta entre repetições.", "3–5 × 3–5 s (máximo), 2 min entre repetições");
+  ex("gemeos-pesado", "Elevação de gémeos pesada (carga pesada lenta)", "heavy slow resistance calf raise smith machine", "forca", ["ginasio"], "R", "Gémeos, sóleo, tendão de Aquiles (rigidez e capacidade do tendão)",
+    ["Na máquina de gémeos, Smith ou leg press, pontas dos pés num degrau.", "Sobe em 3 s até ao máximo, pausa 1 s.", "Desce em 3 s até abaixo do degrau, sem ressaltar.", "Carga que permita 6–8 repetições (as últimas difíceis)."],
+    ["Ressaltar no fundo", "Amplitude curta", "Dobrar os joelhos para ajudar"], "Elevação de gémeos em pé a uma perna com haltere.", "Unilateral na máquina ou mais carga (6 repetições).", "3–4 × 6–8 (3 s a subir, 3 s a descer)");
+  ex("isometria-gemeos", "Isometria de gémeos pesada", "isometric calf raise hold", "prevencao", ["ginasio", "peso-corporal"], "R", "Gémeos, sóleo, tendão de Aquiles",
+    ["Em pé na ponta dos pés (meia ponta), debaixo de uma barra presa no rack ou numa máquina com carga.", "Empurra para cima com força alta (70–80% do máximo) e mantém a posição.", "Joelho estendido (gémeos) ou fletido a 30° (sóleo)."],
+    ["Deixar o calcanhar descer", "Prender a respiração"], "Duas pernas, sem carga, 30 s.", "Uma perna ou mais força (até 90%).", "4–5 × 30–45 s (alívio da dor do tendão e manutenção)");
+  ex("soleo-isometrico-parede", "Isometria do sóleo na parede", "soleus wall sit calf raise hold", "prevencao", ["peso-corporal", "halteres"], "R", "Sóleo, tendão de Aquiles",
+    ["Costas na parede, joelhos fletidos a ~60–90° (como na cadeira na parede, mas mais alto).", "Sobe os calcanhares e mantém-te na ponta dos pés.", "Respira normalmente; mantém o peso sobre o dedo grande e o segundo dedo."],
+    ["Calcanhares a descer ao longo da série", "Pés a rodar para fora"], "Duas pernas, menos tempo.", "Uma perna ou haltere sobre as coxas.", "3–4 × 30–45 s");
+  ex("split-squat-bulgaro-barra", "Split squat búlgaro com barra", "barbell bulgarian split squat", "forca", ["ginasio"], "CR", "Quadríceps, glúteos, adutores",
+    ["Barra nas costas (ou no Smith), pé de trás num banco.", "Desce na vertical até o joelho de trás quase tocar no chão.", "Sobe pela perna da frente, joelho alinhado com o pé.", "Permite cargas mais altas do que com halteres (sem a pega a limitar)."],
+    ["Pé da frente perto demais do banco", "Joelho a cair para dentro", "Perder o equilíbrio com a barra (usa o Smith no início)"], "Split squat búlgaro com halteres.", "Mais carga (4–6 repetições).", "3–4 × 4–6 por perna");
+  ex("step-up-joelho", "Step-up com elevação do joelho", "step up knee drive", "forca", ["peso-corporal", "halteres"], "CR", "Glúteos, quadríceps, flexores da anca (padrão de corrida)",
+    ["Pé inteiro num banco à altura do joelho.", "Sobe só com essa perna e leva o joelho da outra à altura da anca, braço oposto à frente.", "Fica 1 s em equilíbrio e desce devagar.", "Na fase de potência, a subida é explosiva."],
+    ["Impulso com a perna de baixo", "Tronco a cair à frente", "Joelho de apoio a cair para dentro"], "Step-up simples, caixa baixa.", "Halteres, caixa mais alta ou subida explosiva.", "3 × 6–10 por perna");
+  ex("ponte-isquios", "Ponte de isquiotibiais (alavanca longa)", "single leg hamstring bridge long lever", "prevencao", ["peso-corporal"], "R", "Isquiotibiais (isometria), glúteos",
+    ["Deitado de costas, calcanhar num banco ou degrau, joelho quase esticado (~20°).", "Sobe a anca e mantém, sem a lombar arquear.", "A outra perna fica no ar ou dobrada."],
+    ["Joelho muito dobrado (vira ponte glútea)", "Anca a cair", "Cãibra: reduz o tempo e progride"], "Duas pernas, banco baixo.", "Uma perna, mais tempo ou repetições com descida lenta.", "3 × 20–30 s por perna");
+  ex("copenhagen-dinamico", "Copenhaga dinâmica", "copenhagen adduction exercise dynamic", "prevencao", ["peso-corporal"], "CR", "Adutores (excêntrico), oblíquos",
+    ["Em prancha lateral com a perna de cima apoiada num banco (joelho = mais fácil; tornozelo = mais difícil).", "Desce a anca até quase tocar no chão e sobe até alinhar o corpo.", "A perna de baixo pode subir ao encontro do banco no topo."],
+    ["Rodar o tronco", "Descer sem controlo", "Fazer no tornozelo antes de dominar o joelho"], "Prancha Copenhaga isométrica (joelho apoiado).", "Pé apoiado e mais repetições.", "2–3 × 6–12 por lado");
+  ex("flexao-anca-elastico", "Elevação do joelho com elástico (flexor da anca)", "banded standing hip flexion knee drive", "forca", ["elastico"], "CR", "Psoas-ilíaco, reto femoral",
+    ["Mini-band nos pés ou elástico preso atrás, ao tornozelo.", "De pé numa perna, sobe o joelho da outra acima da anca, pé fletido.", "Pausa 1 s em cima e desce em controlo (ou rápido, na fase de potência)."],
+    ["Inclinar o tronco para trás", "Arredondar a lombar para subir mais", "Perder o equilíbrio no apoio"], "Sem elástico ou deitado (marcha do psoas).", "Elástico mais forte ou subida rápida.", "2–3 × 8–12 por perna");
+  ex("marcha-psoas", "Marcha do psoas deitado", "supine psoas march mini band", "core", ["elastico", "peso-corporal"], "CR", "Psoas-ilíaco, core (controlo lombo-pélvico)",
+    ["Deitado de costas, ancas e joelhos a 90°, mini-band nos pés.", "Lombar encostada ao chão.", "Estica uma perna devagar contra o elástico enquanto a outra fica a 90°; troca."],
+    ["Lombar a descolar do chão", "Ir depressa"], "Sem elástico.", "Elástico mais forte ou pausa de 3 s com a perna em cima.", "2–3 × 8–10 por perna");
+  ex("landmine-press", "Press unilateral na landmine", "half kneeling landmine press", "forca", ["ginasio"], "N", "Deltoide, serrátil anterior, tríceps, core",
+    ["Barra com uma ponta fixa (landmine) ou num canto; meio ajoelhado.", "Segura a ponta da barra junto ao ombro e empurra para cima e à frente.", "No fim, deixa a omoplata avançar à volta das costelas (serrátil).", "Alternativa ao press acima da cabeça, mais amiga do ombro do nadador."],
+    ["Arquear a lombar", "Rodar o tronco", "Encolher o ombro"], "Carga leve, de pé.", "Mais carga ou de pé com passo à frente.", "3 × 8–10 por braço");
+  ex("landmine-rotacao", "Rotação na landmine", "landmine rotation", "core", ["ginasio"], "NCR", "Oblíquos, core (anti-rotação e transferência anca-tronco)",
+    ["De pé, pés à largura dos ombros, braços esticados a segurar a ponta da barra à frente do peito.", "Leva a barra num arco até à anca de um lado, rodando a anca e os pés, e volta ao centro.", "Movimento controlado; trava a barra com o tronco."],
+    ["Dobrar os braços", "Arquear a lombar", "Ir depressa demais"], "Barra sem discos, amplitude menor.", "Mais carga ou ritmo mais rápido.", "2–3 × 8 por lado");
+  ex("extensao-lombar-45", "Extensão lombar a 45°", "45 degree back extension", "core", ["ginasio", "peso-corporal"], "NCR", "Glúteos, isquiotibiais, extensores da coluna (resistência para a posição aero)",
+    ["No banco romano a 45°, almofada abaixo da anca.", "Dobra pela anca com as costas neutras e sobe até o corpo ficar em linha.", "Contrai os glúteos no topo, sem hiperestender."],
+    ["Hiperestender a lombar no topo", "Arredondar as costas em baixo", "Balanço"], "Superman alternado no chão.", "Segurar um disco ao peito ou pausa de 3 s no topo.", "2–3 × 10–15");
+  ex("elevacao-escapular", "Elevações escapulares na barra", "scapular pull up", "prevencao", ["ginasio"], "N", "Trapézio inferior, grande dorsal (controlo da omoplata)",
+    ["Pendurado na barra com os braços esticados.", "Sem dobrar os cotovelos, puxa as omoplatas para baixo e para trás, subindo o corpo 3–5 cm.", "Pausa 2 s e desce devagar."],
+    ["Dobrar os cotovelos", "Encolher os ombros", "Balanço"], "Com os pés no chão ou elástico.", "Pausa de 5 s ou com peso.", "2–3 × 8–10");
+
   // ================= SESSÕES-MODELO ADICIONAIS =================
   SESSOES.push(
     {
       id: "forca-maxima", nome: "Força máxima", fase: "Preparatória específica", local: "Ginásio", duracao: 50,
       frequencia: "2× por semana", rpe: "7–8",
       objetivo: "Aumentar a força máxima com cargas altas e poucas repetições, para melhorar a economia de corrida e de pedalada.",
-      nota: "Aquece bem com 2 séries de aproximação em cada exercício principal. Paragem 2–3 min entre séries pesadas.",
+      nota: "Aquece bem com 2 séries de aproximação em cada exercício principal. Pausa de 2–3 min entre séries pesadas. Deixa 1–2 repetições na reserva.",
       blocos: [
         { titulo: "Ativação", itens: [{ ex: "ponte-glutea", dose: "2 × 15", descanso: "—" }, { ex: "worlds-greatest", dose: "1 × 5/lado", descanso: "—" }] },
         { titulo: "Principal", itens: [
@@ -395,7 +440,7 @@
       id: "pliometria-corrida", nome: "Pliometria para a corrida", fase: "Preparatória específica", local: "Pista ou relva", duracao: 25,
       frequencia: "1–2× por semana", rpe: "6–7",
       objetivo: "Melhorar a reatividade e a rigidez do tendão para uma passada mais económica.",
-      nota: "Qualidade acima de tudo: contactos curtos e explosivos. Para quando a técnica piorar. Faz antes de um treino de corrida fácil.",
+      nota: "~130 contactos (nível avançado). Qualidade acima de tudo: contactos curtos e explosivos. Para quando a técnica piorar. Faz antes de um treino de corrida fácil, em relva ou pista, nunca com as pernas cansadas.",
       blocos: [
         { titulo: "Aquecimento", itens: [
           { ex: "skipping-a", dose: "2 × 20 m", descanso: "—" },
@@ -403,10 +448,10 @@
           { ex: "carioca", dose: "1 × 20 m/lado", descanso: "—" }
         ] },
         { titulo: "Pliometria", itens: [
-          { ex: "pogo", dose: "3 × 20", descanso: "60 s" },
-          { ex: "saltos-unipodais", dose: "3 × 10/perna", descanso: "60 s" },
+          { ex: "pogo", dose: "2 × 20", descanso: "60 s" },
+          { ex: "saltos-unipodais", dose: "2 × 8/perna", descanso: "60 s" },
           { ex: "saltos-barreiras", dose: "4 × 5", descanso: "90 s" },
-          { ex: "multisaltos", dose: "4 × 25 m", descanso: "90 s" }
+          { ex: "multisaltos", dose: "3 × 25 m", descanso: "2 min" }
         ] }
       ]
     },

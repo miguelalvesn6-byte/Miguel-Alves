@@ -1463,3 +1463,16 @@ a.sd-hoje:hover { background: color-mix(in srgb, var(--verde) 85%, var(--verde-i
   #app[aria-busy="true"]::before { display: none; }
   .spinner { animation: none !important; border-top-color: var(--line); }
 }
+
+/* ---------- Seletor Triatlo / Corrida e guia da época ---------- */
+.modalidades { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: .5rem; }
+.chip-modalidade {
+  font: inherit; font-family: var(--display); font-stretch: 75%; font-weight: 800; font-size: 1.05rem;
+  text-transform: uppercase; letter-spacing: .04em; padding: .55rem 0; min-height: var(--toque, 44px);
+  border: 0; border-radius: 9px; background: transparent; color: var(--ink-2); cursor: pointer;
+}
+.chip-modalidade[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.guia-epoca { margin: .25rem 0 .75rem; padding: .75rem 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.guia-epoca summary { cursor: pointer; font-weight: 650; min-height: var(--toque, 44px); display: flex; align-items: center; }
+.guia-epoca p, .guia-epoca ul, .guia-epoca ol { margin: .5rem 0 0; color: var(--ink-2); font-size: .93rem; }
+.guia-epoca li + li { margin-top: .25rem; }

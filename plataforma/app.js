@@ -57,6 +57,26 @@
     plano: null           // formulário "atribuir fase"
   };
   try { est.nivel = localStorage.getItem("nivelPlaneamento") || "basico"; } catch (_) { /* sem armazenamento */ }
+  est.modalidade = "triatlo";
+  try { est.modalidade = localStorage.getItem("modalidadePlaneamento") || "triatlo"; } catch (_) { /* sem armazenamento */ }
+
+  // Planeamento: fases de uma modalidade (triatlo/corrida) e procura de uma fase em qualquer modalidade.
+  function modalidadesPlan() {
+    const P = window.PLANEAMENTO || {};
+    return P.modalidades || { triatlo: { id: "triatlo", nome: "Triatlo", fases: P.fases || [] } };
+  }
+  function fasesDe(mod) {
+    const M = modalidadesPlan();
+    return (M[mod] || M.triatlo || { fases: [] }).fases;
+  }
+  function encontrarFase(faseId) {
+    const M = modalidadesPlan();
+    for (const k of Object.keys(M)) {
+      const f = M[k].fases.find((x) => x.id === faseId);
+      if (f) return { fase: f, modalidade: k };
+    }
+    return { fase: null, modalidade: null };
+  }
 
   // ======================================================================
   // Utilitários
@@ -191,20 +211,25 @@
     if (ex.error) throw ex.error;
     if (se.error) throw se.error;
 
-    // A biblioteca base vem dos ficheiros do site (../treino-fisico/dados.js e exercicios-extra.js).
-    // O que estiver na base de dados com o mesmo id substitui-a (ex.: um vídeo teu).
+    // A biblioteca vem dos ficheiros ../treino-fisico/*.js (revistos pelo especialista).
+    // A base de dados só acrescenta exercícios/sessões que não existam nesses ficheiros;
+    // de um exercício da base de dados aproveita-se apenas o vídeo, se tiver.
     const base = (window.EXERCICIOS_BASE || []).map((e) => ({
       id: e.id, nome: e.nome, nome_en: e.nomeEn || "", categoria: e.categoria, material: e.material,
       disciplinas: e.disciplinas, musculos: e.musculos, execucao: e.execucao, erros: e.erros,
       regressao: e.regressao, progressao: e.progressao, dose: e.dose, video: e.video || ""
     }));
     const porId = new Map(base.map((e) => [e.id, e]));
-    ex.data.forEach((e) => porId.set(e.id, e));
+    ex.data.forEach((e) => {
+      const b = porId.get(e.id);
+      if (!b) porId.set(e.id, e);
+      else if (e.video && !b.video) b.video = e.video;
+    });
     est.exercicios = [...porId.values()].sort((x, y) => x.nome.localeCompare(y.nome, "pt"));
     est.exPorId = Object.fromEntries(est.exercicios.map((e) => [e.id, e]));
 
     const sesPorId = new Map((window.SESSOES_BASE || []).map((s) => [s.id, s]));
-    se.data.forEach((s) => sesPorId.set(s.id, s));
+    se.data.forEach((s) => { if (!sesPorId.has(s.id)) sesPorId.set(s.id, s); });
     est.sessoesNaBD = new Set(se.data.map((s) => s.id));
     // Sessões completas primeiro (pela ordem definida), depois as restantes por nome.
     const todas = [...sesPorId.values()];
@@ -1297,7 +1322,8 @@
             <label class="campo"><span>Partir de uma sessão-modelo</span>
               <select id="tModelo">
                 <option value="">— Em branco —</option>
-                ${[...(window.PLANEAMENTO ? window.PLANEAMENTO.niveis.map((n) => [`Planeamento · ${n.nome}`, (s) => s.nivel === n.id]) : []),
+                ${[...(window.PLANEAMENTO ? Object.entries(modalidadesPlan()).flatMap(([mk, m]) => window.PLANEAMENTO.niveis.map((n) =>
+                     [`${m.nome || mk} · ${n.nome}`, (s) => s.nivel === n.id && (s.modalidade || "triatlo") === mk])) : []),
                    ["Em casa", (s) => s.casa],
                    ["Sessões curtas e blocos", (s) => !s.nivel && !s.casa]].map(([grupo, filtro]) => `
                   <optgroup label="${grupo}">
@@ -1502,14 +1528,29 @@
     const nv = P.niveis.find((n) => n.id === est.nivel) || P.niveis[0];
     const ni = P.niveis.indexOf(nv);
     const porId = Object.fromEntries(est.sessoes.map((s) => [s.id, s]));
+    const M = modalidadesPlan();
+    const mod = M[est.modalidade] ? est.modalidade : "triatlo";
+    const guia = P.guia && P.guia[mod];
     return `
       <div id="planeamento">
+        ${Object.keys(M).length > 1 ? `
+        <div class="niveis modalidades" role="group" aria-label="Modalidade">
+          ${Object.keys(M).map((k) => `<button type="button" class="chip-modalidade" data-modalidade="${k}" aria-pressed="${k === mod}">${esc(M[k].nome || k)}</button>`).join("")}
+        </div>` : ""}
+        ${guia ? `
+        <details class="guia-epoca">
+          <summary>Como encadear as fases na época (${esc(M[mod].nome || mod)})</summary>
+          ${guia.resumo ? `<p>${esc(guia.resumo)}</p>` : ""}
+          ${Array.isArray(guia.sequencia) && guia.sequencia.length ? `<ol>${guia.sequencia.map((x) => `<li>${esc(x)}</li>`).join("")}</ol>` : ""}
+          ${guia.provas ? `<ul>${Object.entries(guia.provas).map(([k, v]) => `<li><b>Prova ${esc(k)}:</b> ${esc(v)}</li>`).join("")}</ul>` : ""}
+          ${guia.descarga ? `<p><b>Descarga:</b> ${esc(guia.descarga)}</p>` : ""}
+        </details>` : ""}
         <div class="niveis" role="group" aria-label="Nível">
           ${P.niveis.map((n) => `<button type="button" class="chip-nivel" data-nivel="${n.id}" aria-pressed="${n.id === nv.id}">${n.nome}</button>`).join("")}
         </div>
         <p class="nivel-desc">${esc(nv.descricao)}</p>
         <ol class="fases">
-          ${P.fases.map((f) => `
+          ${fasesDe(mod).map((f) => `
             <li class="fase">
               <div class="fase-cab">
                 <h3>${esc(f.nome)}</h3>
@@ -1571,7 +1612,7 @@
   function vistaPlano(chave) {
     const P = window.PLANEAMENTO;
     const [faseId, nivelId] = chave.split("--");
-    const f = P && P.fases.find((x) => x.id === faseId);
+    const f = P && encontrarFase(faseId).fase;
     const nv = P && P.niveis.find((x) => x.id === nivelId);
     if (!f || !nv) {
       app().innerHTML = naoEncontrado("#biblioteca", "Biblioteca", "Fase não encontrada.");
@@ -1638,7 +1679,8 @@
     if (p.dia1 === p.dia2) return toast("Escolhe dois dias diferentes.");
     if (!p.inicio) return toast("Escolhe a data de início.");
     const [faseId, nivelId] = p.chave.split("--");
-    const f = window.PLANEAMENTO.fases.find((x) => x.id === faseId);
+    const f = encontrarFase(faseId).fase;
+    if (!f) return toast("Fase não encontrada.");
     const sessoes = f.sessoes[nivelId].map((id) => est.sessoes.find((s) => s.id === id));
     const datas = datasPlano(p);
     const linhas = [];
@@ -2076,6 +2118,13 @@
       const falhou = () => { $("rsTexto").select(); toast("Seleciona e copia o texto (Ctrl+C)."); };
       if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(() => toast("Resumo copiado."), falhou);
       else falhou();
+      return;
+    }
+    if (el.classList.contains("chip-modalidade")) {
+      est.modalidade = el.dataset.modalidade;
+      try { localStorage.setItem("modalidadePlaneamento", est.modalidade); } catch (_) { /* sem armazenamento */ }
+      const cont = $("planeamento");
+      if (cont) cont.outerHTML = htmlPlaneamento();
       return;
     }
     if (el.classList.contains("chip-nivel")) {

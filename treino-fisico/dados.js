@@ -3,7 +3,8 @@
 // Para acrescentar um exercício, copia um bloco de EXERCICIOS e muda os campos.
 // - id: só letras minúsculas, números e hífens (é usado no link do exercício)
 // - categoria: "forca" | "core" | "mobilidade" | "prevencao" | "ativacao" | "pliometria" | "tecnica"
-// - material: lista com "ginasio" | "halteres" | "elastico" | "peso-corporal" | "kettlebell" | "fitball" | "rolo" | "trx" | "bola-medicinal"
+// - material: lista com "ginasio" | "halteres" | "elastico" | "peso-corporal" | "kettlebell" | "fitball" | "rolo" | "trx" | "bola-medicinal" | "escada-agilidade"
+// - Os ids dos exercícios NUNCA se mudam nem se apagam (os treinos guardados usam-nos). Para descontinuar, marca com um comentário "// DESCONTINUADO".
 // - disciplinas: lista com "natacao" | "ciclismo" | "corrida"
 // - video: link para um vídeo teu (YouTube, Drive...). Vazio = mostra pesquisa no YouTube.
 //
@@ -51,7 +52,7 @@ const EXERCICIOS = [
   },
   {
     id: "split-squat-bulgaro",
-    nome: "Split squat búlgaro",
+    nome: "Split squat búlgaro (pé de trás elevado)",
     nomeEn: "bulgarian split squat",
     categoria: "forca",
     material: ["halteres", "peso-corporal", "ginasio"],
@@ -61,11 +62,12 @@ const EXERCICIOS = [
       "Pé de trás apoiado num banco, pé da frente cerca de um passo largo à frente.",
       "Desce na vertical até o joelho de trás quase tocar no chão.",
       "Mantém o joelho da frente alinhado com o 2.º dedo do pé.",
-      "Sobe pela perna da frente. Faz todas as repetições e troca."
+      "Sobe pela perna da frente. Faz todas as repetições e troca.",
+      "Tronco ligeiramente inclinado à frente = mais glúteo; tronco vertical = mais quadríceps."
     ],
     erros: ["Joelho da frente a cair para dentro", "Tronco a rodar", "Empurrar com a perna de trás"],
     regressao: "Split squat com os dois pés no chão.",
-    progressao: "Halteres mais pesados ou descida em 3 s.",
+    progressao: "Halteres mais pesados, descida em 3 s ou versão com barra (split squat búlgaro com barra).",
     dose: "3 × 6–10 por perna"
   },
   {
@@ -120,8 +122,8 @@ const EXERCICIOS = [
     ],
     erros: ["Movimento curto e rápido", "Rodar o pé para fora", "Dobrar o joelho"],
     regressao: "Duas pernas, no chão.",
-    progressao: "Haltere na mão do lado que trabalha.",
-    dose: "3 × 12–15 por perna"
+    progressao: "Haltere na mão do lado que trabalha; depois a elevação de gémeos pesada (carga pesada lenta) na máquina.",
+    dose: "3 × 12–15 por perna (referência para corredores: 25 ou mais seguidas a uma perna)"
   },
   {
     id: "gemeos-sentado",
@@ -136,10 +138,10 @@ const EXERCICIOS = [
       "Carga sobre os joelhos (máquina, halteres ou barra).",
       "Sobe e desce em amplitude total, controlando a descida."
     ],
-    erros: ["Carga demasiado leve (o sóleo aguenta muito)", "Amplitude curta"],
+    erros: ["Carga demasiado leve (o sóleo suporta muitas vezes o peso do corpo a correr)", "Amplitude curta", "Ressaltar em baixo"],
     regressao: "Sem carga, numa perna.",
-    progressao: "Aumentar carga progressivamente.",
-    dose: "3 × 10–15"
+    progressao: "Aumentar a carga progressivamente; tempo 3 s a subir e 3 s a descer (carga pesada lenta).",
+    dose: "3–4 × 8–15"
   },
   {
     id: "nordic",
@@ -153,12 +155,12 @@ const EXERCICIOS = [
       "Ajoelhado numa superfície macia, calcanhares presos (parceiro ou barra).",
       "Corpo direito dos joelhos à cabeça.",
       "Inclina-te para a frente o mais devagar possível, travando com os isquiotibiais.",
-      "Quando não aguentares, apara a queda com as mãos e volta à posição inicial."
+      "Quando não aguentares, apara a queda com as mãos e volta à posição inicial (ajuda-te com as mãos a subir)."
     ],
-    erros: ["Dobrar a anca", "Cair rápido logo no início"],
+    erros: ["Dobrar a anca", "Cair rápido logo no início", "Começar com muitas repetições (dor muscular de vários dias)", "Fazer na véspera de séries rápidas"],
     regressao: "Amplitude parcial ou com elástico a ajudar.",
-    progressao: "Descer mais e mais devagar.",
-    dose: "2–3 × 4–6"
+    progressao: "Descer mais e mais devagar; depois segurar um peso ao peito.",
+    dose: "2–3 × 3–6 (começa com 2 × 3)"
   },
   {
     id: "copenhagen",
@@ -174,9 +176,9 @@ const EXERCICIOS = [
       "Mantém o corpo alinhado, sem a anca cair."
     ],
     erros: ["Anca a descer", "Rodar o tronco para a frente"],
-    regressao: "Joelho de cima apoiado no banco (alavanca curta).",
-    progressao: "Pé apoiado e levantar/baixar a perna de baixo.",
-    dose: "3 × 15–30 s por lado"
+    regressao: "Nível 1: joelho de cima apoiado no banco (alavanca curta).",
+    progressao: "Nível 2: pé apoiado (alavanca longa). Nível 3: Copenhaga dinâmica (subir e baixar a anca).",
+    dose: "2–3 × 15–30 s por lado"
   },
 
   // ---------- Força: membros superiores / natação ----------
@@ -505,14 +507,14 @@ const EXERCICIOS = [
       "Aterra na parte da frente do pé com o mínimo de tempo no chão.",
       "Mantém o corpo alto e os braços relaxados."
     ],
-    erros: ["Dobrar muito os joelhos", "Aterrar com os calcanhares", "Saltos lentos"],
+    erros: ["Dobrar muito os joelhos", "Aterrar com os calcanhares", "Saltos lentos", "Começar em cimento ou com os gémeos cansados"],
     regressao: "Saltar à corda devagar.",
-    progressao: "Uma perna ou para a frente/trás.",
-    dose: "3 × 20 contactos"
+    progressao: "Pogo a avançar, lateral ou a uma perna.",
+    dose: "2–3 × 10–20 contactos"
   },
   {
     id: "aquiles-excentrico",
-    nome: "Excêntrico do Aquiles no degrau",
+    nome: "Excêntrico do Aquiles no degrau (Alfredson)",
     nomeEn: "eccentric heel drop achilles",
     categoria: "prevencao",
     material: ["peso-corporal"],
@@ -523,10 +525,10 @@ const EXERCICIOS = [
       "Tira um pé e desce só com o outro, devagar (3–4 s), até abaixo do degrau.",
       "Faz metade das repetições com joelho estendido e metade com joelho fletido."
     ],
-    erros: ["Descer depressa", "Fazer com dor acima de 5/10"],
+    erros: ["Descer depressa", "Dor acima de 5/10 durante o exercício", "Dor ou rigidez que piora na manhã seguinte (reduz a carga)"],
     regressao: "Descida com as duas pernas.",
-    progressao: "Mochila com peso.",
-    dose: "3 × 15 por perna"
+    progressao: "Mochila com peso (5–20 kg) ou passar para a elevação de gémeos pesada (carga pesada lenta).",
+    dose: "3 × 15 por perna (metade com joelho fletido); dor aceitável até 5/10 se não piorar no dia seguinte"
   }
 ];
 
@@ -629,7 +631,7 @@ const SESSOES = [
     frequencia: "2× por semana",
     rpe: "5–6",
     objetivo: "Fortalecer gémeos, Aquiles, isquiotibiais e adutores, as zonas que mais se lesionam com o volume de corrida.",
-    nota: "Dor no tendão até 3/10 durante o exercício é aceitável se no dia seguinte não piorar.",
+    nota: "Monitorização da dor (Silbernagel): dor no tendão até 3/10 durante o exercício é aceitável (máx. 5/10) se a dor e a rigidez na manhã seguinte não piorarem. Se piorarem, reduz a carga na sessão seguinte. Pogo: ~60 contactos.",
     blocos: [
       { titulo: "Sequência", itens: [
         { ex: "gemeos-em-pe", dose: "3 × 15/perna", descanso: "45 s" },
@@ -668,7 +670,7 @@ const SESSOES = [
     frequencia: "1× por semana",
     rpe: "6",
     objetivo: "Manter a força ganha sem acumular fadiga. Pouco volume, carga relativamente alta.",
-    nota: "Não fazer nos 4–5 dias antes de uma prova A.",
+    nota: "Não fazer nos 4–5 dias antes de uma prova A. Pogo: ~40 contactos.",
     blocos: [
       { titulo: "Principal", itens: [
         { ex: "agachamento-goblet", dose: "3 × 5", descanso: "2 min" },
