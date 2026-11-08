@@ -49,6 +49,77 @@
   window.addEventListener("resize", pedir);
   atualizarBarra();
 
+  // ---------- Revelação suave das secções ao fazer scroll ----------
+  const reduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const revelar = document.querySelectorAll("[data-revelar]");
+  if (!reduzido && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entradas) => {
+      entradas.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("visto"); io.unobserve(e.target); } });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    revelar.forEach((el) => io.observe(el));
+  } else {
+    revelar.forEach((el) => el.classList.add("visto"));
+  }
+
+  // ---------- Curvas de nível no fundo do hero (canvas, decorativo) ----------
+  // Campo suave (soma de senos) + marching squares. Desenha uma vez e ao redimensionar.
+  const relevo = document.querySelector(".hero-relevo");
+  if (relevo && relevo.getContext) {
+    const ctx = relevo.getContext("2d");
+    let larguraAnterior = 0, alturaAnterior = 0;
+    const campo = (x, y) =>
+      Math.sin(x * 0.0042 + Math.sin(y * 0.0031) * 1.6) +
+      Math.cos(y * 0.0049 - Math.sin(x * 0.0023) * 1.4) * 0.9 +
+      Math.sin((x + y) * 0.0017) * 0.6;
+    function desenharRelevo() {
+      const caixa = hero.getBoundingClientRect();
+      const w = Math.round(caixa.width), h = Math.round(caixa.height);
+      if (!w || !h || (Math.abs(w - larguraAnterior) < 2 && Math.abs(h - alturaAnterior) < 2)) return;
+      larguraAnterior = w; alturaAnterior = h;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      relevo.width = w * dpr; relevo.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+      const passo = w < 700 ? 12 : 16;
+      const cols = Math.ceil(w / passo) + 1, linhas = Math.ceil(h / passo) + 1;
+      const v = new Float32Array(cols * linhas);
+      for (let j = 0; j < linhas; j++) for (let i = 0; i < cols; i++) v[j * cols + i] = campo(i * passo, j * passo);
+      for (let n = -2.2, k = 0; n <= 2.2; n += 0.32, k++) {
+        ctx.beginPath();
+        ctx.strokeStyle = k % 5 === 2 ? "rgba(134,239,172,0.16)" : "rgba(159,181,169,0.075)";
+        ctx.lineWidth = 1;
+        for (let j = 0; j < linhas - 1; j++) {
+          for (let i = 0; i < cols - 1; i++) {
+            const a = v[j * cols + i], b = v[j * cols + i + 1], c = v[(j + 1) * cols + i + 1], d = v[(j + 1) * cols + i];
+            const caso = (a > n ? 8 : 0) | (b > n ? 4 : 0) | (c > n ? 2 : 0) | (d > n ? 1 : 0);
+            if (caso === 0 || caso === 15) continue;
+            const x = i * passo, y = j * passo;
+            const t = (p, q) => (n - p) / (q - p || 1e-6);
+            const topo = [x + passo * t(a, b), y], dir = [x + passo, y + passo * t(b, c)];
+            const baixo = [x + passo * t(d, c), y + passo], esq = [x, y + passo * t(a, d)];
+            const seg = (p1, p2) => { ctx.moveTo(p1[0], p1[1]); ctx.lineTo(p2[0], p2[1]); };
+            switch (caso) {
+              case 1: case 14: seg(esq, baixo); break;
+              case 2: case 13: seg(baixo, dir); break;
+              case 3: case 12: seg(esq, dir); break;
+              case 4: case 11: seg(topo, dir); break;
+              case 5: seg(esq, topo); seg(baixo, dir); break;
+              case 6: case 9: seg(topo, baixo); break;
+              case 7: case 8: seg(esq, topo); break;
+              case 10: seg(esq, baixo); seg(topo, dir); break;
+            }
+          }
+        }
+        ctx.stroke();
+      }
+      relevo.classList.add("pronto");
+    }
+    let espera = 0;
+    const agendar = () => { clearTimeout(espera); espera = setTimeout(desenharRelevo, 150); };
+    window.addEventListener("resize", agendar);
+    if ("requestIdleCallback" in window) requestIdleCallback(desenharRelevo, { timeout: 600 }); else setTimeout(desenharRelevo, 60);
+  }
+
   // Escolher um plano preenche o formulário.
   document.querySelectorAll("[data-plano]").forEach((a) => {
     a.addEventListener("click", () => { $("cPlano").value = a.dataset.plano; });
