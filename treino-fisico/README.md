@@ -17,7 +17,7 @@ Dois planos separados, cada um com 6 fases × 3 níveis (básico, avançado, eli
 - **Triatlo** (`PLANEAMENTO.modalidades.triatlo`, também em `PLANEAMENTO.fases`): pliometria moderada, ombro/natação no seco, core para a posição aero, quadríceps e extensão da anca para o ciclismo.
 - **Corrida** (`PLANEAMENTO.modalidades.corrida`, ids `cor-…`): mais pliometria e progressão técnica (dribles → wickets), gémeos–sóleo–Aquiles, isquiotibiais, flexores da anca e força unilateral; menos membros superiores.
 
-Fases: Preparatória geral → Preparatória específica (força máxima) → Pré-competitiva (potência) → Competitiva (manutenção) → Afinação (taper para prova A) → Transição. `PLANEAMENTO.guia` explica como encadeá-las com provas A/B/C. Os contactos de pliometria de cada sessão são calculados automaticamente e escritos na nota (alvo por fase e nível em `fase.contactos`).
+Fases: Preparatória geral → Preparatória específica (força máxima) → Pré-competitiva (potência) → Competitiva (manutenção) → Afinação (taper para prova A) → Transição. Blocos curtos e repetíveis: Preparatória geral 4 sem. (3+1), Preparatória específica 4 sem. (3+1), Pré-competitiva 3 sem., Competitiva em blocos de 2–4 sem. entre provas, Afinação 1–2 sem., Transição 1–3 sem. (`semanasNum` = semanas pré-preenchidas na app). `PLANEAMENTO.guia` explica como encadeá-las e repeti-las com provas A/B/C. Os contactos de pliometria de cada sessão são calculados automaticamente e escritos na nota (alvo por fase e nível em `fase.contactos`).
 
 ## Editar conteúdo
 

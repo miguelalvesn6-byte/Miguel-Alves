@@ -71,8 +71,8 @@
     }));
   }
 
-  const NOTA_PROVAS_TRI = "Provas A (objetivo da época): usa a fase Afinação nos 7–14 dias antes. Provas B: faz só o Dia 1 com uma série a menos em cada exercício, 4–5 dias antes, e nada de força nos 3 dias antes. Provas C (treino): treina normalmente, mas não faças força nas 48 h antes. Depois de um Ironman ou meio Ironman: 7–10 dias sem pliometria nem força pesada.";
-  const NOTA_PROVAS_COR = "Provas A (objetivo da época): usa a fase Afinação nos 7–14 dias antes. Provas B: faz só o Dia 1 com uma série a menos em cada exercício, 4–5 dias antes, e nada de pliometria nos 3 dias antes. Provas C (treino): treina normalmente, mas não faças força nas 48 h antes. Depois de uma maratona: 10–14 dias sem pliometria nem força pesada (depois de 10 km/meia maratona: 4–7 dias).";
+  const NOTA_PROVAS_TRI = "Provas A (objetivo da época): usa a fase Afinação na(s) 1–2 semanas antes. Provas B: faz só o Dia 1 com uma série a menos em cada exercício, 4–5 dias antes, e nada de força nos 3 dias antes. Provas C (treino): treina normalmente, mas não faças força nas 48 h antes. Depois de um Ironman ou meio Ironman: 7–10 dias sem pliometria nem força pesada.";
+  const NOTA_PROVAS_COR = "Provas A (objetivo da época): usa a fase Afinação na(s) 1–2 semanas antes. Provas B: faz só o Dia 1 com uma série a menos em cada exercício, 4–5 dias antes, e nada de pliometria nos 3 dias antes. Provas C (treino): treina normalmente, mas não faças força nas 48 h antes. Depois de uma maratona: 10–14 dias sem pliometria nem força pesada (depois de 10 km/meia maratona: 4–7 dias).";
 
   // =====================================================================
   // TRIATLO — 3 desportos: carga total gerida com cuidado, pliometria moderada,
@@ -80,10 +80,10 @@
   // =====================================================================
   const FASES_TRI = [
     {
-      id: "prep-geral", nome: "Preparatória geral (adaptação)", semanas: "6–10 semanas", semanasNum: 8,
+      id: "prep-geral", nome: "Preparatória geral (adaptação)", semanas: "4 semanas (3 de carga + 1 de descarga); repetível", semanasNum: 4,
       objetivo: "Adaptar tendões e músculos à carga, aprender a técnica dos exercícios e construir força geral — com o ombro (natação) e o tronco para a posição aero (ciclismo) incluídos desde o início.",
       rpe: ["6", "6", "7"], contactos: [[40, 60], [60, 80], [80, 100]],
-      nota: "Faz a força depois de um treino intenso (no mesmo dia) ou num dia fácil — nunca na véspera do treino longo de bicicleta ou da série chave de corrida. Sobe a carga quando completares todas as séries com as repetições na reserva indicadas para o teu nível.",
+      nota: "Faz a força depois de um treino intenso (no mesmo dia) ou num dia fácil — nunca na véspera do treino longo de bicicleta ou da série chave de corrida. Sobe a carga quando completares todas as séries com as repetições na reserva indicadas para o teu nível. Progressão do bloco (3:1): semana 1 com 1 repetição a mais na reserva do que o indicado (ajustar cargas e técnica); semana 2 na dose indicada; semana 3 sobe 2,5–5% a carga (ou +1–2 repetições nos exercícios sem peso) e os contactos para o limite superior do alvo; semana 4 de descarga (deixa ligada a opção de descarga da app). Início de época, atleta novo ou regresso de paragem longa: faz 2 blocos seguidos (8 semanas), com cargas 2,5–5% acima no 2.º.",
       dias: [
         {
           foco: "Agachamento",
@@ -150,10 +150,10 @@
     },
     // ------------------------------------------------------------------
     {
-      id: "prep-especifica", nome: "Preparatória específica (força máxima)", semanas: "6–8 semanas", semanasNum: 6,
+      id: "prep-especifica", nome: "Preparatória específica (força máxima)", semanas: "4 semanas (3 de carga + 1 de descarga); repetível", semanasNum: 4,
       objetivo: "Força máxima com cargas altas e poucas repetições: melhora a economia de pedalada e de corrida sem ganho relevante de massa muscular, mantendo a saúde do ombro.",
       rpe: ["7", "7", "8"], contactos: [[50, 70], [70, 90], [90, 110]],
-      nota: "Força pesada 2×/semana (3–5 repetições perto de 85% do máximo nos níveis avançado e elite). Afasta a sessão pelo menos 6 h dos treinos de qualidade de bicicleta, ou faz noutro dia. Se o volume de natação/ciclismo subir muito, mantém as cargas e tira uma série.",
+      nota: "Força pesada 2×/semana (3–5 repetições perto de 85% do máximo nos níveis avançado e elite). Afasta a sessão pelo menos 6 h dos treinos de qualidade de bicicleta, ou faz noutro dia. Se o volume de natação/ciclismo subir muito, mantém as cargas e tira uma série. Progressão do bloco (3:1): semana 1 com 1 repetição a mais na reserva do que o indicado (ajustar cargas e técnica); semana 2 na dose indicada; semana 3 sobe 2,5–5% a carga (ou +1–2 repetições nos exercícios sem peso) e os contactos para o limite superior do alvo; semana 4 de descarga (deixa ligada a opção de descarga da app). Para um 2.º bloco (época longa ou Ironman): repete as 4 semanas a partir das cargas da semana 3 do 1.º bloco.",
       dias: [
         {
           foco: "Agachamento + reatividade",
@@ -218,10 +218,10 @@
     },
     // ------------------------------------------------------------------
     {
-      id: "pre-competitiva", nome: "Pré-competitiva (potência)", semanas: "4–6 semanas", semanasNum: 4,
+      id: "pre-competitiva", nome: "Pré-competitiva (potência)", semanas: "3 semanas, sem descarga própria", semanasNum: 3,
       objetivo: "Converter a força em potência: menos volume, intenção máxima de velocidade em cada repetição, pliometria reativa moderada e força específica da braçada.",
       rpe: ["7", "7", "8"], contactos: [[45, 65], [60, 80], [75, 105]],
-      nota: "Coincide com os blocos de treino específico de prova: se a semana de bicicleta/corrida for muito dura, faz só o Dia 1. Mantém uma carga pesada (3 repetições) para não perder a força máxima.",
+      nota: "Coincide com os blocos de treino específico de prova: se a semana de bicicleta/corrida for muito dura, faz só o Dia 1. Mantém uma carga pesada (3 repetições) para não perder a força máxima. Bloco curto de 3 semanas de carga (semana 1 na dose indicada, semanas 2–3 mais carga/velocidade, mesmo volume) sem descarga própria: a opção de descarga da app só atua na 4.ª semana, por isso não tem efeito aqui (podes desligá-la); a descarga é a semana seguinte (Afinação ou semana de prova da Competitiva).",
       dias: [
         {
           foco: "Agachamento + potência",
@@ -282,10 +282,10 @@
     },
     // ------------------------------------------------------------------
     {
-      id: "competitiva", nome: "Competitiva (manutenção)", semanas: "Época de provas", semanasNum: 8,
+      id: "competitiva", nome: "Competitiva (manutenção)", semanas: "Blocos de 2–4 semanas entre provas (repetível)", semanasNum: 4,
       objetivo: "Manter a força e a reatividade com pouco volume (1–2 sessões por semana chegam para não perder força) e chegar fresco às provas.",
       rpe: ["6", "6", "7"], contactos: [[25, 45], [30, 55], [35, 65]],
-      nota: "Semanas sem prova: Dia 1 + Dia 2. Semanas com prova: só o Dia 1. " + NOTA_PROVAS_TRI,
+      nota: "Atribui um bloco por cada intervalo entre provas (2–4 semanas) e repete-o ao longo da época. Semanas sem prova: Dia 1 + Dia 2. Semanas com prova: só o Dia 1. Bloco de 4 semanas: deixa a descarga da app ligada (a 4.ª semana, normalmente a da prova, fica mais leve). Blocos de 2–3 semanas: desliga-a — a semana da prova já é a descarga. " + NOTA_PROVAS_TRI,
       dias: [
         {
           foco: "Manutenção principal",
@@ -332,10 +332,10 @@
     },
     // ------------------------------------------------------------------
     {
-      id: "afinacao", nome: "Afinação (taper para prova A)", semanas: "7–14 dias antes da prova A", semanasNum: 2,
+      id: "afinacao", nome: "Afinação (taper para prova A)", semanas: "1–2 semanas antes da prova A", semanasNum: 1,
       objetivo: "Manter a força e a frescura neuromuscular enquanto o volume total cai: pouca quantidade, intensidade alta, zero dor muscular.",
       rpe: ["5", "5", "6"], contactos: [[15, 35], [20, 35], [20, 40]],
-      nota: "Dia 1 entre 10 e 7 dias antes da prova; Dia 2 entre 4 e 3 dias antes (ou não fazer, se te sentires pesado). Nada de exercícios novos nem cargas novas. Taper de 2 semanas para Ironman; 7–10 dias para sprint/olímpico.",
+      nota: "Dia 1 entre 10 e 7 dias antes da prova; Dia 2 entre 4 e 3 dias antes (ou não fazer, se te sentires pesado). Nada de exercícios novos nem cargas novas. Sprint/olímpico: 1 semana (Dia 1 + Dia 2). Ironman/meio Ironman: taper de 2 semanas — na 1.ª faz só o Dia 1 da Competitiva com uma série a menos e atribui esta fase (1 semana) na semana da prova.",
       dias: [
         {
           foco: "Última sessão de força",
@@ -378,10 +378,10 @@
     },
     // ------------------------------------------------------------------
     {
-      id: "transicao", nome: "Transição", semanas: "2–4 semanas", semanasNum: 3,
-      objetivo: "Recuperar depois da época ou de uma paragem: corrigir desequilíbrios, mobilidade, saúde do ombro e força leve.",
+      id: "transicao", nome: "Transição", semanas: "1–3 semanas", semanasNum: 2,
+      objetivo: "Recuperar depois da época, de uma prova A ou de uma paragem: corrigir desequilíbrios, mobilidade, saúde do ombro e força leve.",
       rpe: ["4", "5", "5"], contactos: [[15, 40], [20, 45], [25, 50]],
-      nota: "Sem falhas nem dor muscular forte. Bom momento para avaliar: elevações de gémeos a uma perna, agachamento a uma perna, rotação externa do ombro e prancha lateral.",
+      nota: "1 semana entre provas A próximas; 2 semanas depois de um meio Ironman; 3 semanas no fim da época ou depois de um Ironman. Sem descarga da app. Sem falhas nem dor muscular forte. Bom momento para avaliar: elevações de gémeos a uma perna, agachamento a uma perna, rotação externa do ombro e prancha lateral.",
       dias: [
         {
           foco: "Mobilidade e controlo",
@@ -421,10 +421,10 @@
   // =====================================================================
   const FASES_COR = [
     {
-      id: "cor-prep-geral", nome: "Preparatória geral (adaptação)", semanas: "6–8 semanas", semanasNum: 6,
+      id: "cor-prep-geral", nome: "Preparatória geral (adaptação)", semanas: "4 semanas (3 de carga + 1 de descarga); repetível", semanasNum: 4,
       objetivo: "Preparar tendões (Aquiles, rotuliano) e músculos para a carga, aprender a técnica de corrida e a aterragem, e construir força base com ênfase unilateral.",
       rpe: ["6", "6", "7"], contactos: [[60, 80], [80, 110], [100, 130]],
-      nota: "Faz a força no dia das séries (depois delas) ou num dia fácil, com 48 h até ao próximo treino de qualidade. Tendão sensível: dor até 3/10 durante e sem piorar na manhã seguinte = podes continuar (modelo de Silbernagel).",
+      nota: "Faz a força no dia das séries (depois delas) ou num dia fácil, com 48 h até ao próximo treino de qualidade. Tendão sensível: dor até 3/10 durante e sem piorar na manhã seguinte = podes continuar (modelo de Silbernagel). Progressão do bloco (3:1): semana 1 com 1 repetição a mais na reserva do que o indicado e contactos no limite inferior do alvo; semana 2 na dose indicada; semana 3 sobe 2,5–5% a carga e os contactos para o limite superior (~10% por semana); semana 4 de descarga (deixa ligada a opção de descarga da app: uma série a menos e ~30% menos contactos). Atleta novo na força ou com tendinopatia recente: faz 2 blocos seguidos (8 semanas).",
       dias: [
         {
           foco: "Agachamento + gémeos",
@@ -490,10 +490,10 @@
     },
     // ------------------------------------------------------------------
     {
-      id: "cor-prep-especifica", nome: "Preparatória específica (força máxima)", semanas: "6–8 semanas", semanasNum: 6,
+      id: "cor-prep-especifica", nome: "Preparatória específica (força máxima)", semanas: "4 semanas (3 de carga + 1 de descarga); repetível", semanasNum: 4,
       objetivo: "Força máxima e rigidez reativa: cargas altas e poucas repetições, pliometria unilateral e técnica a velocidade mais alta. É a fase com mais impacto na economia de corrida.",
       rpe: ["7", "7", "8"], contactos: [[65, 85], [95, 120], [115, 140]],
-      nota: "Pliometria em relva, pista ou piso de borracha — nunca em cimento. Nas semanas de volume máximo de corrida mantém a carga e tira uma série. Os contactos sobem ~10% por semana dentro da fase.",
+      nota: "Pliometria em relva, pista ou piso de borracha — nunca em cimento. Nas semanas de volume máximo de corrida mantém a carga e tira uma série. Progressão do bloco (3:1): semana 1 com 1 repetição a mais na reserva do que o indicado e contactos no limite inferior do alvo; semana 2 na dose indicada; semana 3 sobe 2,5–5% a carga e os contactos para o limite superior (~10% por semana); semana 4 de descarga (deixa ligada a opção de descarga da app: uma série a menos e ~30% menos contactos). Maratona ou época longa: faz 2 blocos seguidos, o 2.º a partir das cargas da semana 3 do 1.º.",
       dias: [
         {
           foco: "Agachamento + reatividade",
@@ -558,10 +558,10 @@
     },
     // ------------------------------------------------------------------
     {
-      id: "cor-pre-competitiva", nome: "Pré-competitiva (potência e reatividade)", semanas: "4–6 semanas", semanasNum: 4,
+      id: "cor-pre-competitiva", nome: "Pré-competitiva (potência e reatividade)", semanas: "3 semanas, sem descarga própria", semanasNum: 3,
       objetivo: "Converter a força em potência específica: menos volume, intenção máxima de velocidade, pliometria reativa de contacto curto e técnica à velocidade de prova.",
       rpe: ["7", "7", "8"], contactos: [[60, 80], [80, 105], [95, 125]],
-      nota: "Menos contactos do que na fase anterior, mas mais intensos (drop jumps, barreiras, multisaltos). Alternativa ao Dia 2 numa semana sem ginásio: sessão \"Multisaltos em subida\". Mantém 48 h entre a pliometria e as séries mais rápidas.",
+      nota: "Menos contactos do que na fase anterior, mas mais intensos (drop jumps, barreiras, multisaltos). Alternativa ao Dia 2 numa semana sem ginásio: sessão \"Multisaltos em subida\". Mantém 48 h entre a pliometria e as séries mais rápidas. Bloco curto de 3 semanas de carga (contactos a subir do limite inferior para o superior do alvo, sem acrescentar exercícios) sem descarga própria: a opção de descarga da app só atua na 4.ª semana, por isso não tem efeito aqui (podes desligá-la); a descarga é a semana seguinte (Afinação ou semana de prova da Competitiva).",
       dias: [
         {
           foco: "Agachamento + reatividade",
@@ -625,10 +625,10 @@
     },
     // ------------------------------------------------------------------
     {
-      id: "cor-competitiva", nome: "Competitiva (manutenção)", semanas: "Época de provas", semanasNum: 8,
+      id: "cor-competitiva", nome: "Competitiva (manutenção)", semanas: "Blocos de 2–4 semanas entre provas (repetível)", semanasNum: 3,
       objetivo: "Manter a força, a rigidez do tendão e a técnica com pouco volume para chegar fresco às provas.",
       rpe: ["6", "6", "7"], contactos: [[25, 50], [35, 60], [40, 70]],
-      nota: "Semanas sem prova: Dia 1 + Dia 2. Semanas com prova: só o Dia 1. " + NOTA_PROVAS_COR,
+      nota: "Atribui um bloco por cada intervalo entre provas (2–4 semanas) e repete-o ao longo da época. Semanas sem prova: Dia 1 + Dia 2. Semanas com prova: só o Dia 1. Bloco de 4 semanas: deixa a descarga da app ligada (a 4.ª semana, normalmente a da prova, fica mais leve). Blocos de 2–3 semanas: desliga-a — a semana da prova já é a descarga. " + NOTA_PROVAS_COR,
       dias: [
         {
           foco: "Manutenção principal",
@@ -682,10 +682,10 @@
     },
     // ------------------------------------------------------------------
     {
-      id: "cor-afinacao", nome: "Afinação (taper para prova A)", semanas: "7–14 dias antes da prova A", semanasNum: 2,
+      id: "cor-afinacao", nome: "Afinação (taper para prova A)", semanas: "1–2 semanas antes da prova A", semanasNum: 1,
       objetivo: "Manter a força e a rigidez do tendão enquanto o volume de corrida cai: pouca quantidade, intensidade alta, zero dor muscular.",
       rpe: ["5", "5", "6"], contactos: [[15, 35], [20, 40], [20, 45]],
-      nota: "Dia 1 entre 10 e 7 dias antes da prova; Dia 2 entre 4 e 2 dias antes (ou não fazer, se te sentires pesado). Nada de exercícios novos nem cargas novas. Maratona: taper de 2 semanas; 10 km/meia: 7–10 dias.",
+      nota: "Dia 1 entre 10 e 7 dias antes da prova; Dia 2 entre 4 e 2 dias antes (ou não fazer, se te sentires pesado). Nada de exercícios novos nem cargas novas. 10 km/meia maratona: 1 semana (Dia 1 + Dia 2). Maratona: taper de 2 semanas — na 1.ª faz só o Dia 1 da Competitiva com uma série a menos e atribui esta fase (1 semana) na semana da prova.",
       dias: [
         {
           foco: "Última sessão de força",
@@ -732,10 +732,10 @@
     },
     // ------------------------------------------------------------------
     {
-      id: "cor-transicao", nome: "Transição", semanas: "2–4 semanas", semanasNum: 3,
-      objetivo: "Recuperar da época: tendões em carga baixa, corrigir assimetrias, pés e tornozelos, mobilidade e força leve.",
+      id: "cor-transicao", nome: "Transição", semanas: "1–3 semanas", semanasNum: 2,
+      objetivo: "Recuperar da época ou de uma prova A: tendões em carga baixa, corrigir assimetrias, pés e tornozelos, mobilidade e força leve.",
       rpe: ["4", "5", "5"], contactos: [[20, 40], [20, 50], [25, 60]],
-      nota: "Sem falhas nem dor muscular forte. Bom momento para avaliar: elevações de gémeos a uma perna (objetivo: 25+), agachamento a uma perna, ponte de isquiotibiais e salto a uma perna (diferença entre pernas < 10%).",
+      nota: "1 semana depois de 10 km/meia maratona; 2 semanas depois de uma maratona; 3 semanas no fim da época. Sem descarga da app. Sem falhas nem dor muscular forte. Bom momento para avaliar: elevações de gémeos a uma perna (objetivo: 25+), agachamento a uma perna, ponte de isquiotibiais e salto a uma perna (diferença entre pernas < 10%).",
       dias: [
         {
           foco: "Mobilidade e tendões",
@@ -820,33 +820,33 @@
       titulo: "Como encadear as fases (triatlo)",
       resumo: "2 sessões de força por semana fora da época de provas e 1–2 durante a época. Com 3 desportos, a força entra como complemento: nunca na véspera do treino longo de bicicleta ou da série chave de corrida, e o volume de pliometria fica abaixo do de um corredor.",
       sequencia: [
-        "Outono/inverno: Transição (2–4 sem.) → Preparatória geral (6–10 sem.) → Preparatória específica (6–8 sem.).",
-        "4–6 semanas antes da primeira prova importante: Pré-competitiva (potência).",
-        "Época de provas: Competitiva (manutenção). Se houver um intervalo de 8+ semanas sem provas A/B, volta 3–4 semanas à Preparatória específica.",
-        "Antes de cada prova A: Afinação (1–2 semanas). Depois da última prova da época: Transição."
+        "Construção curta (≈11 semanas até à 1.ª prova A, mais 1–2 de Afinação): Transição 1–3 sem. → Preparatória geral 4 sem. (3+1) → Preparatória específica 4 sem. (3+1) → Pré-competitiva 3 sem. → Afinação 1–2 sem. → prova A.",
+        "Início de época, atleta novo na força ou regresso de paragem: repete a Preparatória geral (2 × 4 sem.). Época longa ou Ironman: repete também a Preparatória específica (2.º bloco de 4 sem. a partir das cargas da semana 3 do 1.º). Com 3 desportos, prolongar a base é preferível a encurtar a recuperação.",
+        "Entre provas: um bloco Competitiva de 2–4 semanas por cada intervalo, repetido ao longo da época. Intervalo de 6–8 semanas sem provas A/B: Preparatória específica 4 sem. → Pré-competitiva 3 sem. (ou só a Pré-competitiva se faltarem 3–5 semanas).",
+        "Antes de cada prova A: Afinação (1 sem. sprint/olímpico; 2 sem. meio Ironman/Ironman). Depois: Transição (1 sem. entre provas A próximas; 2–3 sem. depois de um meio Ironman/Ironman ou no fim da época)."
       ],
       provas: {
-        A: "Prova principal (1–3 por época): Afinação completa (Dia 1 a 7–10 dias, Dia 2 a 3–4 dias). Depois de um Ironman: 1–2 semanas de Transição antes de voltar à Competitiva.",
-        B: "Prova importante mas não decisiva: na semana da prova só o Dia 1 da Competitiva, com uma série a menos, 4–5 dias antes.",
-        C: "Prova de treino: treina normalmente, sem força nas 48 h antes."
+        A: "Prova principal (1–3 por época, idealmente com 8+ semanas entre elas): ciclo Pré-competitiva 3 sem. → Afinação 1–2 sem. → prova → Transição 1–3 sem. Entre duas provas A com 8–12 semanas, volta a fazer Preparatória específica 4 sem. → Pré-competitiva 3 sem. → Afinação.",
+        B: "Prova importante mas não decisiva: fecha um bloco Competitiva (a semana da prova é a última do bloco): só o Dia 1, com uma série a menos, 4–5 dias antes. Na semana seguinte começa o bloco seguinte.",
+        C: "Prova de treino: não interrompe o bloco em curso (Preparatória ou Competitiva); treina normalmente, sem força nas 48 h antes."
       },
-      descarga: "A cada 4.ª semana (3:1) faz uma série a menos em cada exercício e não vás perto da falha. Faz coincidir a descarga com a semana mais leve de natação/ciclismo/corrida."
+      descarga: "Ritmo 3:1 nas fases de 4 semanas (Preparatória geral, Preparatória específica, Competitiva de 4 semanas): deixa ligada a opção \"descarga a cada 4.ª semana\" da app — uma série a menos em cada exercício e longe da falha. Em blocos de 1–3 semanas (Pré-competitiva, Competitiva curta, Afinação, Transição) desliga-a: a descarga é a semana de prova, a Afinação ou a Transição. Faz coincidir a descarga com a semana mais leve de natação/ciclismo/corrida."
     },
     corrida: {
       titulo: "Como encadear as fases (corrida)",
       resumo: "2 sessões de força e pliometria por semana durante quase todo o ano; 1–2 na época de provas. A força pesada e a pliometria são as ferramentas com mais impacto na economia de corrida, e a capacidade dos gémeos, do sóleo e dos isquiotibiais é a melhor prevenção de lesões.",
       sequencia: [
-        "Base (inverno ou depois da última prova): Transição (2–4 sem.) → Preparatória geral (6–8 sem.) → Preparatória específica (6–8 sem.).",
-        "4–6 semanas antes da prova A: Pré-competitiva (potência e reatividade), em paralelo com o treino específico de ritmo.",
-        "Época de provas: Competitiva (manutenção). Maratona: as últimas 6–8 semanas antes do taper são de manutenção, para não somar fadiga às tiradas longas.",
-        "Antes de cada prova A: Afinação (1–2 semanas). Depois da prova A: 1–2 semanas de Transição e regresso à Preparatória específica se houver outra prova A daqui a 12+ semanas."
+        "Construção curta (≈11 semanas até à prova A, mais 1–2 de Afinação): Transição 1–3 sem. → Preparatória geral 4 sem. (3+1) → Preparatória específica 4 sem. (3+1) → Pré-competitiva 3 sem. (em paralelo com o treino específico de ritmo) → Afinação 1–2 sem. → prova A.",
+        "Maratona ou época longa: 2 blocos de Preparatória específica (8 sem.; o 2.º a partir das cargas da semana 3 do 1.º). Atleta novo na força ou com tendinopatia recente: 2 blocos de Preparatória geral. Nas últimas 6–8 semanas antes do taper da maratona usa blocos Competitiva, para não somar fadiga às tiradas longas.",
+        "Entre provas: um bloco Competitiva de 2–4 semanas por cada intervalo, repetido ao longo da época. Intervalo de 6–8 semanas sem provas A/B: Preparatória específica 4 sem. → Pré-competitiva 3 sem. (ou só a Pré-competitiva se faltarem 3–5 semanas).",
+        "Antes de cada prova A: Afinação (1 sem. 10 km/meia; 2 sem. maratona). Depois: Transição (1 sem. depois de 10 km/meia; 2 sem. depois de uma maratona; 3 sem. no fim da época) e, se houver outra prova A daqui a 10+ semanas, recomeça na Preparatória específica."
       ],
       provas: {
-        A: "Prova principal (2–3 por época): Afinação completa. Depois de uma maratona: 10–14 dias sem pliometria nem força pesada.",
-        B: "Prova importante mas não decisiva: na semana da prova só o Dia 1 da Competitiva, com uma série a menos, 4–5 dias antes; sem pliometria nos 3 dias antes.",
-        C: "Prova de treino ou corrida de controlo: treina normalmente, sem força nas 48 h antes."
+        A: "Prova principal (2–3 por época): ciclo Pré-competitiva 3 sem. → Afinação 1–2 sem. → prova → Transição 1–2 sem. Depois de uma maratona: 10–14 dias sem pliometria nem força pesada.",
+        B: "Prova importante mas não decisiva: fecha um bloco Competitiva (a semana da prova é a última do bloco): só o Dia 1, com uma série a menos, 4–5 dias antes; sem pliometria nos 3 dias antes. Na semana seguinte começa o bloco seguinte.",
+        C: "Prova de treino ou corrida de controlo: não interrompe o bloco em curso; treina normalmente, sem força nas 48 h antes."
       },
-      descarga: "A cada 4.ª semana (3:1) faz uma série a menos em cada exercício e reduz os contactos de pliometria ~30%. Faz coincidir com a semana de menor volume de corrida."
+      descarga: "Ritmo 3:1 nas fases de 4 semanas (Preparatória geral, Preparatória específica, Competitiva de 4 semanas): deixa ligada a opção \"descarga a cada 4.ª semana\" da app — uma série a menos em cada exercício e ~30% menos contactos de pliometria. Em blocos de 1–3 semanas (Pré-competitiva, Competitiva curta, Afinação, Transição) desliga-a: a descarga é a semana de prova, a Afinação ou a Transição. Faz coincidir com a semana de menor volume de corrida."
     }
   };
 

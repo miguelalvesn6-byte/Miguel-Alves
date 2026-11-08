@@ -590,3 +590,39 @@
     }
   );
 })();
+
+// ================= CONDICIONAMENTO HÍBRIDO (off-season pessoal) =================
+// Acrescentados para offseason-pessoal.js — mesmo formato compacto.
+(function () {
+  const D = { N: "natacao", C: "ciclismo", R: "corrida" };
+  const ex = (id, nome, nomeEn, categoria, material, disc, musculos, execucao, erros, regressao, progressao, dose) => {
+    if (EXERCICIOS.some((e) => e.id === id)) return;
+    EXERCICIOS.push({
+      id, nome, nomeEn, categoria, material, musculos, execucao, erros, regressao, progressao, dose,
+      disciplinas: disc.split("").map((c) => D[c]),
+      video: ""
+    });
+  };
+
+  ex("ski-erg", "SkiErg", "concept2 skierg technique", "forca", ["ginasio"], "NCR", "Dorsal, tríceps, core, glúteos (puxada dupla)",
+    ["De pé, pés à largura da anca, braços em cima com as pegas na mão.", "Puxa as pegas para baixo com os braços quase esticados, dobrando a anca e os joelhos ligeiramente, como num crunch em pé.", "Termina com as mãos junto às coxas e volta a subir com o corpo alto.", "Ritmo controlado: força na puxada, recuperação relaxada; mede pelos watts ou ritmo/500 m."],
+    ["Puxar só com os braços", "Agachar em vez de dobrar a anca", "Arredondar as costas no fim da puxada"], "Remo-ergómetro ou elástico preso em cima (puxada de braços estendidos).", "Intervalos curtos a watts altos (30–45 s).", "1 min por ronda ou 5 × 250 m");
+  ex("remo-ergometro", "Remo-ergómetro", "concept2 rowing technique", "forca", ["ginasio"], "NCR", "Quadríceps, glúteos, dorsal, core",
+    ["Sequência na puxada: pernas → tronco → braços.", "Na recuperação ao contrário: braços → tronco → pernas.", "Costas neutras, pegas à altura do esterno no fim."],
+    ["Dobrar os braços cedo", "Joelhos a subir antes de as mãos passarem"], "Ritmo baixo (20 pancadas/min).", "Intervalos de 250 m fortes.", "4 × 250 m");
+  ex("supino-barra", "Supino com barra", "barbell bench press", "forca", ["ginasio"], "N", "Peitoral, tríceps, deltoide anterior",
+    ["Deitado no banco, olhos debaixo da barra, pés firmes no chão.", "Omoplatas juntas e para baixo, ligeiro arco torácico, glúteos no banco.", "Desce a barra controlada até tocar na parte baixa do peito, antebraços verticais.", "Empurra para cima e ligeiramente para trás; sempre com segurança (rack com batentes ou ajudante)."],
+    ["Ressaltar a barra no peito", "Cotovelos abertos a 90°", "Levantar os glúteos do banco"], "Supino com halteres ou flexões.", "Mais carga ou pausa de 1 s no peito.", "4 × 6–10");
+  ex("ghd-abdominais", "Abdominais no GHD", "ghd sit up", "core", ["ginasio"], "CR", "Flexores da anca, reto abdominal",
+    ["Pés presos no GHD, anca sobre ou ligeiramente à frente do apoio.", "Desce controlando até o tronco ficar paralelo ao chão (no início não passes da horizontal).", "Sobe com o abdómen e os flexores da anca até tocar nos pés ou ficar vertical.", "Ritmo constante, sem chicotear a lombar."],
+    ["Descer abaixo da horizontal sem preparação (sobrecarga lombar)", "Joelhos esticados e bloqueados com amplitude excessiva", "Fazer muitas repetições na primeira vez (rabdomiólise)"], "Abdominais no AbMat no chão ou crunch invertido.", "Amplitude completa ou bola medicinal ao peito.", "3 × 10–15");
+  ex("wall-ball", "Wall ball", "wall ball shot", "forca", ["bola-medicinal"], "CR", "Quadríceps, glúteos, ombros, condição",
+    ["Bola ao peito (9 kg homens / 6 kg mulheres), a ~30–50 cm da parede.", "Agachamento até a anca ficar abaixo do joelho.", "Sobe explosivo e lança a bola para o alvo (3 m homens / 2,7 m mulheres).", "Apanha a bola e desce já para o agachamento seguinte."],
+    ["Não descer abaixo do paralelo", "Lançar só com os braços", "Ficar longe da parede", "Bola abaixo do alvo"], "Bola mais leve (6 kg) ou alvo mais baixo.", "Mais repetições sem pousar a bola.", "Máximo em 2 min");
+  ex("saltos-duplos-corda", "Saltos duplos na corda (double unders)", "double unders jump rope", "pliometria", ["peso-corporal"], "R", "Gémeos, tendão de Aquiles, coordenação",
+    ["A corda passa duas vezes debaixo dos pés em cada salto.", "Salto um pouco mais alto que o normal, corpo direito, pernas quase esticadas.", "Rotação feita pelos pulsos, cotovelos junto ao corpo.", "Aterra na parte da frente do pé, contacto curto e silencioso."],
+    ["Dobrar os joelhos (\"pike\")", "Rodar a corda com os braços todos", "Contactos longos e pesados"], "Saltos simples com 1 duplo a cada 3–5 simples.", "Séries longas sem falhar.", "3 × 15–20");
+  ex("corda-alternada", "Corda a pés alternados", "alternate foot jump rope running step", "pliometria", ["peso-corporal"], "R", "Gémeos, tendão de Aquiles, coordenação de passada",
+    ["Saltar à corda alternando os pés, como uma corrida no sítio.", "Contacto curto debaixo da anca, joelhos ligeiramente altos.", "Ritmo constante, ombros relaxados."],
+    ["Aterrar com o calcanhar", "Inclinar para trás"], "Saltos com os dois pés.", "Mais rápido ou joelhos altos.", "2 × 30 contactos");
+})();
