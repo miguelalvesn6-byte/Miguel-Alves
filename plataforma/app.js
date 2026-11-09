@@ -481,7 +481,9 @@
     let h;
     try { h = decodeURIComponent(location.hash.slice(1)) || inicial; } catch (_) { h = inicial; }
     if (est.rascunhoRota !== h) est.rascunho = null;
-    if (!h.startsWith("g-")) pararGuiado();
+    // Ver um exercício a partir do modo guiado não perde o progresso (só pára o cronómetro).
+    if (h.startsWith("ex-") && est.guiado) { if (est.guiado.relogio) { clearInterval(est.guiado.relogio); est.guiado.relogio = null; } est.guiado.resta = 0; }
+    else if (!h.startsWith("g-")) pararGuiado();
     est.rascunhoRota = h;
 
     // O atleta só vê os seus treinos: sem biblioteca, planeamento nem sessões-modelo.
@@ -898,6 +900,11 @@
       const passos = [];
       (t.blocos || []).forEach((b, bi) => (b.itens || []).forEach((it) => passos.push({ bloco: b.titulo, formato: b.formato || "", bi, it })));
       g = est.guiado = { id, t, passos, i: 0, feitas: {}, resta: 0, relogio: null, wake: null };
+      // Retoma onde ficou (ex.: depois de ver um vídeo, voltar à app ou recarregar a página).
+      try {
+        const guardado = JSON.parse(localStorage.getItem("guiado:" + id) || "null");
+        if (guardado && guardado.i < passos.length) { g.i = guardado.i; g.feitas = guardado.feitas || {}; }
+      } catch (_) { /* sem armazenamento */ }
       try { if (navigator.wakeLock) g.wake = await navigator.wakeLock.request("screen"); } catch (_) { /* opcional */ }
     }
     desenharGuiado();
@@ -906,6 +913,7 @@
   function desenharGuiado() {
     const g = est.guiado;
     if (!g) return;
+    try { localStorage.setItem("guiado:" + g.id, JSON.stringify({ i: g.i, feitas: g.feitas, em: Date.now() })); } catch (_) { /* sem armazenamento */ }
     if (!g.passos.length) { app().innerHTML = naoEncontrado(`#t-${g.id}`, "Voltar ao treino", "Este treino não tem exercícios.", ""); return; }
     const p = g.passos[g.i];
     const e = est.exPorId[p.it.ex];
@@ -950,7 +958,7 @@
             <details class="guiado-como">
               <summary>Como fazer</summary>
               <ol>${passosExec.map((x) => `<li>${esc(x)}</li>`).join("")}</ol>
-              <a href="#ex-${esc(p.it.ex)}">Ver explicação completa</a>
+              <a href="#ex-${esc(p.it.ex)}" data-do-guiado="1">Ver explicação completa</a>
             </details>` : ""}
         </article>
 
