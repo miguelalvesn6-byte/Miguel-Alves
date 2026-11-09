@@ -1315,7 +1315,58 @@
   // ======================================================================
   // Treinador: página de um atleta
   // ======================================================================
+  // Listas de treinos da página do atleta, com modo "Selecionar para apagar".
+  function htmlListasAtleta() {
+    const dados = (est.treinosAtleta && est.treinosAtleta.data) || [];
+    const h = hoje();
+    const proximos = dados.filter((t) => t.data >= h);
+    const anteriores = dados.filter((t) => t.data < h).slice().reverse();
+    const sel = est.selApagar || (est.selApagar = new Set());
+    const modo = !!est.modoApagar;
+    const linha = (t) => modo
+      ? `<label class="linha-sel"><input type="checkbox" data-sel-treino="${t.id}" ${sel.has(t.id) ? "checked" : ""} />
+           <span><b>${esc(t.titulo)}</b><small>${esc(dataBonita(t.data))} · ${ESTADOS[t.estado] || t.estado}</small></span></label>`
+      : linhaTreino(t);
+    const n = sel.size;
+    return `
+      <div class="barra-apagar">
+        ${modo ? `
+          <button type="button" class="btn pequeno" data-sel-acao="proximos">Selecionar próximos (${proximos.length})</button>
+          <button type="button" class="btn pequeno" data-sel-acao="planeados">Só os por fazer</button>
+          <button type="button" class="btn pequeno" data-sel-acao="limpar">Limpar</button>
+          <button type="button" class="btn pequeno perigo" data-sel-acao="apagar" ${n ? "" : "disabled"}>Apagar ${n} treino${n === 1 ? "" : "s"}</button>
+          <button type="button" class="btn pequeno" data-sel-acao="sair">Cancelar</button>`
+        : `<button type="button" class="btn pequeno" data-sel-acao="entrar">Selecionar treinos para apagar</button>`}
+      </div>
+      <h2 class="titulo-secao">Próximos</h2>
+      ${proximos.length ? `<div class="lista-treinos">${proximos.map(linha).join("")}</div>` : `<p class="vazio-caixa">Sem treinos marcados.</p>`}
+      <h2 class="titulo-secao">Anteriores (8 semanas)</h2>
+      ${anteriores.length ? `<div class="lista-treinos">${anteriores.map(linha).join("")}</div>` : `<p class="vazio-caixa">Sem histórico.</p>`}`;
+  }
+  function redesenharListasAtleta() {
+    const z = $("listasTreinos");
+    if (z) z.innerHTML = htmlListasAtleta();
+  }
+  async function apagarSelecionados(btn) {
+    const ids = [...(est.selApagar || [])];
+    if (!ids.length) return;
+    if (btn.dataset.confirmar !== "1") {
+      btn.dataset.confirmar = "1";
+      btn.textContent = `Confirmar: apagar ${ids.length}`;
+      setTimeout(() => { if (btn.isConnected) { btn.dataset.confirmar = ""; btn.textContent = `Apagar ${ids.length} treino${ids.length === 1 ? "" : "s"}`; } }, 4000);
+      return;
+    }
+    btn.disabled = true;
+    const { error } = await sb.from("treinos").delete().in("id", ids);
+    if (error) { btn.disabled = false; return erro(error); }
+    toast(`${ids.length} treino${ids.length === 1 ? "" : "s"} apagado${ids.length === 1 ? "" : "s"}.`);
+    est.selApagar = new Set();
+    est.modoApagar = false;
+    rota();
+  }
+
   async function vistaAtleta(id) {
+    if (!est.treinosAtleta || est.treinosAtleta.id !== id) { est.modoApagar = false; est.selApagar = new Set(); }
     const a = est.atletas.find((x) => x.id === id);
     if (!a) {
       app().innerHTML = naoEncontrado("#atletas", "Atletas", "Atleta não encontrado.", "Pode ter sido removido ou o link está incompleto.");
@@ -1395,11 +1446,7 @@
 
         <div id="fbZona"></div>
 
-        <h2 class="titulo-secao">Próximos</h2>
-        ${proximos.length ? `<div class="lista-treinos">${proximos.map((t) => linhaTreino(t)).join("")}</div>` : `<p class="vazio-caixa">Sem treinos marcados.</p>`}
-
-        <h2 class="titulo-secao">Anteriores (8 semanas)</h2>
-        ${anteriores.length ? `<div class="lista-treinos">${anteriores.map((t) => linhaTreino(t)).join("")}</div>` : `<p class="vazio-caixa">Sem histórico.</p>`}
+        <div id="listasTreinos">${htmlListasAtleta()}</div>
       </section>`;
     await desenharFeedbacksAtleta(id);
   }
@@ -2319,6 +2366,19 @@
       return;
     }
     if (el.dataset.copiarSemana) { copiarSemana(el, el.dataset.copiarSemana); return; }
+    if (el.dataset.selAcao) {
+      const a = el.dataset.selAcao;
+      const dados = (est.treinosAtleta && est.treinosAtleta.data) || [];
+      if (!est.selApagar) est.selApagar = new Set();
+      if (a === "entrar") est.modoApagar = true;
+      if (a === "sair") { est.modoApagar = false; est.selApagar = new Set(); }
+      if (a === "limpar") est.selApagar = new Set();
+      if (a === "proximos") dados.filter((t) => t.data >= hoje()).forEach((t) => est.selApagar.add(t.id));
+      if (a === "planeados") { est.selApagar = new Set(dados.filter((t) => t.estado === "planeado" && t.data >= hoje()).map((t) => t.id)); }
+      if (a === "apagar") { apagarSelecionados(el); return; }
+      redesenharListasAtleta();
+      return;
+    }
     if (el.dataset.resumo && est.treinosAtleta) {
       const a = est.atletas.find((x) => x.id === el.dataset.resumo) || {};
       $("rsTexto").value = gerarResumo(a, est.treinosAtleta.data, $("rsSemana").value);
@@ -2375,6 +2435,12 @@
 
   document.addEventListener("change", async (ev) => {
     const el = ev.target;
+    if (el.dataset && el.dataset.selTreino) {
+      if (!est.selApagar) est.selApagar = new Set();
+      if (el.checked) est.selApagar.add(el.dataset.selTreino); else est.selApagar.delete(el.dataset.selTreino);
+      redesenharListasAtleta();
+      return;
+    }
     if (el.dataset && el.dataset.cand) {
       const { error } = await sb.from("candidaturas").update({ estado: el.value }).eq("id", el.dataset.cand);
       if (error) return erro(error);

@@ -1521,3 +1521,10 @@ a.sd-hoje:hover { background: color-mix(in srgb, var(--verde) 85%, var(--verde-i
   font-size: .9rem;
   line-height: 1.35;
 }
+
+/* ---------- Apagar vários treinos ---------- */
+.barra-apagar { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0 .25rem; }
+.linha-sel { display: flex; align-items: center; gap: .75rem; padding: .7rem .5rem; border-bottom: 1px solid var(--line); cursor: pointer; min-height: 52px; }
+.linha-sel input { width: 1.3rem; height: 1.3rem; flex: none; accent-color: var(--accent); }
+.linha-sel span { display: grid; min-width: 0; }
+.linha-sel small { color: var(--muted); }
