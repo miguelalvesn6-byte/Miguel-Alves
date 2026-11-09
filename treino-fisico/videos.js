@@ -219,6 +219,7 @@
     "toes-to-bar": "https://www.youtube.com/watch?v=xX9Hzi7Onnw", // "The Strict Toes-To-Bar" — CrossFit
     "turkish-get-up": "https://www.youtube.com/watch?v=0bWRPC49-KI", // "Turkish Get-Up Basics" — StrongFirst
     "gatinhar-urso": "https://www.youtube.com/watch?v=Ee1BQNI6zN4", // "Bear Crawl" — BSR Physical Therapy
+    "bike-erg": "https://www.youtube.com/watch?v=ClgAYjvqP_s", // "Correct Set up and Position for Concept2 Bike Erg" — CrossFit Federal Hill
   };
   if (typeof EXERCICIOS === 'undefined') return;
   EXERCICIOS.forEach(e => { if (V[e.id] && !e.video) e.video = V[e.id]; });

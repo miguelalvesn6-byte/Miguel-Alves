@@ -691,3 +691,16 @@
     ["Quatro apoios com os joelhos 2–3 cm do chão.", "Avança mão e pé contrários ao mesmo tempo, passos curtos.", "Anca baixa e quieta — imagina um copo de água nas costas."],
     ["Anca alta", "Anca a rodar de um lado para o outro"], "Prancha do urso estática.", "Para trás ou com elástico de resistência.", "15–20 m");
 })();
+
+// ================= MOTOR DE CICLISMO (Plano Miguel) =================
+(function () {
+  if (EXERCICIOS.some((e) => e.id === "bike-erg")) return;
+  EXERCICIOS.push({
+    id: "bike-erg", nome: "BikeErg (bicicleta ergómetro)", nomeEn: "concept2 bikeerg technique", categoria: "forca", material: ["ginasio"],
+    musculos: "Quadríceps, glúteos, isquiotibiais (motor específico de ciclismo)",
+    execucao: ["Ajusta o selim como na tua bicicleta (joelho a ~25–35° em baixo) e, se possível, usa os teus pedais.", "Controla o esforço pelos watts e pela cadência (85–100 rpm nos intervalos de potência, 70–80 rpm nos de força).", "Tronco estável, ombros relaxados; a força vem da anca e do joelho."],
+    erros: ["Selim mal ajustado", "Cadência muito baixa com resistência alta (sobrecarga do joelho)", "Arrancar a fundo e cair a meio"],
+    regressao: "Bicicleta estática de ginásio ou rolo com a tua bicicleta.", progressao: "Intervalos curtos a watts altos ou baixa cadência com mais resistência.", dose: "6 × 30 s forte : 90 s",
+    disciplinas: ["ciclismo"], video: ""
+  });
+})();
