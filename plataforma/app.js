@@ -482,7 +482,7 @@
     try { h = decodeURIComponent(location.hash.slice(1)) || inicial; } catch (_) { h = inicial; }
     if (est.rascunhoRota !== h) est.rascunho = null;
     // Ver um exercício a partir do modo guiado não perde o progresso (só pára o cronómetro).
-    if (h.startsWith("ex-") && est.guiado) { if (est.guiado.relogio) { clearInterval(est.guiado.relogio); est.guiado.relogio = null; } est.guiado.resta = 0; }
+    if (h.startsWith("ex-") && est.guiado) { if (est.guiado.relogio) { clearInterval(est.guiado.relogio); est.guiado.relogio = null; } if (est.guiado.tique) { clearInterval(est.guiado.tique); est.guiado.tique = null; } est.guiado.resta = 0; }
     else if (!h.startsWith("g-")) pararGuiado();
     est.rascunhoRota = h;
 
@@ -760,35 +760,233 @@
   }
 
   // ======================================================================
+  // Blocos com relógio (EMOM/E2MOM/E3MOM, AMRAP, rondas, intervalos, chipper, densidade)
+  // O formato vem de bloco.formato (e, em segunda linha, da nota do 1.º exercício).
+  // Devolve null para blocos "normais" (séries × repetições).
+  // ======================================================================
+  const RE_RELOGIO = /\b(E\d?MOM|EMOM|AMRAP|rondas?|intervalos?|chipper|densidade|limite\s+\d+\s*min|blocos de \d+\s*min)\b|\d+\s*[×x]\s*\d+\s*s\s*:\s*\d+\s*s/i;
+  const segDe = (n, u) => Number(n) * (/^m/i.test(u || "s") ? 60 : 1);
+
+  // "Min ímpar: 5 reps · voltas 1–2 rampa…" → { etiqueta: "Min ímpar", resto: "5 reps · voltas 1–2 rampa…" }
+  function prefixoDose(dose) {
+    const m = String(dose || "").match(/^\s*((?:min(?:uto)?|janela|intervalos?)\s+(?:ímpar(?:es)?|par(?:es)?|\d+))\s*:\s*(.*)$/i);
+    return m ? { etiqueta: m[1], resto: m[2] } : { etiqueta: "", resto: String(dose || "") };
+  }
+
+  // Dose para a volta v: "voltas 1–2 rampa (50%, 60%) · voltas 3–8 a ≈70%" → na volta 2: "rampa 60%".
+  function doseNaVolta(dose, v) {
+    const partes = prefixoDose(dose).resto.split(/\s+·\s+/);
+    const base = [], agora = [];
+    let especificas = false;
+    partes.forEach((p) => {
+      const m = p.match(/^(?:voltas?\s*)(\d+)(?:\s*[–-]\s*(\d+))?\s*:?\s*(.*)$/i) || p.match(/^(\d+)(?:\s*[–-]\s*(\d+))?\s*:\s*(.*)$/);
+      if (!m) { base.push(p); return; }
+      especificas = true;
+      const a = Number(m[1]), b = Number(m[2] || m[1]);
+      if (v < a || v > b) return;
+      let txt = m[3];
+      const lista = txt.match(/^(.*?)\s*\(([^)]*)\)\s*$/);
+      if (lista && b > a) {
+        const vals = lista[2].split(/\s*,\s*/);
+        if (vals.length === b - a + 1) txt = `${lista[1]} ${vals[v - a]}`.trim();
+      }
+      agora.push(txt.replace(/^a\s+/, ""));
+    });
+    if (!especificas) return base.join(" · ");
+    return [...base, ...agora].join(" · ");
+  }
+
+  function relogioDoBloco(b) {
+    const itens = b.itens || [];
+    const f = String(b.formato || "");
+    const nota0 = String((itens[0] || {}).nota || "");
+    const t = `${f} · ${nota0}`;
+    const todos = itens.map((_, k) => k);
+    const limiteM = t.match(/limite\s+(\d+)\s*min/i);
+    const limite = limiteM ? Number(limiteM[1]) * 60 : null;
+
+    // Aquecimento cronometrado: todos os exercícios em "N min" → sequência automática.
+    if (!RE_RELOGIO.test(t)) {
+      const mins = itens.map((it) => (String(it.dose).match(/^\s*(\d+)\s*min\b/i) || [])[1]);
+      if (itens.length >= 2 && mins.every(Boolean) && /\bmin\b/.test(f)) {
+        let ini = 0;
+        const fases = itens.map((it, k) => {
+          const s = Number(mins[k]) * 60;
+          const fa = { ini, s, tipo: "trabalho", rotulo: `Parte ${k + 1} de ${itens.length}`, ativos: [k] };
+          ini += s; return fa;
+        });
+        return { modo: "fases", nome: "Sequência", fases, total: ini };
+      }
+      return null;
+    }
+
+    // EMOM / E2MOM / E3MOM
+    let m = t.match(/\bE(\d)?MOM\s+(\d+)\s*min/i);
+    if (m) {
+      const k = Number(m[1] || 1), T = Number(m[2]) * 60;
+      const pre = itens.map((it) => prefixoDose(it.dose).etiqueta.toLowerCase());
+      let w = k * 60, ciclo = 1, ativos = () => todos, unidade = k > 1 ? "Janela" : "Minuto";
+      const pos = (s) => (/ímpar/.test(s) ? 0 : /\bpar/.test(s) ? 1 : -1);
+      if (pre.some((p) => /^min/.test(p) && pos(p) >= 0)) {
+        w = 60; ciclo = 2; unidade = "Minuto";
+        ativos = (j) => todos.filter((x) => pos(pre[x]) === -1 || pos(pre[x]) === j % 2);
+      } else if (pre.some((p) => /^janela/.test(p))) {
+        ciclo = 2;
+        ativos = (j) => todos.filter((x) => pos(pre[x]) === -1 || pos(pre[x]) === j % 2);
+      } else if (pre.some((p) => /^min\S*\s+\d/.test(p))) {
+        w = 60; unidade = "Minuto";
+        const nums = pre.map((p) => Number((p.match(/\d+/) || [])[0]) || 0);
+        ciclo = Math.max(...nums);
+        ativos = (j) => todos.filter((x) => !nums[x] || nums[x] === (j % ciclo) + 1);
+      }
+      const N = Math.max(1, Math.floor(T / w));
+      const V = Math.ceil(N / ciclo);
+      const fases = Array.from({ length: N }, (_, j) => ({
+        ini: j * w, s: w, tipo: "trabalho", volta: Math.floor(j / ciclo) + 1,
+        rotulo: `Volta ${Math.floor(j / ciclo) + 1} de ${V}`,
+        sub: ciclo > 1 || V !== N ? `${unidade} ${j + 1} de ${N}` : `${w / 60} min por volta`,
+        ativos: ativos(j)
+      }));
+      return { modo: "fases", nome: k > 1 ? `E${k}MOM` : "EMOM", fases, total: N * w };
+    }
+
+    // Intervalos "6 intervalos · 30 s forte : 90 s" ou "6 × 30 s : 90 s"
+    m = t.match(/(\d+)\s*(?:intervalos?\s*·?|[×x])\s*(\d+)\s*s\b[^:·]*:\s*(\d+)\s*s/i);
+    if (m) {
+      const n = Number(m[1]), tr = Number(m[2]), de = Number(m[3]);
+      const txt = itens.map((it) => `${it.dose} ${it.nota || ""}`.toLowerCase());
+      const temPar = txt.some((x) => /ímpar|\bpar/.test(x));
+      const fases = [];
+      for (let j = 1; j <= n; j++) {
+        const imp = j % 2 === 1;
+        const casa = (x) => (imp ? /ímpar/.test(x) : /\bpar/.test(x));
+        const doseDe = (k) => String(itens[k].dose).toLowerCase();
+        fases.push({ ini: (j - 1) * (tr + de), s: tr, tipo: "trabalho", rotulo: `Intervalo ${j} de ${n}`, sub: "Forte",
+          ativos: temPar ? todos.filter((k) => !/após/.test(doseDe(k)) && casa(doseDe(k))) : todos.filter((k) => !/após/.test(doseDe(k))) });
+        fases.push({ ini: (j - 1) * (tr + de) + tr, s: de, tipo: "descanso", rotulo: `Recupera · intervalo ${j} de ${n}`, sub: "Recuperação",
+          ativos: todos.filter((k) => /após/.test(doseDe(k)) && (!temPar || casa(doseDe(k)))) });
+      }
+      return { modo: "fases", nome: "Intervalos", fases, total: n * (tr + de) };
+    }
+
+    // N blocos de AMRAP / densidade, ou um AMRAP único
+    m = t.match(/(\d+)\s*blocos de\s*(?:AMRAP|densidade de)\s*(\d+)\s*min/i) || t.match(/()AMRAP\s*(\d+)\s*min/i) || t.match(/(\d+)\s*blocos de\s*(\d+)\s*min/i);
+    if (m) {
+      const n = Number(m[1] || 1), s = Number(m[2]) * 60;
+      const r = t.match(/(\d+)\s*(s|min)\b[^·]*?entre blocos/i);
+      const de = r ? segDe(r[1], r[2]) : 0;
+      const nome = /densidade/i.test(t) ? "Densidade" : "AMRAP";
+      const fases = [];
+      let ini = 0;
+      for (let j = 1; j <= n; j++) {
+        fases.push({ ini, s, tipo: "trabalho", seg: j - 1, rotulo: n > 1 ? `${nome} ${j} de ${n}` : nome, sub: `${s / 60} min · máximo de voltas`, ativos: todos });
+        ini += s;
+        if (j < n && de) { fases.push({ ini, s: de, tipo: "descanso", rotulo: `Descanso · a seguir ${nome} ${j + 1}`, sub: "Descanso", ativos: [] }); ini += de; }
+      }
+      return { modo: "fases", nome, fases, total: ini, contador: true };
+    }
+
+    // "5 rondas de 3 min" (janela fixa por ronda)
+    m = t.match(/(\d+)\s*rondas?\s*de\s*(\d+)\s*min/i);
+    if (m) {
+      const n = Number(m[1]), w = Number(m[2]) * 60;
+      const fases = Array.from({ length: n }, (_, j) => ({ ini: j * w, s: w, tipo: "trabalho", volta: j + 1, rotulo: `Ronda ${j + 1} de ${n}`, sub: `Janela de ${w / 60} min`, ativos: todos }));
+      return { modo: "fases", nome: "Rondas", fases, total: n * w };
+    }
+
+    // "4 rondas · 90 s entre rondas (+ 1 min de wall balls máximos) · limite 20 min"
+    m = t.match(/(\d+)\s*rondas?\b/i);
+    if (m) {
+      const r = t.match(/(\d+)\s*(s|min)\b(?:\s*de descanso)?\s*entre rondas/i);
+      const ex = t.match(/\+\s*(\d+)\s*min\s+de\s+([^·.]+)/i);
+      const extraIdx = itens.findIndex((it) => /depois d[ao]s?\s+\d/i.test(`${it.dose}`));
+      return {
+        modo: "cronometro", nome: "Rondas", rondas: Number(m[1]), descanso: r ? segDe(r[1], r[2]) : 0, limite,
+        extra: ex ? { s: Number(ex[1]) * 60, nome: ex[2].trim(), idx: extraIdx } : null,
+        estacoes: todos.filter((k) => k !== extraIdx)
+      };
+    }
+    if (/chipper/i.test(t)) return { modo: "cronometro", nome: "Chipper", lista: true, limite, estacoes: todos };
+    return { modo: "cronometro", nome: "Relógio", limite, contador: true, estacoes: todos };
+  }
+
+  // ======================================================================
   // Blocos de uma sessão (usado no treino e nos modelos)
   // ======================================================================
+  const ICO_PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true" class="ico"><circle cx="12" cy="12" r="9.5"/><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none"/></svg>';
+  const ICO_RELOGIO = '<svg viewBox="0 0 24 24" aria-hidden="true" class="ico"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 2M9.5 3h5"/></svg>';
+
+  function cabBloco(b, bi) {
+    // "1 · Mobilidade (8 min)" → número, nome e minutos
+    const m = String(b.titulo || "").match(/^\s*(\d+)\s*·\s*(.*?)\s*(?:\((\d+)\s*min\))?\s*$/);
+    return {
+      num: m ? m[1] : String(bi + 1),
+      nome: m ? m[2] : String(b.titulo || "").replace(/\s*\((\d+)\s*min\)\s*$/, ""),
+      min: Number(m ? m[3] : (String(b.titulo || "").match(/\((\d+)\s*min\)/) || [])[1]) || 0
+    };
+  }
+
+  // Nota curta: etiquetas ("elástico", "máximo") + 1.ª frase; o resto fica em "mais".
+  function notaCurta(nota) {
+    let txt = String(nota || "").trim();
+    const tags = [];
+    let m;
+    while ((m = txt.match(/^(elástico(?:\s*\([^)]*\))?|máximo|teste)\s*·\s*/i))) { tags.push(m[1].replace(/\s*\(.*$/, "")); txt = txt.slice(m[0].length); }
+    let curto = txt, resto = "";
+    if (txt.length > 90) {
+      const p = txt.search(/\.\s/);
+      if (p > 0 && p < 120) { curto = txt.slice(0, p + 1); resto = txt.slice(p + 2); }
+    }
+    return { tags, curto, resto };
+  }
+
+  function linhaPlano(blocos) {
+    const cabs = (blocos || []).map(cabBloco);
+    const total = cabs.reduce((s, c) => s + c.min, 0);
+    if (cabs.length < 2 || cabs.some((c) => !c.min)) return "";
+    const nRel = (blocos || []).filter((b) => relogioDoBloco(b)).length;
+    return `
+      <div class="plano-linha">
+        <p class="plano-tit"><b>Plano da sessão</b><span>${total} min · ${cabs.length} blocos${nRel ? ` · ${nRel} com relógio` : ""}</span></p>
+        <div class="plano-barra" aria-hidden="true">
+          ${cabs.map((c, k) => `<i class="${relogioDoBloco(blocos[k]) ? "com-relogio" : ""}" style="flex:${c.min}"></i>`).join("")}
+        </div>
+        <ol class="plano-leg">
+          ${cabs.map((c, k) => `<li style="flex:${c.min}"><b>${esc(c.num)}</b> <span>${esc(c.nome)}</span> <em>${c.min}′</em>${relogioDoBloco(blocos[k]) ? '<span class="sr"> (com relógio)</span>' : ""}</li>`).join("")}
+        </ol>
+      </div>`;
+  }
+
   function htmlBlocos(blocos) {
     let n = 0;
-    return (blocos || []).map((b, bi) => {
-      // "1 · Mobilidade (8 min)" → número, nome e minutos
-      const m = String(b.titulo || "").match(/^\s*(\d+)\s*·\s*(.*?)\s*(?:\((\d+)\s*min\))?\s*$/);
-      const num = m ? m[1] : String(bi + 1);
-      const nomeBloco = m ? m[2] : String(b.titulo || "").replace(/\s*\((\d+)\s*min\)\s*$/, "");
-      const minM = m ? m[3] : (String(b.titulo || "").match(/\((\d+)\s*min\)/) || [])[1];
+    return linhaPlano(blocos) + (blocos || []).map((b, bi) => {
+      const c = cabBloco(b, bi);
+      const rel = relogioDoBloco(b);
       const nItens = (b.itens || []).length;
+      const comVideo = (b.itens || []).some((i) => est.exPorId[i.ex] && est.exPorId[i.ex].video);
       return `
-      <section class="bloco">
+      <section class="bloco${rel ? " bloco-relogio" : ""}" id="bloco-${bi + 1}">
         <header class="bloco-cab">
-          <span class="bloco-n" aria-hidden="true">${esc(num)}</span>
-          <h3>${esc(nomeBloco)}</h3>
-          <span class="bloco-min">${minM ? `${esc(minM)} min` : `${nItens} ex.`}</span>
+          <span class="bloco-n" aria-hidden="true">${esc(c.num)}</span>
+          <h3>${esc(c.nome)}</h3>
+          <span class="bloco-min">${c.min ? `${c.min} min` : `${nItens} ex.`}</span>
         </header>
-        ${b.formato ? `<p class="bloco-formato">${esc(b.formato)}</p>` : ""}
-        <ol class="passos">
+        ${b.formato ? `<p class="bloco-formato">${rel ? `<span class="fmt-tipo">${ICO_RELOGIO}${esc(rel.nome)}</span>` : ""}<span>${esc(b.formato)}</span></p>` : ""}
+        <ol class="passos${comVideo ? " com-video" : ""}">
           ${(b.itens || []).map((i) => {
             n += 1;
             const e = est.exPorId[i.ex];
             const nome = e ? `<a class="nome" href="#ex-${esc(e.id)}">${esc(e.nome)}</a>` : `<span class="nome">${esc(i.ex)}</span>`;
-            const desc = e ? `<span class="desc">${esc(e.musculos)}</span>` : "";
-            const nota = i.nota ? `<span class="desc nota-item">${esc(i.nota)}</span>` : "";
+            const nc = notaCurta(i.nota);
+            const pd = prefixoDose(i.dose);
+            const tags = [pd.etiqueta, ...nc.tags].filter(Boolean).map((x) => `<span class="tag-ex">${esc(x)}</span>`).join("");
+            const nota = nc.curto ? `<span class="desc nota-item">${esc(nc.curto)}${nc.resto ? `<details class="nota-mais"><summary>mais</summary>${esc(nc.resto)}</details>` : ""}</span>` : (e ? `<span class="desc">${esc(e.musculos)}</span>` : "");
             const descanso = i.descanso && i.descanso !== "—" ? `<small class="descanso">desc. ${esc(i.descanso)}</small>` : "";
-            const [dose, extra] = partirDose(i.dose);
-            return `<li class="passo${e ? " com-link" : ""}"><span class="n">${n}</span><div class="passo-txt">${nome}${desc}${nota}</div><div class="dose"><span class="dose-v">${esc(dose)}</span>${extra ? `<small>${esc(extra)}</small>` : ""}${descanso}</div></li>`;
+            const partes = pd.resto.split(/\s+·\s+/);
+            const [dose, extra] = partirDose(partes[0]);
+            const extras = [extra, ...partes.slice(1)].filter(Boolean);
+            const video = e && e.video ? `<a class="passo-video" href="${esc(e.video)}" target="_blank" rel="noopener" aria-label="Ver vídeo: ${esc(e.nome)}">${ICO_PLAY}</a>` : (comVideo ? "<span></span>" : "");
+            return `<li class="passo${e ? " com-link" : ""}"><span class="n">${n}</span><div class="passo-txt">${nome}${tags ? `<span class="tags-ex">${tags}</span>` : ""}${nota}</div><div class="dose"><span class="dose-v">${esc(dose)}</span>${extras.map((x) => `<small>${esc(x)}</small>`).join("")}${descanso}</div>${video}</li>`;
           }).join("")}
         </ol>
       </section>`;
@@ -886,6 +1084,7 @@
   function pararGuiado() {
     const g = est.guiado;
     if (g && g.relogio) clearInterval(g.relogio);
+    if (g && g.tique) clearInterval(g.tique);
     if (g && g.wake) { try { g.wake.release(); } catch (_) { /* ignorado */ } }
     est.guiado = null;
   }
@@ -897,53 +1096,101 @@
       const { data: t, error } = await sb.from("treinos").select("*").eq("id", id).maybeSingle();
       if (error) throw error;
       if (!t) { app().innerHTML = naoEncontrado("#treinos", "Os meus treinos", "Treino não encontrado.", ""); return; }
+      // Um passo por exercício nos blocos normais; um passo por bloco nos blocos com relógio.
       const passos = [];
-      (t.blocos || []).forEach((b, bi) => (b.itens || []).forEach((it) => passos.push({ bloco: b.titulo, formato: b.formato || "", bi, it })));
-      g = est.guiado = { id, t, passos, i: 0, feitas: {}, resta: 0, relogio: null, wake: null };
+      (t.blocos || []).forEach((b, bi) => {
+        const rel = relogioDoBloco(b);
+        if (rel && (b.itens || []).length) passos.push({ tipo: "tempo", bloco: b.titulo, formato: b.formato || "", bi, b, rel });
+        else (b.itens || []).forEach((it) => passos.push({ bloco: b.titulo, formato: b.formato || "", bi, it }));
+      });
+      g = est.guiado = { id, t, passos, i: 0, feitas: {}, tempos: {}, resta: 0, relogio: null, tique: null, wake: null };
       // Retoma onde ficou (ex.: depois de ver um vídeo, voltar à app ou recarregar a página).
       try {
         const guardado = JSON.parse(localStorage.getItem("guiado:" + id) || "null");
-        if (guardado && guardado.i < passos.length) { g.i = guardado.i; g.feitas = guardado.feitas || {}; }
+        if (guardado && guardado.i < passos.length && (guardado.n == null || guardado.n === passos.length)) {
+          g.i = guardado.i; g.feitas = guardado.feitas || {}; g.tempos = guardado.tempos || {};
+        }
       } catch (_) { /* sem armazenamento */ }
-      try { if (navigator.wakeLock) g.wake = await navigator.wakeLock.request("screen"); } catch (_) { /* opcional */ }
+      pedirWake();
     }
     desenharGuiado();
+  }
+
+  async function pedirWake() {
+    const g = est.guiado;
+    if (!g || (g.wake && !g.wake.released)) return;
+    try { if (navigator.wakeLock) g.wake = await navigator.wakeLock.request("screen"); } catch (_) { /* opcional */ }
+  }
+
+  function guardarGuiado() {
+    const g = est.guiado;
+    if (!g) return;
+    try { localStorage.setItem("guiado:" + g.id, JSON.stringify({ i: g.i, n: g.passos.length, feitas: g.feitas, tempos: g.tempos, em: Date.now() })); } catch (_) { /* sem armazenamento */ }
+  }
+
+  // Cabeçalho comum aos dois modos.
+  function topoGuiado(g, p, texto) {
+    const pct = Math.round((g.i / g.passos.length) * 100);
+    const c = cabBloco(p.b || { titulo: p.bloco }, p.bi);
+    const nBlocos = (g.t.blocos || []).length;
+    return `
+        <div class="guiado-topo">
+          <a class="voltar" href="#t-${g.id}">← Ver treino completo</a>
+          <p class="sobre">Bloco ${esc(c.num)}${nBlocos ? ` de ${nBlocos}` : ""} · ${esc(c.nome)}${c.min ? ` · ${c.min} min` : ""}</p>
+          ${p.formato ? `<p class="bloco-formato">${p.rel ? `<span class="fmt-tipo">${ICO_RELOGIO}${esc(p.rel.nome)}</span>` : ""}<span>${esc(p.formato)}</span></p>` : ""}
+          <div class="guiado-progresso" role="progressbar" aria-valuemin="0" aria-valuemax="${g.passos.length}" aria-valuenow="${g.i + 1}" aria-label="Progresso do treino"><i style="width:${pct}%"></i></div>
+          <p class="muted">${texto}</p>
+        </div>`;
+  }
+
+  function navGuiado(g) {
+    const ultimo = g.i === g.passos.length - 1;
+    const prox = g.passos[g.i + 1];
+    let aSeguir = "";
+    if (prox) {
+      if (prox.tipo === "tempo") aSeguir = `${cabBloco(prox.b, prox.bi).nome} · ${prox.rel.nome}`;
+      else { const e = est.exPorId[prox.it.ex]; aSeguir = `${e ? e.nome : prox.it.ex} · ${partirDose(prox.it.dose)[0]}`; }
+    }
+    return `
+        ${aSeguir ? `<p class="guiado-seguir"><span>A seguir</span> ${esc(aSeguir)}</p>` : ""}
+        <div class="guiado-nav">
+          <button type="button" class="btn grande" data-guiado="-1" ${g.i === 0 ? "disabled" : ""}>← Anterior</button>
+          ${ultimo
+            ? `<a class="btn primario grande" href="#t-${g.id}" data-registar="1">Terminar e registar</a>`
+            : `<button type="button" class="btn primario grande" data-guiado="1">Seguinte →</button>`}
+        </div>`;
   }
 
   function desenharGuiado() {
     const g = est.guiado;
     if (!g) return;
-    try { localStorage.setItem("guiado:" + g.id, JSON.stringify({ i: g.i, feitas: g.feitas, em: Date.now() })); } catch (_) { /* sem armazenamento */ }
+    if (g.tique) { clearInterval(g.tique); g.tique = null; }
+    guardarGuiado();
     if (!g.passos.length) { app().innerHTML = naoEncontrado(`#t-${g.id}`, "Voltar ao treino", "Este treino não tem exercícios.", ""); return; }
     const p = g.passos[g.i];
+    if (p.tipo === "tempo") { desenharTempo(g, p); return; }
     const e = est.exPorId[p.it.ex];
     const [dose, extra] = partirDose(p.it.dose);
     const n = seriesDe(p.it.dose);
     const feitas = g.feitas[g.i] || 0;
     const desc = p.it.descanso && p.it.descanso !== "—" ? p.it.descanso : "";
-    const ultimo = g.i === g.passos.length - 1;
-    const pct = Math.round(((g.i) / g.passos.length) * 100);
     const passosExec = e && e.execucao ? e.execucao.slice(0, 3) : [];
+    const nc = notaCurta(p.it.nota);
     app().innerHTML = `
       <section class="vista guiado">
-        <div class="guiado-topo">
-          <a class="voltar" href="#t-${g.id}">← Ver treino completo</a>
-          <p class="sobre">${esc(p.bloco)}</p>
-          ${p.formato ? `<p class="bloco-formato">${esc(p.formato)}</p>` : ""}
-          <div class="guiado-progresso" role="progressbar" aria-valuemin="0" aria-valuemax="${g.passos.length}" aria-valuenow="${g.i + 1}" aria-label="Progresso do treino"><i style="width:${pct}%"></i></div>
-          <p class="muted">Exercício ${g.i + 1} de ${g.passos.length}</p>
-        </div>
+        ${topoGuiado(g, p, `Exercício ${g.i + 1} de ${g.passos.length}`)}
 
         <article class="guiado-cartao">
+          ${nc.tags.length ? `<p class="tags-ex">${nc.tags.map((x) => `<span class="tag-ex">${esc(x)}</span>`).join("")}</p>` : ""}
           <h1>${esc(e ? e.nome : p.it.ex)}</h1>
           ${e ? `<p class="muted">${esc(e.musculos)}</p>` : ""}
           <p class="guiado-dose">${esc(dose)}</p>
           ${extra ? `<p class="guiado-extra">${esc(extra)}</p>` : ""}
-          ${p.it.nota ? `<p class="nota">${esc(p.it.nota)}</p>` : ""}
+          ${p.it.nota ? `<p class="nota">${esc([nc.curto, nc.resto].filter(Boolean).join(" "))}</p>` : ""}
           ${desc ? `<p class="muted">Descanso: <b>${esc(desc)}</b></p>` : ""}
 
           <div class="series" role="group" aria-label="Séries">
-            ${Array.from({ length: n }, (_, k) => `<button type="button" class="serie" data-serie="${k}" aria-pressed="${k < feitas}">${k < feitas ? "✓" : k + 1}</button>`).join("")}
+            ${Array.from({ length: n }, (_, k) => `<button type="button" class="serie" data-serie="${k}" aria-pressed="${k < feitas}" aria-label="Série ${k + 1}${k < feitas ? ", feita" : ""}">${k < feitas ? "✓" : k + 1}</button>`).join("")}
           </div>
           <button type="button" class="btn primario grande" data-serie-feita="1" ${feitas >= n ? "disabled" : ""}>${feitas >= n ? "Séries concluídas" : n > 1 ? `Série ${feitas + 1} feita` : "Feito"}</button>
 
@@ -953,7 +1200,7 @@
             <button type="button" class="btn pequeno" data-saltar-descanso="1">Saltar</button>
           </div>
 
-          ${e && e.video ? `<a class="btn guiado-video" href="${esc(e.video)}" target="_blank" rel="noopener">Ver vídeo do exercício ↗</a>` : ""}
+          ${e && e.video ? `<a class="btn guiado-video" href="${esc(e.video)}" target="_blank" rel="noopener">${ICO_PLAY} Ver vídeo do exercício ↗</a>` : ""}
           ${passosExec.length ? `
             <details class="guiado-como">
               <summary>Como fazer</summary>
@@ -961,14 +1208,295 @@
               <a href="#ex-${esc(p.it.ex)}" data-do-guiado="1">Ver explicação completa</a>
             </details>` : ""}
         </article>
-
-        <div class="guiado-nav">
-          <button type="button" class="btn grande" data-guiado="-1" ${g.i === 0 ? "disabled" : ""}>← Anterior</button>
-          ${ultimo
-            ? `<a class="btn primario grande" href="#t-${g.id}" data-registar="1">Terminar e registar</a>`
-            : `<button type="button" class="btn primario grande" data-guiado="1">Seguinte →</button>`}
-        </div>
+        ${navGuiado(g)}
       </section>`;
+  }
+
+  // ----------------------------------------------------------------------
+  // Bloco com relógio: o bloco inteiro num ecrã, relógio grande, estação atual
+  // destacada e mudança automática a cada janela. O tempo é calculado a partir de
+  // marcas de tempo (continua certo com o ecrã bloqueado, ao ver um vídeo ou ao recarregar).
+  // ----------------------------------------------------------------------
+  const PREP_MS = 5000;  // contagem "Prepara-te" antes do primeiro arranque
+
+  function estadoTempo(g) {
+    const k = g.i;
+    if (!g.tempos[k]) g.tempos[k] = { acum: 0, desde: null, iniciado: false, voltas: {}, feitos: [], rondas: 0, descAte: null, extraDe: null, fim: false };
+    return g.tempos[k];
+  }
+  const decorrido = (ts) => (ts.acum + (ts.desde ? Date.now() - ts.desde : 0)) / 1000;  // segundos (negativo = preparação)
+
+  // Onde estamos no relógio: fase atual, tempos e textos.
+  function leituraTempo(p, ts) {
+    const r = p.rel, e = decorrido(ts);
+    if (e < 0) return { prep: true, num: Math.ceil(-e), rotulo: "Prepara-te", sub: "", ativos: r.modo === "fases" ? r.fases[0].ativos : [], frac: 0, chave: "prep", e };
+    if (r.modo === "fases") {
+      if (ts.fim || e >= r.total) return { fim: true, num: 0, rotulo: "Bloco terminado", sub: `Total ${formatarSeg(Math.round(r.total))}`, ativos: [], frac: 1, chave: "fim", e };
+      let j = r.fases.findIndex((f) => e >= f.ini && e < f.ini + f.s);
+      if (j < 0) j = r.fases.length - 1;
+      const f = r.fases[j];
+      const resta = f.ini + f.s - e;
+      return { j, f, num: Math.ceil(resta), resta, rotulo: f.rotulo, sub: f.sub || "", ativos: f.ativos, frac: (e - f.ini) / f.s, chave: "f" + j, descanso: f.tipo === "descanso", e,
+        total: `${formatarSeg(Math.floor(e))} / ${formatarSeg(r.total)}` };
+    }
+    // Cronómetro (rondas, chipper, livre)
+    const lim = r.limite;
+    if (ts.fim || (lim && e >= lim)) return { fim: true, num: 0, rotulo: lim && e >= lim ? "Tempo limite" : "Bloco terminado", sub: `Tempo ${formatarSeg(Math.round(Math.min(e, lim || e)))}`, ativos: [], frac: 1, chave: "fim", e };
+    if (ts.descAte != null && e < ts.descAte) {
+      const resta = ts.descAte - e;
+      return { num: Math.ceil(resta), resta, rotulo: `Descanso · a seguir ${ts.rondas >= (r.rondas || 99) && r.extra ? r.extra.nome : `ronda ${ts.rondas + 1}`}`, sub: "", ativos: [], frac: 1 - resta / (r.descanso || 1), chave: "d" + ts.rondas, descanso: true, e, conta: false };
+    }
+    if (ts.extraDe != null) {
+      const resta = ts.extraDe + r.extra.s - e;
+      if (resta <= 0) return { fim: true, num: 0, rotulo: "Bloco terminado", sub: `Tempo ${formatarSeg(Math.round(e))}`, ativos: [], frac: 1, chave: "fim", e };
+      return { num: Math.ceil(resta), resta, rotulo: r.extra.nome.replace(/^./, (x) => x.toUpperCase()), sub: "Máximo de repetições", ativos: [r.extra.idx], frac: (e - ts.extraDe) / r.extra.s, chave: "x", e };
+    }
+    let ativos = r.estacoes || [];
+    if (r.lista) { const k = ativos.find((x) => !ts.feitos.includes(x)); ativos = k == null ? [] : [k]; }
+    const rot = r.rondas ? `Ronda ${Math.min(ts.rondas + 1, r.rondas)} de ${r.rondas}` : r.lista ? `Estação ${Math.min(ts.feitos.length + 1, (r.estacoes || []).length)} de ${(r.estacoes || []).length}` : r.nome;
+    return { num: Math.floor(e), rotulo: rot, sub: lim ? `Limite ${formatarSeg(lim)} · faltam ${formatarSeg(Math.max(0, Math.ceil(lim - e)))}` : "", ativos, frac: lim ? e / lim : 0, chave: "c" + ts.rondas, e, conta: true };
+  }
+
+  function desenharTempo(g, p) {
+    const r = p.rel, ts = estadoTempo(g), b = p.b;
+    const L = leituraTempo(p, ts);
+    const corre = !!ts.desde;
+    const som = somLigado();
+    const segAtual = L.f && L.f.seg != null ? L.f.seg : (r.fases ? (r.fases.filter((f) => f.seg != null && f.ini <= Math.max(0, L.e)).pop() || {}).seg ?? 0 : 0);
+    const nVoltas = r.modo === "fases" ? (ts.voltas[segAtual] || 0) : ts.rondas;
+    const historico = r.contador && r.modo === "fases" ? r.fases.filter((f) => f.seg != null).map((f) => ts.voltas[f.seg] || 0) : [];
+    const estacoes = r.modo === "cronometro" && r.extra ? [...r.estacoes, r.extra.idx] : (b.itens || []).map((_, k) => k);
+    const nPassos = g.passos.length;
+    const cronometro = r.modo === "cronometro";
+    const ae = document.activeElement;
+    const foco = ae && ae.dataset ? (ae.dataset.f || (ae.dataset.estacao != null ? `e${ae.dataset.estacao}` : "")) : "";
+    app().innerHTML = `
+      <section class="vista guiado guiado-tempo">
+        ${topoGuiado(g, p, `Passo ${g.i + 1} de ${nPassos} · bloco com relógio`)}
+
+        <article class="relogio${L.descanso ? " em-descanso" : ""}${L.fim ? " terminado" : ""}${L.prep ? " a-preparar" : ""}" id="relogio" data-corre="${corre}">
+          <p class="rel-fase"><b id="relFase">${esc(L.rotulo)}</b><span id="relSub">${esc(L.sub)}</span></p>
+          <div class="rel-num" id="relNum" role="timer" aria-label="Relógio">${L.prep ? L.num : formatarSeg(Math.max(0, L.num))}</div>
+          <div class="rel-barra" aria-hidden="true"><i id="relBarra" style="width:${Math.round(Math.min(1, Math.max(0, L.frac)) * 100)}%"></i></div>
+          <p class="rel-total" id="relTotal">${L.total ? `Total ${L.total}` : cronometro ? (r.limite ? `Cronómetro · limite ${formatarSeg(r.limite)}` : "Cronómetro") : ""}</p>
+          <p class="rel-agora" id="relAgora">${htmlAgora(b, L, p)}</p>
+
+          <div class="rel-ctl">
+            <button type="button" class="btn grande rel-reiniciar" data-f="reiniciar" data-tempo="reiniciar" ${ts.iniciado ? "" : "disabled"}>Reiniciar</button>
+            <button type="button" class="btn primario grande rel-play" data-f="play" data-tempo="${corre ? "pausa" : "inicio"}" ${L.fim ? "disabled" : ""}>${corre ? "Pausa" : ts.iniciado ? "Continuar" : "Começar"}</button>
+          </div>
+          ${r.contador || r.rondas ? `
+          <div class="rel-contador" role="group" aria-label="${r.rondas ? "Rondas" : "Voltas"}">
+            <button type="button" class="btn grande" data-f="menos" data-tempo="menos" aria-label="Menos uma ${r.rondas ? "ronda" : "volta"}" ${nVoltas ? "" : "disabled"}>−</button>
+            <p><b id="relVoltas">${nVoltas}</b><span>${r.rondas ? `de ${r.rondas} rondas` : `voltas${historico.length > 1 ? ` neste bloco` : ""}`}</span></p>
+            <button type="button" class="btn grande ${r.rondas ? "primario" : ""}" data-f="mais" data-tempo="mais" aria-label="${r.rondas ? "Ronda feita" : "Mais uma volta"}" ${L.fim || (r.rondas && ts.rondas >= r.rondas) ? "disabled" : ""}>${r.rondas ? "Ronda feita" : "+"}</button>
+          </div>
+          ${historico.length > 1 ? `<p class="rel-hist">Voltas por bloco: ${historico.map((v, k) => `<span>${k + 1}: <b>${v}</b></span>`).join("")}</p>` : ""}` : ""}
+          <button type="button" class="rel-som" data-f="som" data-tempo="som" aria-pressed="${som}">${som ? "Som e vibração ligados" : "Som desligado"}</button>
+        </article>
+        <p class="sr" id="relAviso" aria-live="assertive" aria-atomic="true"></p>
+
+        <h2 class="titulo-secao">${r.lista ? "Estações · toca para marcar" : "Estações"}</h2>
+        <ol class="estacoes" id="estacoes">
+          ${estacoes.map((k) => linhaEstacao(b, k, L, ts, r)).join("")}
+        </ol>
+        ${navGuiado(g)}
+      </section>`;
+    if (foco) {
+      const alvo = document.querySelector(foco[0] === "e" && /^e\d+$/.test(foco) ? `[data-estacao="${foco.slice(1)}"]` : `[data-f="${foco}"]`);
+      if (alvo && !alvo.disabled) alvo.focus();
+    }
+    if (corre) iniciarTique();
+  }
+
+  function htmlAgora(b, L, p) {
+    if (L.fim) return `<span>Feito</span> Regista as voltas/tempo e passa ao seguinte.`;
+    const ativos = L.ativos || [];
+    if (!ativos.length) return L.descanso ? `<span>Agora</span> Descansa` : "";
+    const v = (L.f && L.f.volta) || 1;
+    const txt = ativos.map((k) => {
+      const it = b.itens[k], e = est.exPorId[it.ex];
+      return `<b>${esc(e ? e.nome : it.ex)}</b> ${esc(doseNaVolta(it.dose, v))}`;
+    }).join(" <i>+</i> ");
+    return `<span>${L.prep ? "Primeiro" : "Agora"}</span> ${txt}`;
+  }
+
+  function linhaEstacao(b, k, L, ts, r) {
+    const it = b.itens[k], e = est.exPorId[it.ex];
+    const pd = prefixoDose(it.dose);
+    const ativa = (L.ativos || []).includes(k);
+    const feito = r.lista && ts.feitos.includes(k);
+    const nome = e ? e.nome : it.ex;
+    const v = (L.f && L.f.volta) || 0;
+    const dose = v ? doseNaVolta(it.dose, v) : pd.resto;
+    return `
+      <li class="estacao${ativa ? " ativa" : ""}${feito ? " feita" : ""}" data-k="${k}">
+        ${r.lista
+          ? `<button type="button" class="est-check" data-estacao="${k}" aria-pressed="${feito}" aria-label="${esc(nome)}: ${feito ? "feito" : "marcar como feito"}">${feito ? "✓" : ""}</button>`
+          : `<span class="est-marca" aria-hidden="true">${ativa ? "▶" : ""}</span>`}
+        <div class="est-txt">
+          ${pd.etiqueta ? `<span class="tag-ex">${esc(pd.etiqueta)}</span>` : ""}
+          <strong>${esc(nome)}</strong>${ativa ? '<span class="sr"> (agora)</span>' : ""}
+          <span class="est-dose">${esc(dose)}</span>
+          ${it.nota ? `<details class="nota-mais"><summary>nota</summary>${esc(it.nota)}</details>` : ""}
+        </div>
+        <div class="est-acoes">
+          ${e && e.video ? `<a class="est-btn" href="${esc(e.video)}" target="_blank" rel="noopener" aria-label="Ver vídeo do exercício: ${esc(nome)}">${ICO_PLAY}</a>` : ""}
+          ${e ? `<a class="est-btn est-como" href="#ex-${esc(it.ex)}" data-do-guiado="1" aria-label="Como fazer: ${esc(nome)}">?</a>` : ""}
+        </div>
+      </li>`;
+  }
+
+  // Atualização leve (só textos) a cada 250 ms; avisos sonoros nas mudanças.
+  function iniciarTique() {
+    const g = est.guiado;
+    if (!g) return;
+    if (g.tique) clearInterval(g.tique);
+    g.ultChave = null;
+    g.ultPip = null;
+    const passo = () => {
+      const g2 = est.guiado;
+      if (!g2 || !$("relogio")) { clearInterval(g.tique); return; }
+      const p = g2.passos[g2.i], ts = estadoTempo(g2);
+      const L = leituraTempo(p, ts);
+      if (g2.ultChave == null) g2.ultChave = L.chave;
+      if (L.chave !== g2.ultChave) {
+        g2.ultChave = L.chave;
+        if (L.fim) {
+          ts.fim = true; ts.acum = Math.round(L.e * 1000); ts.desde = null;
+          g2.feitas[g2.i] = 1;
+          avisar([[880, .25], [0, .12], [880, .25], [0, .12], [1320, .6]], [400, 150, 400, 150, 600]);
+          anunciar("Bloco terminado.");
+          desenharGuiado();
+          return;
+        }
+        avisar(L.descanso ? [[520, .5]] : [[1320, .45]], L.descanso ? [300] : [250, 100, 250]);
+        anunciar(`${L.rotulo}. ${textoSimples(htmlAgora(p.b, L, p))}`);
+        if (!L.descanso && !L.prep) pedirWake();
+        desenharTempo(g2, p);
+        return;
+      }
+      // Bips curtos nos últimos 3 s de cada janela/descanso/preparação.
+      if (L.resta != null || L.prep) {
+        const s = L.prep ? L.num : Math.ceil(L.resta);
+        if (s <= 3 && s >= 1 && g2.ultPip !== L.chave + s) { g2.ultPip = L.chave + s; avisar([[880, .12]], null); }
+      }
+      const num = $("relNum");
+      if (num) num.textContent = L.prep ? String(L.num) : formatarSeg(Math.max(0, L.num));
+      const bar = $("relBarra");
+      if (bar) bar.style.width = `${Math.round(Math.min(1, Math.max(0, L.frac)) * 100)}%`;
+      if ($("relSub")) $("relSub").textContent = L.sub;
+      if ($("relTotal") && L.total) $("relTotal").textContent = `Total ${L.total}`;
+    };
+    g.tique = setInterval(passo, 250);
+    passo();
+  }
+
+  const textoSimples = (html) => String(html).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  function anunciar(txt) {
+    const a = $("relAviso");
+    if (a) { a.textContent = ""; setTimeout(() => { if ($("relAviso")) $("relAviso").textContent = txt; }, 60); }
+  }
+
+  // Som (WebAudio, criado num toque do utilizador) e vibração.
+  function somLigado() { try { return localStorage.getItem("guiado:som") !== "0"; } catch (_) { return true; } }
+  function prepararAudio() {
+    const g = est.guiado;
+    if (!g || !somLigado()) return;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!est.audio) est.audio = new AC();
+      if (est.audio.state === "suspended") est.audio.resume();
+    } catch (_) { /* sem áudio */ }
+  }
+  function avisar(tons, vib) {
+    if (!somLigado()) return;
+    if (vib && navigator.vibrate) { try { navigator.vibrate(vib); } catch (_) { /* ignorado */ } }
+    const ac = est.audio;
+    if (!ac || !tons) return;
+    try {
+      let t0 = ac.currentTime + .02;
+      tons.forEach(([f, d]) => {
+        if (f) {
+          const o = ac.createOscillator(), v = ac.createGain();
+          o.type = "square"; o.frequency.value = f;
+          v.gain.setValueAtTime(.0001, t0);
+          v.gain.exponentialRampToValueAtTime(.25, t0 + .01);
+          v.gain.exponentialRampToValueAtTime(.0001, t0 + d);
+          o.connect(v).connect(ac.destination);
+          o.start(t0); o.stop(t0 + d + .02);
+        }
+        t0 += d;
+      });
+    } catch (_) { /* sem áudio */ }
+  }
+
+  // Botões do relógio.
+  function acaoTempo(acao, el) {
+    const g = est.guiado;
+    if (!g) return;
+    const p = g.passos[g.i];
+    if (!p || p.tipo !== "tempo") return;
+    const r = p.rel, ts = estadoTempo(g);
+    const e = decorrido(ts);
+    if (acao === "inicio") {
+      prepararAudio();
+      pedirWake();
+      if (!ts.iniciado) { ts.iniciado = true; ts.acum = -PREP_MS; }
+      ts.desde = Date.now();
+      avisar([[660, .08]], [40]);
+    } else if (acao === "pausa") {
+      ts.acum = Math.round(e * 1000); ts.desde = null;
+    } else if (acao === "reiniciar") {
+      if (el.dataset.confirmar !== "1") {
+        el.dataset.confirmar = "1";
+        el.textContent = "Confirmar";
+        setTimeout(() => { if (el.isConnected) { el.dataset.confirmar = ""; el.textContent = "Reiniciar"; } }, 4000);
+        return;
+      }
+      g.tempos[g.i] = null;
+      delete g.feitas[g.i];
+    } else if (acao === "som") {
+      try { localStorage.setItem("guiado:som", somLigado() ? "0" : "1"); } catch (_) { /* ignorado */ }
+      if (somLigado()) prepararAudio();
+    } else if (acao === "mais" || acao === "menos") {
+      const d = acao === "mais" ? 1 : -1;
+      prepararAudio();
+      if (r.modo === "fases") {
+        const L = leituraTempo(p, ts);
+        const seg = L.f && L.f.seg != null ? L.f.seg : (r.fases.filter((f) => f.seg != null && f.ini <= Math.max(0, e)).pop() || {}).seg ?? 0;
+        ts.voltas[seg] = Math.max(0, (ts.voltas[seg] || 0) + d);
+      } else if (r.rondas) {
+        ts.rondas = Math.max(0, Math.min(r.rondas, ts.rondas + d));
+        if (d > 0) {
+          if (!ts.iniciado) { ts.iniciado = true; ts.acum = 0; ts.desde = Date.now(); }
+          const fimRondas = ts.rondas >= r.rondas;
+          if ((!fimRondas || r.extra) && r.descanso) ts.descAte = Math.max(0, e) + r.descanso;
+          if (fimRondas && r.extra) ts.extraDe = Math.max(0, e) + (r.descanso || 0);
+          if (fimRondas && !r.extra) { ts.fim = true; ts.acum = Math.round(Math.max(0, e) * 1000); ts.desde = null; g.feitas[g.i] = 1; anunciar("Bloco terminado."); avisar([[1320, .6]], [400]); }
+          else anunciar(`Ronda ${ts.rondas} feita.${r.descanso ? ` Descanso ${formatarSeg(r.descanso)}.` : ""}`);
+        } else { ts.descAte = null; ts.extraDe = null; ts.fim = false; }
+      } else {
+        ts.rondas = Math.max(0, ts.rondas + d);
+      }
+    }
+    desenharGuiado();
+  }
+
+  // Chipper: marcar estação feita (a seguinte fica destacada).
+  function marcarEstacao(k) {
+    const g = est.guiado;
+    if (!g) return;
+    const p = g.passos[g.i], ts = estadoTempo(g);
+    k = Number(k);
+    ts.feitos = ts.feitos.includes(k) ? ts.feitos.filter((x) => x !== k) : [...ts.feitos, k];
+    if (p.rel.estacoes.every((x) => ts.feitos.includes(x)) && ts.iniciado && !ts.fim) {
+      ts.acum = Math.round(Math.max(0, decorrido(ts)) * 1000); ts.desde = null; ts.fim = true; g.feitas[g.i] = 1;
+      avisar([[1320, .6]], [400]);
+      toast(`Chipper terminado em ${formatarSeg(Math.round(ts.acum / 1000))}.`);
+    }
+    desenharGuiado();
   }
 
   function formatarSeg(s) {
@@ -2307,8 +2835,13 @@
       const d = $("dica"); if (d) d.remove();
       return;
     }
+    if (est.guiado && el.dataset.tempo) { acaoTempo(el.dataset.tempo, el); return; }
+    if (est.guiado && el.dataset.estacao != null) { marcarEstacao(el.dataset.estacao); return; }
     if (est.guiado && el.dataset.guiado) {
       const g = est.guiado;
+      // Sair de um bloco com relógio põe o relógio em pausa (o tempo fica guardado).
+      const pa = g.passos[g.i], ta = pa && pa.tipo === "tempo" ? g.tempos[g.i] : null;
+      if (ta && ta.desde) { ta.acum = Math.round(decorrido(ta) * 1000); ta.desde = null; }
       g.i = Math.min(g.passos.length - 1, Math.max(0, g.i + Number(el.dataset.guiado)));
       if (g.relogio) { clearInterval(g.relogio); g.relogio = null; }
       g.resta = 0;

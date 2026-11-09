@@ -661,7 +661,7 @@ a.sd-hoje:hover { background: color-mix(in srgb, var(--verde) 85%, var(--verde-i
 .passo a.nome:focus-visible { outline: none; }
 .passo a.nome:focus-visible::after { outline: 3px solid var(--accent); outline-offset: -3px; border-radius: 4px; }
 .passo .desc { display: block; color: var(--muted); font-size: .84rem; line-height: 1.35; margin-top: .1rem; }
-.passo .nota-item { color: var(--accent); font-weight: 600; }
+.passo .nota-item { color: var(--ink-2); font-weight: 450; }
 .passo .dose { text-align: right; min-width: 0; }
 .dose-v {
   display: block;
@@ -680,7 +680,7 @@ a.sd-hoje:hover { background: color-mix(in srgb, var(--verde) 85%, var(--verde-i
   line-height: 1.3;
   color: var(--muted);
 }
-.passo .dose .descanso { font-family: var(--mono); }
+.passo .dose .descanso { font-family: var(--mono); display: block; padding: 0; border-radius: 0; background: none; color: var(--muted); }
 @media (max-width: 30rem) {
   .passo { grid-template-columns: 1.2rem minmax(0, 1fr) minmax(0, 44%); gap: .55rem; padding: .7rem .8rem; }
   .dose-v { font-size: 1.02rem; }
@@ -1511,6 +1511,10 @@ a.sd-hoje:hover { background: color-mix(in srgb, var(--verde) 85%, var(--verde-i
 
 /* Formato de um bloco (ex.: "5 rondas · 2 min entre rondas") */
 .bloco-formato {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .35rem .6rem;
   margin: .4rem 0 .6rem;
   padding: .55rem .8rem;
   border-radius: 10px;
@@ -1521,6 +1525,146 @@ a.sd-hoje:hover { background: color-mix(in srgb, var(--verde) 85%, var(--verde-i
   font-size: .9rem;
   line-height: 1.35;
 }
+.bloco-formato > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.fmt-tipo {
+  display: inline-flex; align-items: center; gap: .3rem;
+  padding: .15rem .55rem .15rem .4rem; border-radius: var(--r-pill);
+  background: var(--verde-ink); color: var(--verde);
+  font-size: .76rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+}
+.fmt-tipo .ico { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+/* ---------- Plano da sessão: linha do tempo dos blocos ---------- */
+.plano-linha { margin: 0 0 1.25rem; display: grid; gap: .4rem; }
+.plano-tit { margin: 0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: .2rem .75rem; align-items: baseline; }
+.plano-tit b { font-family: var(--display); font-stretch: 75%; font-weight: 800; font-size: 1.15rem; text-transform: uppercase; }
+.plano-tit span { font-family: var(--mono); font-size: .82rem; color: var(--ink-2); }
+.plano-barra { display: flex; gap: 3px; height: 10px; }
+.plano-barra i { display: block; min-width: 6px; border-radius: 3px; background: color-mix(in srgb, var(--verde) 38%, var(--surface-2)); }
+.plano-barra i.com-relogio { background: var(--verde); }
+.plano-leg { list-style: none; margin: 0; padding: 0; display: flex; gap: 3px; }
+.plano-leg li { min-width: 0; display: grid; font-size: .74rem; line-height: 1.25; color: var(--ink-2); }
+.plano-leg li > b { font-family: var(--mono); font-weight: 600; color: var(--ink); }
+.plano-leg li > span:not(.sr) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.plano-leg li > em { font-style: normal; font-family: var(--mono); color: var(--muted); }
+.plano-leg li { grid-template-areas: "n m" "t t"; grid-template-columns: auto 1fr; column-gap: .3rem; }
+.plano-leg li > b { grid-area: n; }
+.plano-leg li > em { grid-area: m; }
+.plano-leg li > span:not(.sr) { grid-area: t; }
+
+/* Blocos com relógio no plano: contorno verde. */
+.bloco-relogio .passos { border-color: color-mix(in srgb, var(--verde) 70%, var(--line)); }
+.tags-ex { display: flex; flex-wrap: wrap; gap: .25rem; margin: .2rem 0 .1rem; }
+.tag-ex {
+  display: inline-block; padding: .05rem .4rem; border-radius: 5px;
+  background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line);
+  font-family: var(--mono); font-size: .68rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; line-height: 1.5;
+}
+.passos.com-video .passo { grid-template-columns: 1.6rem minmax(0, 1fr) minmax(0, 38%) 44px; }
+.passo-video {
+  position: relative; z-index: 1;
+  display: grid; place-items: center; width: 44px; height: 44px; margin: -4px -8px -4px 0;
+  border-radius: 50%; color: var(--accent);
+}
+.passo-video .ico { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.passo-video:hover { background: var(--surface-2); }
+.passo-video:focus-visible { outline: 3px solid var(--accent); outline-offset: -2px; }
+.nota-mais { position: relative; z-index: 1; display: inline; }
+.nota-mais summary {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; margin: -14px 0 -14px .1rem;
+  vertical-align: middle; cursor: pointer; list-style: none; font-family: var(--mono); font-size: .74rem; font-weight: 600;
+  color: var(--accent); text-decoration: underline; text-underline-offset: .2em;
+}
+.nota-mais summary::-webkit-details-marker { display: none; }
+.nota-mais[open] { display: block; color: var(--ink-2); font-weight: 400; }
+.nota-mais[open] summary { margin: -10px 0 -10px; }
+@media (max-width: 30rem) {
+  .passos.com-video .passo { grid-template-columns: 1.1rem minmax(0, 1fr) minmax(0, 33%) 40px; gap: .45rem; }
+  .passo-video { margin-right: -12px; }
+}
+
+/* ---------- Modo guiado: bloco com relógio ---------- */
+.guiado-seguir { margin: 0; display: flex; flex-wrap: wrap; gap: .1rem .5rem; align-items: baseline; color: var(--ink-2); font-size: .92rem; }
+.guiado-seguir span { font-family: var(--mono); font-size: .7rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+.guiado-video { display: inline-flex; align-items: center; gap: .45rem; }
+.guiado-video .ico { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.relogio {
+  display: grid; gap: .7rem; padding: 1.1rem 1.1rem 1rem; border-radius: 18px;
+  background: var(--night); color: var(--night-ink); border: 1px solid var(--night-line);
+}
+.rel-fase { margin: 0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: .2rem .75rem; align-items: baseline; }
+.rel-fase b { font-family: var(--display); font-stretch: 75%; font-weight: 800; font-size: 1.45rem; text-transform: uppercase; line-height: 1.05; color: var(--night-ink); }
+.rel-fase span { font-family: var(--mono); font-size: .82rem; color: var(--night-ink-2); }
+.rel-num {
+  font-family: var(--mono); font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -.04em;
+  font-size: clamp(4.4rem, 26vw, 7.5rem); line-height: .95; text-align: center; color: var(--night-accent);
+}
+.relogio.em-descanso .rel-num { color: var(--night-ink); }
+.relogio.a-preparar .rel-num { color: var(--night-ink); }
+.relogio.terminado .rel-num { color: var(--night-ink-2); }
+.rel-barra { height: 8px; border-radius: 999px; background: var(--night-line); overflow: hidden; }
+.rel-barra i { display: block; height: 100%; background: var(--night-accent); border-radius: 999px; transition: width .25s linear; }
+.relogio.em-descanso .rel-barra i { background: var(--night-ink-2); }
+.rel-total { margin: 0; text-align: center; font-family: var(--mono); font-size: .82rem; color: var(--night-ink-2); min-height: 1.2em; }
+.rel-agora {
+  margin: 0; padding: .7rem .85rem; border-radius: 12px; background: var(--night-2); border: 1px solid var(--night-line);
+  font-size: 1.05rem; line-height: 1.35; color: var(--night-ink); min-height: 3.2rem;
+}
+.rel-agora:empty { display: none; }
+.rel-agora span { display: block; font-family: var(--mono); font-size: .7rem; text-transform: uppercase; letter-spacing: .12em; color: var(--night-accent); margin-bottom: .15rem; }
+.rel-agora b { font-weight: 750; }
+.rel-agora i { font-style: normal; color: var(--night-ink-2); padding: 0 .15rem; }
+.rel-ctl { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: .6rem; }
+.rel-ctl .btn { width: 100%; justify-content: center; min-height: 56px; white-space: nowrap; padding-inline: .6rem; }
+.relogio .btn:not(.primario) { background: var(--night-2); border-color: var(--night-line); color: var(--night-ink); }
+.relogio .btn:disabled { opacity: .45; }
+.rel-play { font-size: 1.15rem; }
+.relogio[data-corre="true"] .rel-play { background: var(--night-ink); border-color: var(--night-ink); color: var(--night); }
+.rel-contador { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: .6rem; align-items: center; }
+.rel-contador .btn { min-height: 56px; min-width: 56px; justify-content: center; font-size: 1.3rem; }
+.rel-contador .btn.primario { font-size: 1rem; padding-inline: 1rem; }
+.rel-contador p { margin: 0; display: grid; justify-items: center; line-height: 1.1; }
+.rel-contador b { font-family: var(--mono); font-size: 2rem; font-weight: 600; color: var(--night-ink); }
+.rel-contador span { font-size: .78rem; color: var(--night-ink-2); text-align: center; }
+.rel-hist { margin: 0; display: flex; flex-wrap: wrap; gap: .3rem .9rem; font-family: var(--mono); font-size: .8rem; color: var(--night-ink-2); }
+.rel-hist b { color: var(--night-ink); }
+.rel-som {
+  justify-self: center; min-height: 44px; padding: 0 .8rem; border: 0; background: transparent; cursor: pointer;
+  font: inherit; font-family: var(--mono); font-size: .78rem; color: var(--night-ink-2); text-decoration: underline; text-underline-offset: .2em;
+}
+.relogio :focus-visible { outline: 3px solid var(--night-accent); outline-offset: 2px; }
+
+.estacoes { list-style: none; margin: 0; padding: 0; display: grid; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-l); overflow: hidden; }
+.estacao { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: .5rem; align-items: center; padding: .55rem .7rem .55rem .4rem; border-top: 1px solid var(--line); }
+.estacao:first-child { border-top: 0; }
+.estacao.ativa { background: var(--verde); color: var(--verde-ink); }
+.estacao.ativa .tag-ex { background: color-mix(in srgb, var(--verde-ink) 12%, var(--verde)); border-color: transparent; color: var(--verde-ink); }
+.estacao.ativa .est-dose, .estacao.ativa .nota-mais summary, .estacao.ativa .est-btn { color: var(--verde-ink); }
+.estacao.ativa .nota-mais[open] { color: var(--verde-ink); }
+.estacao.feita strong { text-decoration: line-through; text-decoration-thickness: 2px; }
+.estacao.feita { background: var(--surface-2); }
+.est-marca { display: grid; place-items: center; font-size: .9rem; }
+.est-txt { min-width: 0; display: grid; justify-items: start; gap: .05rem; }
+.est-txt strong { font-weight: 700; line-height: 1.25; }
+.est-dose { font-family: var(--mono); font-weight: 600; font-size: .95rem; color: var(--ink); overflow-wrap: anywhere; }
+.est-acoes { display: flex; gap: .15rem; }
+.est-btn {
+  display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+  color: var(--accent); text-decoration: none; font-family: var(--mono); font-weight: 700; font-size: 1.05rem;
+}
+.est-btn .ico { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.est-como { position: relative; }
+.est-como::before { content: ""; position: absolute; inset: 8px; border: 1.5px solid currentColor; border-radius: 50%; }
+.est-btn:hover { background: var(--surface-2); }
+.estacao.ativa .est-btn:hover { background: color-mix(in srgb, var(--verde-ink) 10%, var(--verde)); }
+.est-check {
+  width: 44px; height: 44px; border-radius: 12px; border: 2px solid var(--line); background: var(--bg); color: var(--verde-ink);
+  font: inherit; font-weight: 800; font-size: 1.2rem; cursor: pointer;
+}
+.est-check[aria-pressed="true"] { background: var(--verde); border-color: var(--verde); }
+.estacao.ativa .est-check { border-color: var(--verde-ink); }
+.estacao .nota-mais summary { margin: -12px 0; }
+@media (prefers-reduced-motion: reduce) { .rel-barra i { transition: none; } }
 
 /* ---------- Apagar vários treinos ---------- */
 .barra-apagar { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0 .25rem; }
