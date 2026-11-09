@@ -1508,3 +1508,16 @@ a.sd-hoje:hover { background: color-mix(in srgb, var(--verde) 85%, var(--verde-i
 .guiado-nav { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
 .guiado-nav .btn { width: 100%; justify-content: center; }
 @media (prefers-reduced-motion: reduce) { .guiado-progresso i { transition: none; } }
+
+/* Formato de um bloco (ex.: "5 rondas · 2 min entre rondas") */
+.bloco-formato {
+  margin: .4rem 0 .6rem;
+  padding: .55rem .8rem;
+  border-radius: 10px;
+  background: var(--verde);
+  color: var(--verde-ink);
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: .9rem;
+  line-height: 1.35;
+}

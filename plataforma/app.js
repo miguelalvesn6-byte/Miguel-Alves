@@ -776,6 +776,7 @@
           <h3>${esc(nomeBloco)}</h3>
           <span class="bloco-min">${minM ? `${esc(minM)} min` : `${nItens} ex.`}</span>
         </header>
+        ${b.formato ? `<p class="bloco-formato">${esc(b.formato)}</p>` : ""}
         <ol class="passos">
           ${(b.itens || []).map((i) => {
             n += 1;
@@ -895,7 +896,7 @@
       if (error) throw error;
       if (!t) { app().innerHTML = naoEncontrado("#treinos", "Os meus treinos", "Treino não encontrado.", ""); return; }
       const passos = [];
-      (t.blocos || []).forEach((b, bi) => (b.itens || []).forEach((it) => passos.push({ bloco: b.titulo, bi, it })));
+      (t.blocos || []).forEach((b, bi) => (b.itens || []).forEach((it) => passos.push({ bloco: b.titulo, formato: b.formato || "", bi, it })));
       g = est.guiado = { id, t, passos, i: 0, feitas: {}, resta: 0, relogio: null, wake: null };
       try { if (navigator.wakeLock) g.wake = await navigator.wakeLock.request("screen"); } catch (_) { /* opcional */ }
     }
@@ -920,6 +921,7 @@
         <div class="guiado-topo">
           <a class="voltar" href="#t-${g.id}">← Ver treino completo</a>
           <p class="sobre">${esc(p.bloco)}</p>
+          ${p.formato ? `<p class="bloco-formato">${esc(p.formato)}</p>` : ""}
           <div class="guiado-progresso" role="progressbar" aria-valuemin="0" aria-valuemax="${g.passos.length}" aria-valuenow="${g.i + 1}" aria-label="Progresso do treino"><i style="width:${pct}%"></i></div>
           <p class="muted">Exercício ${g.i + 1} de ${g.passos.length}</p>
         </div>

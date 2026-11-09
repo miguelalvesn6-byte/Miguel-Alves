@@ -12,21 +12,16 @@
   const i = (ex, dose, descanso, nota) => (nota ? { ex, dose, descanso, nota } : { ex, dose, descanso });
   const b = (n, nome, min, itens) => ({ titulo: `${n} · ${nome} (${min} min)`, min, itens });
 
+  // Aquecimento curto (5 min): motor fácil, uma mobilidade dirigida e a rampa de aproximação.
   const AQUEC_A = (aprox) => [
-    i("ski-erg", "3 min fácil", "—", "Ritmo de conversa, resistência (damper) 4–5. Sem SkiErg: remo-ergómetro ou bicicleta."),
-    i("worlds-greatest", "3/lado", "—"),
-    i("tornozelo-parede", "10/lado", "—"),
-    i("monster-walk", "2 × 10 passos/lado", "—"),
-    i("agachamento-goblet", "2 × 5", "—", "Pausa de 2 s no fundo: joelhos para fora, tronco alto."),
-    i("agachamento-barra", aprox, "60 s", "Séries de aproximação (rampa). As restantes aproximações estão no início do bloco de força.")
+    i("ski-erg", "2 min fácil", "—", "Ritmo de conversa. Sem SkiErg: remo-ergómetro ou bicicleta."),
+    i("worlds-greatest", "2/lado", "—"),
+    i("agachamento-barra", aprox, "45 s", "Séries de aproximação (rampa). As restantes aproximações estão no início do bloco de força.")
   ];
   const AQUEC_B = (aprox) => [
-    i("remo-ergometro", "3 min fácil", "—", "Ritmo de conversa, 20–22 pancadas/min."),
-    i("cars-anca", "5/lado", "—"),
-    i("isquios-ativo", "8/perna", "—"),
-    i("ponte-glutea", "2 × 10", "—"),
-    i("kettlebell-swing", "2 × 10 leve", "—", "16–20 kg: ativar a dobradiça da anca antes do peso morto."),
-    i("peso-morto", aprox, "60 s", "Séries de aproximação (rampa). As restantes estão no início do bloco de força.")
+    i("remo-ergometro", "2 min fácil", "—", "Ritmo de conversa, 20–22 pancadas/min."),
+    i("kettlebell-swing", "1 × 10 leve", "—", "16–20 kg: ativar a dobradiça da anca antes do peso morto."),
+    i("peso-morto", aprox, "45 s", "Séries de aproximação (rampa). As restantes estão no início do bloco de força.")
   ];
   const WB_2MIN = "Padrão: bola 9 kg a alvo de 3 m (6 kg/2,7 m se necessário). Anca abaixo do joelho e bola acima do alvo — só contam repetições válidas. Pára ao 2.º no-rep seguido, se a lombar arredondar no fundo ou se os ombros doerem. Regista o número.";
   const WB_SEGUIDO = "Mesmo padrão (9 kg, 3 m, anca abaixo do joelho). Uma série só: termina quando pousares a bola, falhares o alvo 2 vezes seguidas ou a técnica se degradar. Regista o número.";
@@ -61,7 +56,7 @@
     "Carga moderada, técnica perfeita, 3 repetições na reserva. Se a 4.ª série de agachamento ficar a RPE ≤6, sobe 5 kg na semana 2; se passar RPE 8, mantém. Regista os metros do SkiErg em cada ronda e o número de wall balls: repetes os dois na semana 6.",
     90,
     [
-      b(1, "Aquecimento", 10, AQUEC_A("barra × 8 · 40% × 5")),
+      b(1, "Aquecimento", 5, AQUEC_A("barra × 8 · 40% × 5")),
       b(2, "Pliometria", 10, [
         i("saltos-duplos-corda", "3 × 15", "60 s", "Sem duplos consistentes: 3 × 30 s de corda simples com 1 duplo a cada 4 saltos."),
         i("pogo", "3 × 10", "60 s", "Joelhos quase esticados, contacto curto e silencioso."),
@@ -91,7 +86,7 @@
     "Cada repetição do peso morto parte do chão parado (sem toque e volta). Se a 4.ª série ficar a RPE ≤6, sobe 5–10 kg na semana 2; se passar RPE 8, mantém. EMOM: cada minuto deve deixar 15–25 s de descanso; se não deixar, baixa as repetições. Guarda 48–72 h entre o Dia A e o Dia B.",
     88,
     [
-      b(1, "Aquecimento", 10, AQUEC_B("barra × 5 · 40% × 5")),
+      b(1, "Aquecimento", 5, AQUEC_B("barra × 5 · 40% × 5")),
       b(2, "Pliometria", 10, [
         i("corda-alternada", "2 × 30 (15/pé)", "60 s"),
         i("pogo-lateral", "2 × 10", "60 s"),
@@ -121,7 +116,7 @@
     "Sobe a carga de acordo com o RPE da semana 1 (+2,5–5%). AMRAP controlado: escolhe um ritmo que consigas repetir nos 4 blocos (as voltas por bloco não podem cair mais de meia volta). O final tem saltos: conta ~20–30 contactos extra.",
     96,
     [
-      b(1, "Aquecimento", 10, AQUEC_A("barra × 8 · 40% × 5")),
+      b(1, "Aquecimento", 5, AQUEC_A("barra × 8 · 40% × 5")),
       b(2, "Pliometria", 10, [
         i("saltos-duplos-corda", "3 × 15", "60 s"),
         i("pogo", "3 × 12", "60 s"),
@@ -150,7 +145,7 @@
     "Peso morto +5–10 kg em relação à semana 1 se ficou a RPE ≤7. Nada de falha. E2MOM: cada janela de 2 min deve deixar 20–40 s de descanso. Se a corrida intensa foi na véspera, fica no limite inferior de carga.",
     102,
     [
-      b(1, "Aquecimento", 10, AQUEC_B("barra × 5 · 40% × 5")),
+      b(1, "Aquecimento", 5, AQUEC_B("barra × 5 · 40% × 5")),
       b(2, "Pliometria", 10, [
         i("corda-alternada", "2 × 30 (15/pé)", "60 s"),
         i("saltos-unipodais", "3 × 5/perna", "60 s", "Saltos no sítio numa perna, joelho alinhado com o pé."),
@@ -180,7 +175,7 @@
     "Contraste: 20–30 s depois de cada série de agachamento, 3 saltos máximos à caixa; depois 2–3 min. Carga pelo RPE: série a RPE ≤7 → +5 kg; RPE 9 → −5%. Escada: o SkiErg entre degraus é a ritmo moderado, para manter a técnica dos halteres.",
     72,
     [
-      b(1, "Aquecimento", 10, AQUEC_A("barra × 8 · 40% × 5")),
+      b(1, "Aquecimento", 5, AQUEC_A("barra × 8 · 40% × 5")),
       b(2, "Pliometria", 8, [
         i("saltos-duplos-corda", "3 × 15", "60 s"),
         i("drop-jump", "4 × 3", "90 s", "Caixa 30 cm. Contacto mínimo, salto máximo.")
@@ -209,7 +204,7 @@
     "Contraste: 20–30 s depois de cada série de peso morto, 2 saltos em comprimento máximos; depois 3 min. Chipper: uma passagem a RPE 7–8, sem pressa — cada estação feita com técnica perfeita. Não faças esta sessão nas 48 h antes do treino longo de corrida.",
     66,
     [
-      b(1, "Aquecimento", 10, AQUEC_B("barra × 5 · 40% × 5")),
+      b(1, "Aquecimento", 5, AQUEC_B("barra × 5 · 40% × 5")),
       b(2, "Pliometria", 8, [
         i("corda-alternada", "2 × 20 (10/pé)", "60 s"),
         i("saltos-barreiras", "4 × 4", "90 s", "Barreiras de 30–45 cm, contactos curtos.")
@@ -241,7 +236,7 @@
     "Semana mais pesada do bloco. Se dormiste mal ou a variabilidade cardíaca está baixa, faz 3 séries em vez de 4. Duas séries seguidas a RPE 9 → termina o exercício. EMOM: a subida à corda é técnica — se a pega falhar, troca para elevações.",
     64,
     [
-      b(1, "Aquecimento", 10, AQUEC_A("barra × 8 · 40% × 5")),
+      b(1, "Aquecimento", 5, AQUEC_A("barra × 8 · 40% × 5")),
       b(2, "Pliometria", 8, [
         i("saltos-duplos-corda", "2 × 20", "60 s"),
         i("drop-jump", "4 × 3", "2 min", "Caixa 40 cm se a semana 3 teve contactos curtos; senão 30 cm.")
@@ -270,7 +265,7 @@
     "Salto com trap bar com 20–30% do 1RM do peso morto: altura máxima, não carga. Densidade: em cada bloco de 6 min faz o máximo de voltas com técnica perfeita a RPE 7 — o número de voltas deve ser igual nos 3 blocos.",
     68,
     [
-      b(1, "Aquecimento", 10, AQUEC_B("barra × 5 · 40% × 5")),
+      b(1, "Aquecimento", 5, AQUEC_B("barra × 5 · 40% × 5")),
       b(2, "Pliometria", 8, [
         i("corda-alternada", "2 × 20 (10/pé)", "60 s"),
         i("multisaltos", "4 × 4", "90 s", "Bounds longos e ritmados.")
@@ -300,7 +295,7 @@
     "Intensidade mais alta com o volume mais baixo. Séries leves à máxima velocidade intencional; se a barra abrandar, termina. Se a 1.ª dupla for RPE 9,5, baixa 5%. Intervalos: os watts do último devem ficar a ≤5% do primeiro; se caírem mais, pára aí.",
     45,
     [
-      b(1, "Aquecimento", 10, AQUEC_A("barra × 8 · 40% × 5")),
+      b(1, "Aquecimento", 5, AQUEC_A("barra × 8 · 40% × 5")),
       b(2, "Pliometria", 8, [
         i("saltos-duplos-corda", "2 × 15", "60 s"),
         i("drop-jump", "3 × 3", "2 min", "Caixa 40–50 cm; contacto mínimo.")
@@ -330,7 +325,7 @@
     "Volume baixo: 3 duplas pesadas e saltos máximos. Se a 1.ª dupla subir devagar (RPE 9,5), baixa 5%. Rondas: o remo é forte mas controlado, com a mesma divisão nas 3 rondas. Não faças esta sessão nas 48 h antes de uma corrida intensa ou do treino longo.",
     51,
     [
-      b(1, "Aquecimento", 10, AQUEC_B("barra × 5 · 40% × 5")),
+      b(1, "Aquecimento", 5, AQUEC_B("barra × 5 · 40% × 5")),
       b(2, "Pliometria", 8, [
         i("corda-alternada", "2 × 15 (≈8/pé)", "60 s"),
         i("salto-comprimento-unipodal", "3 × 2/perna", "90 s", "Aterra nas duas pernas e fixa.")
@@ -361,7 +356,7 @@
     "Volume total ~50%, mas o teste é a sério. Agachamento: aproximação 50% × 5, 65% × 3, 75% × 2, 85% × 1 e uma série de 3 a RPE 9 (sem falha). Só tentas outra (+2,5–5 kg) se a primeira foi RPE ≤8 com técnica perfeita. 1RM estimado ≈ carga × 1,10. Condicionamento: as mesmas 5 rondas e cargas da semana 1 — compara metros, divisões das elevações e RPE.",
     43,
     [
-      b(1, "Aquecimento", 10, AQUEC_A("barra × 8 · 40% × 5")),
+      b(1, "Aquecimento", 5, AQUEC_A("barra × 8 · 40% × 5")),
       b(2, "Pliometria", 8, [
         i("saltos-duplos-corda", "2 × 10", "60 s"),
         i("pogo", "2 × 10", "60 s"),
@@ -390,7 +385,7 @@
     "Faz este teste pelo menos 72 h depois do Dia A. Peso morto: aproximação 50% × 5, 65% × 3, 75% × 2, 85% × 1 e uma série de 3 a RPE 9; se as costas arredondarem, a série termina aí. 1RM estimado ≈ carga × 1,10. AMRAP a RPE 6 — é descarga.",
     53,
     [
-      b(1, "Aquecimento", 10, AQUEC_B("barra × 5 · 40% × 5")),
+      b(1, "Aquecimento", 5, AQUEC_B("barra × 5 · 40% × 5")),
       b(2, "Pliometria", 8, [
         i("corda-alternada", "2 × 15 (≈8/pé)", "60 s"),
         i("pogo-lateral", "2 × 10", "60 s"),
@@ -445,4 +440,27 @@
     ],
     interferencia: "Força e potência em off-season com a resistência em volume moderado e intensidade sobretudo baixa (Z1–Z2). Separa o Dia A e o Dia B por 48–72 h (ex.: terça e sexta). Se juntares força e resistência no mesmo dia, resistência de manhã e força à tarde, com pelo menos 6 h de intervalo; corrida ou bicicleta fácil depois da força é aceitável, intervalos intensos não. Nada de força pesada nas 24–48 h antes da série chave de corrida ou do treino longo, e nunca o Dia B (peso morto) na véspera do longo de corrida. O condicionamento não tem corrida (motor = SkiErg, remo, air bike, trenó), para não somar impacto à corrida da semana. Conta a pliometria e a corrida em conjunto: semana de muito volume de corrida → corta 25–30% dos contactos. Na semana 6 baixa também o volume de resistência. Proteína 1,6–2,0 g/kg/dia e hidratos de carbono à volta das sessões."
   };
+})();
+
+// Formato do condicionamento, mostrado em destaque no topo do bloco (rondas, tempo, descanso).
+(function () {
+  const FORMATO = {
+    "off-s1-dia1": "5 rondas · 2 min de descanso entre rondas · qualidade, não velocidade",
+    "off-s1-dia2": "EMOM 20 min · 5 voltas de 4 min (uma estação por minuto)",
+    "off-s2-dia1": "4 blocos de AMRAP 4 min · 2 min entre blocos · ritmo controlado",
+    "off-s2-dia2": "E2MOM 20 min · 5 pares de janelas de 2 min (alterna janela A e B)",
+    "off-s3-dia1": "Escada 2-4-6-8-10 repetições · limite 18 min · qualidade",
+    "off-s3-dia2": "Chipper · 1 passagem pela ordem · limite 18 min",
+    "off-s4-dia1": "EMOM 24 min · 6 voltas de 4 min (uma estação por minuto)",
+    "off-s4-dia2": "3 blocos de 6 min · 1 min 30 s entre blocos · máximo de voltas com técnica perfeita",
+    "off-s5-dia1": "8 intervalos · 30 s forte : 90 s de recuperação",
+    "off-s5-dia2": "3 rondas · 3 min de descanso entre rondas",
+    "off-s6-dia1": "5 rondas (reteste da semana 1) · 2 min de descanso entre rondas",
+    "off-s6-dia2": "AMRAP 12 min · leve (RPE 6)"
+  };
+  SESSOES.forEach((s) => {
+    if (!FORMATO[s.id]) return;
+    const b = s.blocos.find((x) => /Condicionamento/.test(x.titulo));
+    if (b) b.formato = FORMATO[s.id];
+  });
 })();
