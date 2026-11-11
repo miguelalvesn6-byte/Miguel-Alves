@@ -720,6 +720,9 @@
   ex("salto-caixa-continuo", "Saltos à caixa contínuos", "continuous box jumps rebound", "pliometria", ["ginasio"], "CR", "Quadríceps, glúteos, gémeos (reatividade)",
     ["Caixa de 40–50 cm. Salta para cima, desce a andar ou com um passo e salta logo de novo ao tocar no chão.", "Contacto no chão curto e com os tornozelos rígidos.", "Termina a série se a aterragem na caixa ficar mais funda."],
     ["Contacto longo no chão", "Saltar para trás da caixa (risco de queda)", "Aterragem barulhenta"], "Saltos à caixa com reset entre saltos.", "Caixa mais alta ou unipodal.", "3 × 5");
+  ex("saltos-caixas-serie", "Saltos em série por várias caixas", "consecutive box jumps multiple boxes", "pliometria", ["ginasio"], "CR", "Quadríceps, glúteos, gémeos (potência repetida)",
+    ["3–4 caixas de 40–50 cm em fila, com cerca de 1 m entre elas.", "Salta para a primeira caixa, desce para o chão à frente e salta logo para a seguinte, até à última.", "Contacto no chão curto, tornozelos rígidos e aterragem suave em cada caixa."],
+    ["Contacto longo no chão entre caixas", "Caixas demasiado juntas ou altas (aterragem funda)", "Perder o alinhamento do joelho na aterragem"], "Caixas mais baixas ou pausa no chão entre caixas.", "Caixas mais altas ou mais afastadas.", "3 × 3 caixas");
   ex("salto-caixa-unipodal", "Salto à caixa a uma perna", "single leg box jump", "pliometria", ["ginasio"], "CR", "Potência unilateral, estabilidade do joelho",
     ["Numa perna, à frente de uma caixa de 30–50 cm.", "Contramovimento rápido e salta para a caixa aterrando na mesma perna.", "Fixa 2 s com o joelho alinhado e desce a andar."],
     ["Joelho a cair para dentro", "Caixa alta demais (aterragem funda)"], "Caixa baixa ou aterrar com as duas pernas.", "Caixa mais alta.", "3 × 3/perna");

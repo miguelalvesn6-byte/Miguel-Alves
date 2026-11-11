@@ -205,7 +205,7 @@
       b(1, "Aquecimento", 5, AQUEC_A),
       b(2, "Pliometria", 10, [
         i("saltos-zigzag", "3 × 8/perna", "30 s", EL("reatividade unilateral com mudança de direção")),
-        i("salto-caixa-continuo", "3 × 5 (caixa de 40–50 cm)", "60 s", MAX("potência vertical repetida com contacto curto")),
+        i("saltos-caixas-serie", "3 × 4 caixas em fila (40–50 cm)", "60 s", MAX("potência vertical repetida de caixa em caixa com contacto curto")),
         i("salto-agachamento", "3 × 4 com 2 × 12 kg", "60 s", POT("potência com carga (força-velocidade)"))
       ]),
       b(3, "Força", 18, [
@@ -344,7 +344,7 @@
       { n: 1, foco: "Acumulação e técnica", notas: "E2MOM 16: búlgaro + GHD (A) e peso morto ≈70% + GHD (B). Pliometria: aterragem, pogo/linha, CMJ e comprimento (testes) + scoop toss e swings explosivos (~80–85 contactos). Peça de referência (A) e EMOM 16 (B)." },
       { n: 2, foco: "Acumulação (mais carga)", notas: "E2MOM 16: agachamento ≈72–75% + GHD (A) e búlgaro com barra + GHD (B). Pliometria: caixa lateral contínua, patinador com fixação, pogo a avançar, saltos em afundo + passe de peito e salto carregado leve (~85–95 contactos). AMRAP 3 × 4 min (A) e E2MOM 16 (B)." },
       { n: 3, foco: "Intensificação", notas: "E2MOM 18: triplas a ≈85% no agachamento (+ GHD) e no peso morto (+ GHD). Pliometria: hurdle hops contínuos e laterais, depth jump para caixa, salto à caixa unipodal + lançamento rotacional e trap bar (~60–70 contactos). Chipper (A) e 5 rondas de 3 min (B)." },
-      { n: 4, foco: "Intensificação + entrada da potência", notas: "E2MOM 18: agachamento 85–87% (+ GHD) e peso morto 87–88% (+ GHD). Pliometria: zigue-zague, caixa contínua, triplo salto + salto carregado e trap bar (~70–75 contactos); swings pesados no condicionamento. EMOM 16 (A) e densidade 2 × 7 min (B)." },
+      { n: 4, foco: "Intensificação + entrada da potência", notas: "E2MOM 18: agachamento 85–87% (+ GHD) e peso morto 87–88% (+ GHD). Pliometria: zigue-zague, saltos em série por 4 caixas, triplo salto + salto carregado e trap bar (~70–75 contactos); swings pesados no condicionamento. EMOM 16 (A) e densidade 2 × 7 min (B)." },
       { n: 5, foco: "Pico de expressão de potência", notas: "E2MOM 16 pesado-leve: agachamento (A) e búlgaro com barra (B). Pliometria: bounding máximo, depth jump para comprimento, caixa unipodal alta, patinador contínuo + lançamento de 6–8 kg e trap bar a 30–35% (~30–45 contactos). Intervalos 6 × 30 s (A) e 3 rondas explosivas (B)." },
       { n: 6, foco: "Descarga + testes", notas: "E3MOM 15 com tripla de teste (RPE 9) → 1RM estimado. Testes elásticos (10/5 no Dia A, RSI no Dia B) e reteste dos saltos máximos, da peça de referência e dos wall balls (A); AMRAP leve (B)." }
     ],
@@ -412,7 +412,7 @@
     },
     "off-s4-dia1": {
       Aquecimento: AQ_A,
-      Pliometria: "9 séries · elástico 30 s · máximo 60 s · potência 60 s · 75 contactos",
+      Pliometria: "9 séries · elástico 30 s · máximo 60 s · potência 60 s · 72 contactos",
       "Força": "E2MOM 18 min · 9 voltas · min ímpar agachamento, min par GHD · voltas 1–3 rampa",
       Condicionamento: "EMOM 16 min · 4 voltas · min 1 BikeErg, min 2 trenó para trás, min 3 devil press, min 4 elevações"
     },

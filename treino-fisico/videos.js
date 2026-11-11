@@ -220,6 +220,7 @@
     "turkish-get-up": "https://www.youtube.com/watch?v=0bWRPC49-KI", // "Turkish Get-Up Basics" — StrongFirst
     "gatinhar-urso": "https://www.youtube.com/watch?v=Ee1BQNI6zN4", // "Bear Crawl" — BSR Physical Therapy
     "bike-erg": "https://www.youtube.com/watch?v=ClgAYjvqP_s", // "Correct Set up and Position for Concept2 Bike Erg" — CrossFit Federal Hill
+    "saltos-caixas-serie": "https://www.youtube.com/watch?v=O1GA6XjXim4", // "Box Jumps Consecutivi" — Nicholas Rubini (3 caixas em fila)
     "salto-caixa-continuo": "https://www.youtube.com/watch?v=J4IG4ItEAlY", // "Box Jump Rebound" — OPEX Fitness
     "salto-caixa-unipodal": "https://www.youtube.com/watch?v=C5uWN9FIU9E", // "Single Leg Box Jump Tutorial - Proper Form and Technique" — Runna
     "depth-jump-caixa": "https://www.youtube.com/watch?v=ABpSEjemluU", // "How To Do a Depth Jump to Box Jump" — Swift Movement Academy
