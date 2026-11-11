@@ -80,7 +80,7 @@
     ]);
 
   S(1, "B", "7",
-    "Acumulação: técnica do peso morto em E2MOM com Pallof, saltos sobre a linha, salto em comprimento e swings explosivos, e um EMOM de corpo inteiro que começa no remo.",
+    "Acumulação: técnica do peso morto em E2MOM com GHD, saltos sobre a linha, salto em comprimento e swings explosivos, e um EMOM de corpo inteiro que começa no remo.",
     "Cada repetição do peso morto parte do chão parado; se as voltas de trabalho ficarem a RPE ≤6, +5–10 kg na semana 3.",
     84,
     [
@@ -92,7 +92,7 @@
       ]),
       b(3, "Força", 16, [
         i("peso-morto", "4 reps · voltas 1–2 rampa (50%, 60%), 3–8 a ≈70% (RPE 7)", "resto do minuto", OBJ("força de extensão da anca (cadeia posterior)")),
-        i("pallof", "10/lado", "resto do minuto", OBJ("anti-rotação: tronco estável na bicicleta e na corrida"))
+        i("ghd-abdominais", "10 reps", "resto do minuto", OBJ("força dos flexores da anca e do abdómen (tronco rígido)"))
       ]),
       b(4, "Condicionamento", 16, [
         i("remo-ergometro", "14/12 cal", "—", OBJ("motor com extensão da anca e puxada")),
@@ -104,7 +104,7 @@
 
   // ======================= SEMANA 2 — ACUMULAÇÃO (mais carga) =======================
   S(2, "A", "7–8",
-    "Acumulação: agachamento a ≈72–75% com rollout em E2MOM, saltos laterais na caixa, patinador e passe de peito com bola medicinal, e AMRAP controlados.",
+    "Acumulação: agachamento a ≈72–75% com GHD em E2MOM, saltos laterais na caixa, patinador e passe de peito com bola medicinal, e AMRAP controlados.",
     "Primeira semana de agachamento com barra: se as voltas de trabalho ficarem a RPE ≤6, +5 kg na semana 3. AMRAP: o mesmo número de voltas nos 3 blocos.",
     84,
     [
@@ -116,7 +116,7 @@
       ]),
       b(3, "Força", 16, [
         i("agachamento-barra", "5 reps · voltas 1–2 rampa (50%, 60%), 3–8 a ≈72–75% (RPE 7)", "resto do minuto", OBJ("força máxima de extensão do joelho e da anca")),
-        i("rollout", "8 reps", "resto do minuto", OBJ("anti-extensão: tronco rígido na posição aero"))
+        i("ghd-abdominais", "12 reps", "resto do minuto", OBJ("força dos flexores da anca e do abdómen (tronco rígido na posição aero)"))
       ]),
       b(4, "Condicionamento", 15, [
         i("air-bike", "12/10 cal", "—", OBJ("motor de pernas e braços")),
@@ -127,8 +127,8 @@
     ]);
 
   S(2, "B", "7–8",
-    "Acumulação: búlgaro com barra e Copenhagen em E2MOM, corda e pogo a avançar e um E2MOM com BikeErg, trenó, devil press e suitcase carry.",
-    "Búlgaro com barra a RIR 2; Copenhagen com o joelho apoiado se a virilha reclamar. E2MOM de condicionamento com 20–40 s de folga por janela.",
+    "Acumulação: búlgaro com barra e GHD em E2MOM, corda e pogo a avançar e um E2MOM com BikeErg, trenó, devil press e suitcase carry.",
+    "Búlgaro com barra a RIR 2; GHD controlado até à horizontal. E2MOM de condicionamento com 20–40 s de folga por janela.",
     96,
     [
       b(1, "Aquecimento", 5, AQUEC_B),
@@ -139,7 +139,7 @@
       ]),
       b(3, "Força", 16, [
         i("split-squat-bulgaro-barra", "6/perna · voltas 1–2 leves, 3–8 a RIR 2", "resto do minuto", OBJ("força unilateral pesada de joelho e anca")),
-        i("copenhagen", "20 s/lado", "resto do minuto", OBJ("força dos adutores e do core lateral (prevenção da virilha)"))
+        i("ghd-abdominais", "12 reps", "resto do minuto", OBJ("força dos flexores da anca e do abdómen"))
       ]),
       b(4, "Condicionamento", 16, [
         i("bike-erg", "45 s forte", "—", OBJ("potência sustentada de pedalada")),
@@ -175,7 +175,7 @@
     ]);
 
   S(3, "B", "8",
-    "Intensificação: peso morto em triplas a ≈85% com Pallof isométrico, hurdle hops e rondas de 3 min com air bike, arranco e sandbag.",
+    "Intensificação: peso morto em triplas a ≈85% com GHD, hurdle hops e rondas de 3 min com air bike, arranco e sandbag.",
     "Tripla a RPE ≤7 → +5–10 kg; RPE 9 → −5%. Reset em cada repetição do peso morto.",
     70,
     [
@@ -187,7 +187,7 @@
       ]),
       b(3, "Força", 18, [
         i("peso-morto", "voltas 1–3 rampa (50% × 5, 65% × 3, 75% × 2) · voltas 4–9: 3 reps a ≈82–85% (RPE 8)", "resto do minuto", OBJ("força máxima de extensão da anca")),
-        i("pallof-isometrico", "20 s/lado", "resto do minuto", OBJ("anti-rotação sob tensão contínua"))
+        i("ghd-abdominais", "14 reps", "resto do minuto", OBJ("força dos flexores da anca e do abdómen"))
       ]),
       b(4, "Condicionamento", 15, [
         i("air-bike", "10/8 cal", "—", OBJ("motor de pernas e braços")),
@@ -221,7 +221,7 @@
     ]);
 
   S(4, "B", "8–8,5",
-    "Intensificação: peso morto em duplas a 87–88% com Copenhagen, salto com trap bar (potência) e densidade com remo, búlgaros, flexões e swings pesados.",
+    "Intensificação: peso morto em duplas a 87–88% com GHD, salto com trap bar (potência) e densidade com remo, búlgaros, flexões e swings pesados.",
     "Salto com trap bar com 20–30% do 1RM do peso morto: altura máxima. Swings com 32 kg, cada repetição explosiva. Densidade: o mesmo número de voltas nos 2 blocos.",
     70,
     [
@@ -233,7 +233,7 @@
       ]),
       b(3, "Força", 18, [
         i("peso-morto", "voltas 1–3 rampa (50% × 5, 65% × 3, 78% × 2) · voltas 4–9: 2 reps a ≈87–88% (RPE 8–8,5)", "resto do minuto", OBJ("força máxima de extensão da anca")),
-        i("copenhagen", "25 s/lado", "resto do minuto", OBJ("força dos adutores e do core lateral"))
+        i("ghd-abdominais", "15 reps", "resto do minuto", OBJ("força dos flexores da anca e do abdómen"))
       ]),
       b(4, "Condicionamento", 15, [
         i("remo-ergometro", "200 m", "—", OBJ("motor com extensão da anca e puxada")),
@@ -245,7 +245,7 @@
 
   // ======================= SEMANA 5 — PICO DE EXPRESSÃO DE POTÊNCIA =======================
   S(5, "A", "8–9",
-    "Pico de potência: agachamento pesado-leve com toes to bar, bounding máximo, depth jump para comprimento e lançamento pesado de bola medicinal, e intervalos curtos em air bike e BikeErg.",
+    "Pico de potência: agachamento pesado-leve com GHD carregado, bounding máximo, depth jump para comprimento e lançamento pesado de bola medicinal, e intervalos curtos em air bike e BikeErg.",
     "Volume mínimo, intensidade máxima, recuperação completa. Séries leves à máxima velocidade intencional; se a 1.ª dupla for RPE 9,5, baixa 5%.",
     30,
     [
@@ -257,7 +257,7 @@
       ]),
       b(3, "Força", 16, [
         i("agachamento-barra", "voltas 1–2 rampa (60% × 3, 80% × 1) · voltas 3–5: 2 reps a ≈88–90% · voltas 6–8: 3 reps a 60% à máxima velocidade", "resto do minuto", OBJ("expressão de força máxima e de velocidade (pesado-leve)")),
-        i("toes-to-bar", "8 reps", "resto do minuto", OBJ("flexão do tronco e controlo em suspensão"))
+        i("ghd-abdominais", "10 reps com 5 kg ao peito", "resto do minuto", OBJ("força máxima dos flexores da anca e do abdómen"))
       ]),
       b(4, "Condicionamento", 12, [
         i("air-bike", "30 s forte (intervalos ímpares)", "90 s", OBJ("potência máxima de pernas e braços")),
@@ -268,7 +268,7 @@
     ]);
 
   S(5, "B", "8–9",
-    "Pico de potência: búlgaro com barra pesado-leve (unilateral explosivo) com rotação landmine, bounds unipodais e salto com trap bar, e rondas com remo, sandbag e swings pesados.",
+    "Pico de potência: búlgaro com barra pesado-leve (unilateral explosivo) com GHD carregado, bounds unipodais e salto com trap bar, e rondas com remo, sandbag e swings pesados.",
     "Saltos máximos com recuperação completa. Na parte leve do búlgaro, sobe o mais rápido possível com a mesma técnica.",
     45,
     [
@@ -280,7 +280,7 @@
       ]),
       b(3, "Força", 16, [
         i("split-squat-bulgaro-barra", "voltas 1–2 rampa · voltas 3–5: 4/perna pesado (RPE 8) · voltas 6–8: 3/perna a ≈50% à máxima velocidade", "resto do minuto", OBJ("potência unilateral de joelho e anca (pesado-leve)")),
-        i("landmine-rotacao", "6/lado", "resto do minuto", OBJ("anti-rotação e transferência anca-tronco"))
+        i("ghd-abdominais", "10 reps com 5 kg ao peito", "resto do minuto", OBJ("força máxima dos flexores da anca e do abdómen"))
       ]),
       b(4, "Condicionamento", 15, [
         i("remo-ergometro", "300 m", "—", OBJ("motor com extensão da anca e puxada")),
@@ -323,7 +323,7 @@
       ]),
       b(3, "Força", 15, [
         i("peso-morto", "50% × 5 · 65% × 3 · 75% × 2 · 85% × 1 · TESTE 3 reps @ RPE 9 (≈90–92%)", "resto da janela", OBJ("estimar o 1RM de peso morto")),
-        i("pallof", "8/lado", "resto da janela", OBJ("manter a anti-rotação"))
+        i("ghd-abdominais", "8 reps", "resto da janela", OBJ("manter a força do tronco"))
       ]),
       b(4, "Condicionamento", 10, [
         i("remo-ergometro", "200 m fácil", "—", OBJ("motor leve de recuperação")),
@@ -341,14 +341,14 @@
     objetivo: "Off-season para ciclismo e corrida em sessões curtas e cronometradas (≤55 min no papel, ≈60 min reais): força máxima primeiro (agachamento, peso morto e búlgaro; ≥85% nas semanas 3–4) e depois a potência (exercícios de potência a partir da semana 4, pico na semana 5), força elástica de contacto curto para a corrida, core (GHD, anti-extensão, anti-rotação, adutores) e um condicionamento funcional de corpo inteiro que começa sempre num ergómetro — sem corrida. 2 sessões por semana.",
     sessoes: sessoes.map((s) => s.id),
     semanas: [
-      { n: 1, foco: "Acumulação e técnica", notas: "E2MOM 16: búlgaro + GHD (A) e peso morto ≈70% + Pallof (B). Pliometria: aterragem, pogo/linha, CMJ e comprimento (testes) + scoop toss e swings explosivos (~80–85 contactos). Peça de referência (A) e EMOM 16 (B)." },
-      { n: 2, foco: "Acumulação (mais carga)", notas: "E2MOM 16: agachamento ≈72–75% + rollout (A) e búlgaro com barra + Copenhagen (B). Pliometria: caixa lateral contínua, patinador com fixação, pogo a avançar, saltos em afundo + passe de peito e salto carregado leve (~85–95 contactos). AMRAP 3 × 4 min (A) e E2MOM 16 (B)." },
-      { n: 3, foco: "Intensificação", notas: "E2MOM 18: triplas a ≈85% no agachamento (+ GHD) e no peso morto (+ Pallof isométrico). Pliometria: hurdle hops contínuos e laterais, depth jump para caixa, salto à caixa unipodal + lançamento rotacional e trap bar (~60–70 contactos). Chipper (A) e 5 rondas de 3 min (B)." },
-      { n: 4, foco: "Intensificação + entrada da potência", notas: "E2MOM 18: agachamento 85–87% (+ GHD) e peso morto 87–88% (+ Copenhagen). Pliometria: zigue-zague, caixa contínua, triplo salto + salto carregado e trap bar (~70–75 contactos); swings pesados no condicionamento. EMOM 16 (A) e densidade 2 × 7 min (B)." },
+      { n: 1, foco: "Acumulação e técnica", notas: "E2MOM 16: búlgaro + GHD (A) e peso morto ≈70% + GHD (B). Pliometria: aterragem, pogo/linha, CMJ e comprimento (testes) + scoop toss e swings explosivos (~80–85 contactos). Peça de referência (A) e EMOM 16 (B)." },
+      { n: 2, foco: "Acumulação (mais carga)", notas: "E2MOM 16: agachamento ≈72–75% + GHD (A) e búlgaro com barra + GHD (B). Pliometria: caixa lateral contínua, patinador com fixação, pogo a avançar, saltos em afundo + passe de peito e salto carregado leve (~85–95 contactos). AMRAP 3 × 4 min (A) e E2MOM 16 (B)." },
+      { n: 3, foco: "Intensificação", notas: "E2MOM 18: triplas a ≈85% no agachamento (+ GHD) e no peso morto (+ GHD). Pliometria: hurdle hops contínuos e laterais, depth jump para caixa, salto à caixa unipodal + lançamento rotacional e trap bar (~60–70 contactos). Chipper (A) e 5 rondas de 3 min (B)." },
+      { n: 4, foco: "Intensificação + entrada da potência", notas: "E2MOM 18: agachamento 85–87% (+ GHD) e peso morto 87–88% (+ GHD). Pliometria: zigue-zague, caixa contínua, triplo salto + salto carregado e trap bar (~70–75 contactos); swings pesados no condicionamento. EMOM 16 (A) e densidade 2 × 7 min (B)." },
       { n: 5, foco: "Pico de expressão de potência", notas: "E2MOM 16 pesado-leve: agachamento (A) e búlgaro com barra (B). Pliometria: bounding máximo, depth jump para comprimento, caixa unipodal alta, patinador contínuo + lançamento de 6–8 kg e trap bar a 30–35% (~30–45 contactos). Intervalos 6 × 30 s (A) e 3 rondas explosivas (B)." },
       { n: 6, foco: "Descarga + testes", notas: "E3MOM 15 com tripla de teste (RPE 9) → 1RM estimado. Testes elásticos (10/5 no Dia A, RSI no Dia B) e reteste dos saltos máximos, da peça de referência e dos wall balls (A); AMRAP leve (B)." }
     ],
-    cobertura: "Em cada semana: pernas pesadas bilaterais (agachamento, peso morto) e unilaterais (búlgaro com halteres ou barra) em E2MOM; core em todas as sessões (GHD, rollout, toes to bar, Pallof, rotação landmine, Copenhagen); força elástica de contacto curto (corda, pogo, linha, hurdle hops, rebound/drop jumps, bounding) e saltos máximos dinâmicos (laterais, unilaterais, contínuos, depth jumps); potência em todas as sessões (lançamentos de bola medicinal, swings explosivos, salto carregado, salto com trap bar) e pesado-leve na semana 5; transporte (farmer, sandbag, suitcase); membros superiores através de movimentos funcionais; motor sem corrida (air bike, BikeErg, remo; SkiErg na peça de referência).",
+    cobertura: "Em cada semana: pernas pesadas bilaterais (agachamento, peso morto) e unilaterais (búlgaro com halteres ou barra) em E2MOM; core com GHD em todas as sessões (10 → 15 reps, 5 kg ao peito na semana 5); força elástica de contacto curto (corda, pogo, linha, hurdle hops, rebound/drop jumps, bounding) e saltos máximos dinâmicos (laterais, unilaterais, contínuos, depth jumps); potência em todas as sessões (lançamentos de bola medicinal, swings explosivos, salto carregado, salto com trap bar) e pesado-leve na semana 5; transporte (farmer, sandbag, suitcase); membros superiores através de movimentos funcionais; motor sem corrida (air bike, BikeErg, remo; SkiErg na peça de referência).",
     regras: [
       "Pliometria em três partes: ELÁSTICO (contacto <0,25 s, tornozelo rígido, descanso curto — pogo, linha, caixa lateral, hurdle hops, zigue-zague, bounding), MÁXIMO (um salto de cada vez com intenção máxima e aterragem fixa — CMJ, comprimento, patinador, saltos em afundo, depth jump para caixa/comprimento, caixa unipodal, triplo salto) e POTÊNCIA (balístico ou carregado com recuperação completa — lançamentos de bola medicinal, swings explosivos, salto carregado, salto com trap bar). A força elástica devolve energia em cada apoio da corrida; o máximo e a potência levam a força do ginásio para o salto. Progressão: S1–2 aprender a aterrar + elástico de baixa intensidade + balístico leve; S3–4 contínuo, unilateral e lateral, depth jump para caixa; S5 pico (depth jump para comprimento, bounds máximos, balístico mais pesado, volume mínimo); S6 testes (10/5 ou RSI + reteste do CMJ, do comprimento e do lançamento).",
       "Potência: há um exercício de potência em todas as sessões (no bloco de pliometria), com carga a subir ao longo do bloco: bola de 4 kg e swings de 24 kg nas semanas 1–2, trap bar a 20–30% e salto com halteres nas semanas 3–4, bola de 6–8 kg e trap bar a 30–35% na semana 5; mais o pesado-leve no agachamento e no búlgaro na semana 5. Cada repetição à máxima velocidade; se a velocidade cair visivelmente, a série termina.",
@@ -360,7 +360,7 @@
       "Pliometria: descanso curto e fixo nos elásticos (30 s; 45–60 s na semana 5) e recuperação completa nos máximos e na potência (45–75 s). Se o contacto ficar longo, a aterragem ruidosa ou a altura cair >10%, termina o exercício. Dor no Aquiles >3/10 ou que piora no dia seguinte → corta os saltos dessa semana. Sem duplos na corda → corda simples com o dobro dos saltos.",
       "Condicionamento = qualidade, não velocidade: começa sempre no ergómetro; EMOM/E2MOM com 15–40 s de folga; AMRAP e densidade com o mesmo número de voltas em todos os blocos; rondas com a mesma produção (≤5% de queda). Wall balls: 9 kg a 3 m, anca abaixo do joelho, só contam repetições válidas.",
       "Dia mau (sono curto, variabilidade cardíaca baixa, pernas pesadas): 2 voltas de trabalho a menos na força (faz só o core nesses minutos) e corta uma ronda/volta no condicionamento.",
-      "Segurança: agachamento e búlgaro com barra com batentes ou ajudante; peso morto com reset em cada repetição; GHD só até à horizontal nas primeiras sessões; Copenhagen com joelho apoiado se a virilha doer; dor aguda ou articular → parar.",
+      "Segurança: agachamento e búlgaro com barra com batentes ou ajudante; peso morto com reset em cada repetição; GHD só até à horizontal nas primeiras sessões; dor aguda ou articular → parar.",
       "Alternativas: sem GHD → abdominais no AbMat; sem SkiErg → remo; sem air bike → BikeErg ou bicicleta estática; sem BikeErg → air bike; sem trenó → empurrar prato ou wall sit; sem sandbag → kettlebell em goblet/farmer; sem trap bar → salto com halteres leves; sem bola medicinal → salto com agachamento carregado.",
       "Falhaste uma semana inteira? Repete-a. Falhaste uma sessão? Faz a seguinte normalmente."
     ],
@@ -383,19 +383,19 @@
     "off-s1-dia2": {
       Aquecimento: AQ_B,
       Pliometria: "10 séries · elástico 30 s · máximo 45 s · potência 45 s · 84 contactos",
-      "Força": "E2MOM 16 min · 8 voltas · min ímpar peso morto, min par Pallof · voltas 1–2 rampa",
+      "Força": "E2MOM 16 min · 8 voltas · min ímpar peso morto, min par GHD · voltas 1–2 rampa",
       Condicionamento: "EMOM 16 min · 4 voltas · min 1 remo, min 2 KB clean & press, min 3 farmer, min 4 flexões"
     },
     "off-s2-dia1": {
       Aquecimento: AQ_A,
       Pliometria: "9 séries · elástico 30 s · máximo 45 s · potência 45 s · 84 contactos",
-      "Força": "E2MOM 16 min · 8 voltas · min ímpar agachamento, min par rollout · voltas 1–2 rampa",
+      "Força": "E2MOM 16 min · 8 voltas · min ímpar agachamento, min par GHD · voltas 1–2 rampa",
       Condicionamento: "3 blocos de AMRAP 4 min · 90 s entre blocos · air bike → sandbag → thrusters → elevações"
     },
     "off-s2-dia2": {
       Aquecimento: AQ_B,
       Pliometria: "9 séries · elástico 30 s · máximo 45 s · potência 60 s · 96 contactos",
-      "Força": "E2MOM 16 min · 8 voltas · min ímpar búlgaro com barra (as duas pernas), min par Copenhagen · voltas 1–2 leves",
+      "Força": "E2MOM 16 min · 8 voltas · min ímpar búlgaro com barra (as duas pernas), min par GHD · voltas 1–2 leves",
       Condicionamento: "E2MOM 16 min · 8 janelas de 2 min · ímpar: BikeErg 45 s + trenó · par: devil press + suitcase carry"
     },
     "off-s3-dia1": {
@@ -407,7 +407,7 @@
     "off-s3-dia2": {
       Aquecimento: AQ_B,
       Pliometria: "10 séries · elástico 30 s · máximo 45 s · potência 60 s · 70 contactos",
-      "Força": "E2MOM 18 min · 9 voltas · min ímpar peso morto, min par Pallof isométrico · voltas 1–3 rampa",
+      "Força": "E2MOM 18 min · 9 voltas · min ímpar peso morto, min par GHD · voltas 1–3 rampa",
       Condicionamento: "5 rondas de 3 min · air bike → arranco → sandbag · trabalho ≈2 min + descanso até fechar a janela"
     },
     "off-s4-dia1": {
@@ -419,19 +419,19 @@
     "off-s4-dia2": {
       Aquecimento: AQ_B,
       Pliometria: "10 séries · elástico 30 s · máximo 60 s · potência 60 s · 70 contactos",
-      "Força": "E2MOM 18 min · 9 voltas · min ímpar peso morto, min par Copenhagen · voltas 1–3 rampa",
+      "Força": "E2MOM 18 min · 9 voltas · min ímpar peso morto, min par GHD · voltas 1–3 rampa",
       Condicionamento: "Densidade 2 × 7 min · 1 min entre blocos · remo → búlgaro → flexões → swings pesados · máximo de voltas com técnica perfeita"
     },
     "off-s5-dia1": {
       Aquecimento: AQ_A,
       Pliometria: "9 séries · recuperação completa (60 s) · 30 contactos de intensidade máxima",
-      "Força": "E2MOM 16 min · 8 voltas · pesado-leve: min ímpar agachamento, min par toes to bar",
+      "Força": "E2MOM 16 min · 8 voltas · pesado-leve: min ímpar agachamento, min par GHD com 5 kg",
       Condicionamento: "6 intervalos · 30 s forte : 90 s · ímpares air bike + trenó, pares BikeErg + elevações"
     },
     "off-s5-dia2": {
       Aquecimento: AQ_B,
       Pliometria: "8 séries · recuperação completa (45–75 s) · 45 contactos de intensidade máxima",
-      "Força": "E2MOM 16 min · 8 voltas · pesado-leve: min ímpar búlgaro com barra, min par rotação landmine",
+      "Força": "E2MOM 16 min · 8 voltas · pesado-leve: min ímpar búlgaro com barra, min par GHD com 5 kg",
       Condicionamento: "3 rondas · 2 min de descanso entre rondas · remo → sandbag ao ombro → swings → farmer → flexões · limite 15 min"
     },
     "off-s6-dia1": {
@@ -443,7 +443,7 @@
     "off-s6-dia2": {
       Aquecimento: AQ_B,
       Pliometria: "9 séries · teste RSI + reteste do salto em comprimento · 30–60 s de descanso · 26 contactos (descarga)",
-      "Força": "E3MOM 15 min · 5 voltas · rampa até à tripla de teste (RPE 9) + Pallof em cada janela",
+      "Força": "E3MOM 15 min · 5 voltas · rampa até à tripla de teste (RPE 9) + GHD em cada janela",
       Condicionamento: "AMRAP 10 min · leve (RPE 6) · remo → farmer → KB clean & press → remada invertida"
     }
   };
