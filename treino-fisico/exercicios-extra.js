@@ -704,3 +704,38 @@
     disciplinas: ["ciclismo"], video: ""
   });
 })();
+
+// ================= PLIOMETRIA DINÂMICA E POTÊNCIA (Plano Miguel) =================
+(function () {
+  const D = { N: "natacao", C: "ciclismo", R: "corrida" };
+  const ex = (id, nome, nomeEn, categoria, material, disc, musculos, execucao, erros, regressao, progressao, dose) => {
+    if (EXERCICIOS.some((e) => e.id === id)) return;
+    EXERCICIOS.push({
+      id, nome, nomeEn, categoria, material, musculos, execucao, erros, regressao, progressao, dose,
+      disciplinas: disc.split("").map((c) => D[c]),
+      video: ""
+    });
+  };
+
+  ex("salto-caixa-continuo", "Saltos à caixa contínuos", "continuous box jumps rebound", "pliometria", ["ginasio"], "CR", "Quadríceps, glúteos, gémeos (reatividade)",
+    ["Caixa de 40–50 cm. Salta para cima, desce a andar ou com um passo e salta logo de novo ao tocar no chão.", "Contacto no chão curto e com os tornozelos rígidos.", "Termina a série se a aterragem na caixa ficar mais funda."],
+    ["Contacto longo no chão", "Saltar para trás da caixa (risco de queda)", "Aterragem barulhenta"], "Saltos à caixa com reset entre saltos.", "Caixa mais alta ou unipodal.", "3 × 5");
+  ex("salto-caixa-unipodal", "Salto à caixa a uma perna", "single leg box jump", "pliometria", ["ginasio"], "CR", "Potência unilateral, estabilidade do joelho",
+    ["Numa perna, à frente de uma caixa de 30–50 cm.", "Contramovimento rápido e salta para a caixa aterrando na mesma perna.", "Fixa 2 s com o joelho alinhado e desce a andar."],
+    ["Joelho a cair para dentro", "Caixa alta demais (aterragem funda)"], "Caixa baixa ou aterrar com as duas pernas.", "Caixa mais alta.", "3 × 3/perna");
+  ex("depth-jump-caixa", "Depth jump para caixa", "depth jump to box jump", "pliometria", ["ginasio"], "CR", "Força reativa, potência vertical",
+    ["Em cima de uma caixa de 30 cm; à frente, a 1 m, uma caixa de 50–60 cm.", "Dá um passo para fora, cai com os dois pés e salta logo para a caixa da frente.", "Contacto mínimo no chão; aterra suave na caixa."],
+    ["Saltar da caixa em vez de deixar cair", "Contacto longo no chão"], "Drop jump de 20 cm sem a segunda caixa.", "Queda de 40 cm.", "4 × 3");
+  ex("depth-jump-comprimento", "Depth jump para salto em comprimento", "depth jump to broad jump", "pliometria", ["ginasio"], "CR", "Força reativa horizontal, extensão da anca",
+    ["Em cima de uma caixa de 30 cm.", "Cai com os dois pés e projeta-te logo num salto em comprimento máximo.", "Aterra e fixa 2 s; mede a distância."],
+    ["Contacto longo antes do salto", "Aterrar com os joelhos para dentro"], "Salto em comprimento a partir do chão.", "Queda de 40 cm.", "3 × 3");
+  ex("saltos-barreiras-laterais", "Saltos laterais sobre barreiras", "lateral hurdle hops", "pliometria", ["ginasio"], "CR", "Reatividade lateral, glúteo médio, tornozelo",
+    ["Barreira baixa (15–30 cm) ao lado.", "Salta de lado por cima da barreira e volta logo, com os pés juntos.", "Contactos curtos e tronco estável."],
+    ["Pés a separar", "Tronco a inclinar para o lado"], "Linha no chão.", "Duas barreiras seguidas ou uma perna.", "4 × 10");
+  ex("lancamento-medicinal-scoop", "Lançamento de bola medicinal para a frente (scoop toss)", "medicine ball scoop toss", "pliometria", ["bola-medicinal"], "CR", "Extensão da anca, glúteos, potência de corpo inteiro",
+    ["Bola de 4–6 kg entre as pernas, anca para trás como num swing.", "Estende a anca e os joelhos de forma explosiva e lança a bola para a frente e para cima.", "Mede a distância ou lança contra uma parede alta."],
+    ["Lançar só com os braços", "Arredondar as costas"], "Bola mais leve.", "Bola mais pesada.", "3 × 4");
+  ex("passe-peito-medicinal", "Passe de peito com bola medicinal", "medicine ball chest pass", "pliometria", ["bola-medicinal"], "NCR", "Peitoral, tríceps, transferência pernas-braços",
+    ["De pé em posição atlética, bola ao peito, de frente para a parede.", "Dá um passo à frente e empurra a bola contra a parede o mais rápido possível.", "Apanha e repete com a outra perna à frente."],
+    ["Só braços, sem passo", "Lombar a arquear"], "Bola mais leve.", "Bola mais pesada ou a partir de joelhos.", "3 × 5");
+})();

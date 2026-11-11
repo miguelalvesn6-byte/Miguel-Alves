@@ -220,6 +220,13 @@
     "turkish-get-up": "https://www.youtube.com/watch?v=0bWRPC49-KI", // "Turkish Get-Up Basics" — StrongFirst
     "gatinhar-urso": "https://www.youtube.com/watch?v=Ee1BQNI6zN4", // "Bear Crawl" — BSR Physical Therapy
     "bike-erg": "https://www.youtube.com/watch?v=ClgAYjvqP_s", // "Correct Set up and Position for Concept2 Bike Erg" — CrossFit Federal Hill
+    "salto-caixa-continuo": "https://www.youtube.com/watch?v=J4IG4ItEAlY", // "Box Jump Rebound" — OPEX Fitness
+    "salto-caixa-unipodal": "https://www.youtube.com/watch?v=C5uWN9FIU9E", // "Single Leg Box Jump Tutorial - Proper Form and Technique" — Runna
+    "depth-jump-caixa": "https://www.youtube.com/watch?v=ABpSEjemluU", // "How To Do a Depth Jump to Box Jump" — Swift Movement Academy
+    "depth-jump-comprimento": "https://www.youtube.com/watch?v=nQdPalrAUrM", // "Depth jump to broad jump" — Athletic Institute
+    "saltos-barreiras-laterais": "https://www.youtube.com/watch?v=JLDX8HphHNE", // "Lateral Hurdle Hop" — Juniper Strength & Recovery Studio
+    "lancamento-medicinal-scoop": "https://www.youtube.com/watch?v=UmLEPjElr4s", // "How To: Med Ball Forward Scoop Toss" — RAWR Strength
+    "passe-peito-medicinal": "https://www.youtube.com/watch?v=U1uXbG-j1NI", // "Medicine Ball: Chest Pass" — RockIt Fitness
   };
   if (typeof EXERCICIOS === 'undefined') return;
   EXERCICIOS.forEach(e => { if (V[e.id] && !e.video) e.video = V[e.id]; });
