@@ -113,8 +113,8 @@
 
   // ======================= SEMANA 2 — ACUMULAÇÃO (mais carga) =======================
   S(2, "A", "7–8",
-    "Acumulação: agachamento a ≈72–75% com GHD em E2MOM, pliometria de volume (tornozelos, pogo lateral, hurdle hops, pogo a uma perna a avançar, saltos à caixa contínuos) com lançamento para trás, e AMRAP controlados.",
-    "Primeira semana de agachamento com barra: se as voltas de trabalho ficarem a RPE ≤6, +5 kg na semana 3. AMRAP: o mesmo número de voltas nos 3 blocos.",
+    "Acumulação: búlgaro com barra pesado (poucas repetições) com GHD em E2MOM, pliometria de volume (tornozelos, pogo lateral, hurdle hops, pogo a uma perna a avançar, saltos à caixa contínuos) com lançamento rotacional à parede, e AMRAP controlados com SkiErg.",
+    "Búlgaro pesado: 4/perna com a carga mais alta que mantém a técnica (RIR 2); se ficar fácil, sobe 2,5–5 kg na volta seguinte. AMRAP: o mesmo número de voltas nos 3 blocos.",
     180,
     [
       b(1, "Aquecimento", 5, AQUEC_A),
@@ -124,15 +124,15 @@
         i("saltos-barreiras", "5 × 6 barreiras (30 cm)", "45 s", EL("rigidez reativa em saltos contínuos (hurdle hops)")),
         i("saltos-unipodais", "2 × 10/perna a avançar (≈5 m)", "30 s", EL("rigidez reativa numa perna a avançar (apoio da corrida)")),
         i("salto-caixa-continuo", "3 × 5 (caixa de 50 cm)", "60 s", MAX("potência vertical repetida com ressalto curto no chão")),
-        i("lancamento-medicinal-tras", "3 × 4 (bola de 4–5 kg)", "45 s", POT("potência balística da extensão tripla (tornozelo, joelho e anca)"))
+        i("lancamento-rotacional", "3 × 4/lado (bola de 4–6 kg)", "45 s", POT("potência rotacional da anca e do tronco"))
       ]),
       b(3, "Força", 16, [
-        i("agachamento-barra", "5 reps · voltas 1–2 rampa (50%, 60%), 3–8 a ≈72–75% (RPE 7)", "resto do minuto", OBJ("força máxima de extensão do joelho e da anca")),
+        i("split-squat-bulgaro-barra", "4/perna · voltas 1–2 rampa leve, 3–8 pesado a RIR 2 (RPE 8)", "resto do minuto", OBJ("força máxima unilateral de joelho e anca")),
         i("ghd-abdominais", "12 reps", "resto do minuto", OBJ("força dos flexores da anca e do abdómen (tronco rígido na posição aero)"))
       ]),
       b(4, "Condicionamento", 15, [
-        i("air-bike", "12/10 cal", "—", OBJ("motor de pernas e braços")),
-        i("sandbag-carry", "40 m", "—", OBJ("rigidez do tronco com carga ao ombro")),
+        i("ski-erg", "12/10 cal", "—", OBJ("motor de corpo inteiro")),
+        i("farmer-carry", "40 m (2 halteres de 28–32 kg)", "—", OBJ("força de pega e rigidez do tronco sob carga")),
         i("thruster-halteres", "8 reps (2 × 15 kg)", "—", OBJ("agachar e empurrar num só movimento")),
         i("elevacoes", "6 reps", "90 s (fim do bloco)", OBJ("força de puxar vertical"))
       ])
@@ -381,7 +381,7 @@
     sessoes: sessoes.map((s) => s.id),
     semanas: [
       { n: 1, foco: "Acumulação e técnica", notas: "E2MOM 16: búlgaro + GHD (A) e peso morto ≈70% + GHD (B). Pliometria técnica e de volume baixo-intensidade (tornozelos, pogo, pogo a uma perna, skipping em altura, tesouras) + testes: CMJ, triplo salto por perna e scoop (A), salto em comprimento e 5 bounds (B) (170 + 161 contactos). Peça de referência (A) e EMOM 16 (B)." },
-      { n: 2, foco: "Acumulação (mais carga)", notas: "E2MOM 16: agachamento ≈72–75% + GHD (A) e búlgaro com barra + GHD (B). Pliometria com o maior volume do bloco: pogo lateral, hurdle hops a 30 cm, pogo a uma perna a avançar, caixa contínua + lançamento para trás (A); skipping em comprimento, tesouras, patinador, bounds a 80% + step-up explosivo (B) (180 + 198 contactos). AMRAP 3 × 4 min (A) e E2MOM 16 (B)." },
+      { n: 2, foco: "Acumulação (mais carga)", notas: "E2MOM 16: búlgaro com barra pesado (4/perna) + GHD (A) e búlgaro com barra + GHD (B). Pliometria com o maior volume do bloco: pogo lateral, hurdle hops a 30 cm, pogo a uma perna a avançar, caixa contínua + lançamento rotacional (A); skipping em comprimento, tesouras, patinador, bounds a 80% + step-up explosivo (B) (180 + 198 contactos). AMRAP 3 × 4 min (A) e E2MOM 16 (B)." },
       { n: 3, foco: "Intensificação", notas: "E2MOM 18: triplas a ≈85% no agachamento (+ GHD) e no peso morto (+ GHD). Pliometria intensificada: hurdle hops a 40 cm e a uma perna, depth jump para caixa, caixa unipodal + salto carregado (A); zigue-zague, bounds máximos de 8 apoios, triplo salto + trap bar (B) (148 + 170 contactos). Chipper (A) e 5 rondas de 3 min (B)." },
       { n: 4, foco: "Intensificação + entrada da potência", notas: "E2MOM 18: agachamento 85–87% (+ GHD) e peso morto 87–88% (+ GHD). Pliometria mais reativa e unilateral: hurdle hops a 45–50 cm e a uma perna (20 cm), drop jump (RSI), 4 caixas em série + step-up explosivo (A); skipping máximo, patinador contínuo, bounds de 10 apoios, triplo salto + trap bar (B) (141 + 149 contactos); swings pesados no condicionamento. EMOM 16 (A) e densidade 2 × 7 min (B)." },
       { n: 5, foco: "Pico de expressão de potência", notas: "E2MOM 16 pesado-leve: agachamento (A) e búlgaro com barra (B). Pliometria de pico, poucos saltos máximos com recuperação completa: hurdle hops a 50–60 cm, drop jump a uma perna, depth jump de 40 cm + lançamento para trás de 6 kg (A); bounds máximos medidos, depth jump para comprimento, triplo salto + trap bar a 30–35% (B) (127 + 111 contactos, só 57 e 48 máximos). Intervalos 6 × 30 s (A) e 3 rondas explosivas (B)." },
@@ -432,8 +432,8 @@
     "off-s2-dia1": {
       Aquecimento: AQ_A,
       Pliometria: "16 min · 17 séries · elástico 20–45 s · máximo 60 s · potência 45 s · 180 contactos",
-      "Força": "E2MOM 16 min · 8 voltas · min ímpar agachamento, min par GHD · voltas 1–2 rampa",
-      Condicionamento: "3 blocos de AMRAP 4 min · 90 s entre blocos · air bike → sandbag → thrusters → elevações"
+      "Força": "E2MOM 16 min · 8 voltas · min ímpar búlgaro com barra pesado (as duas pernas), min par GHD · voltas 1–2 rampa",
+      Condicionamento: "3 blocos de AMRAP 4 min · 90 s entre blocos · SkiErg → farmer com halteres → thrusters → elevações"
     },
     "off-s2-dia2": {
       Aquecimento: AQ_B,
