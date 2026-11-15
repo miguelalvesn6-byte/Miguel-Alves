@@ -228,6 +228,11 @@
     "saltos-barreiras-laterais": "https://www.youtube.com/watch?v=JLDX8HphHNE", // "Lateral Hurdle Hop" — Juniper Strength & Recovery Studio
     "lancamento-medicinal-scoop": "https://www.youtube.com/watch?v=UmLEPjElr4s", // "How To: Med Ball Forward Scoop Toss" — RAWR Strength
     "passe-peito-medicinal": "https://www.youtube.com/watch?v=U1uXbG-j1NI", // "Medicine Ball: Chest Pass" — RockIt Fitness
+    "saltos-barreiras-unipodais": "https://www.youtube.com/watch?v=Cd6tMMawIYk", // "Single Leg Hurdle Hops" — RC Strength Training
+    "drop-jump-unipodal": "https://www.youtube.com/watch?v=wXx6BYct6-c", // "Single Leg Drop Jump" — Brisbane HPC
+    "skipping-distancia": "https://www.youtube.com/watch?v=mMuA8wHXlfM", // "Power Skip for Distance" — NEMO Fitness
+    "lancamento-medicinal-tras": "https://www.youtube.com/watch?v=b05ny1i308Y", // "Medicine Ball Throw — Overhead Backward" — Brendan Thompson | Speed Coach, DPT
+    "step-up-explosivo": "https://www.youtube.com/watch?v=_KYXIeUatqk", // "Reactive Step Up Jump to Knee Drive" — Theory of Motion Exercise Library
   };
   if (typeof EXERCICIOS === 'undefined') return;
   EXERCICIOS.forEach(e => { if (V[e.id] && !e.video) e.video = V[e.id]; });
