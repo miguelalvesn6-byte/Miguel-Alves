@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calendário de Triatlo 2027 (previsão)</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f3f4f1; --surface:#ffffff; --sunk:#e8eae5; --line:#d6d9d2;
+  --fg:#1c2220; --muted:#5d6661; --accent:#d4561c; --accent-ink:#ffffff; --accent-soft:#fbe5d9;
+  --warn:#a26a00; --warn-soft:#f7ebcc; --bad:#b0352f; --bad-soft:#f6dcda;
+  --c-cni:#2b6cb0; --c-clubes:#c05621; --c-taca:#2c7a7b; --c-jovem:#6b46c1; --c-swim:#2f7a4b; --c-outras:#5d6661;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#141816; --surface:#1d2220; --sunk:#252b28; --line:#333a36;
+  --fg:#e9ece8; --muted:#9aa49e; --accent:#f07a3e; --accent-ink:#1a0e07; --accent-soft:#3a2418;
+  --warn:#e3b04b; --warn-soft:#3a2f14; --bad:#ec7a73; --bad-soft:#3d1f1d;
+  --c-cni:#74a8e6; --c-clubes:#f0975a; --c-taca:#5fc4c2; --c-jovem:#a88bec; --c-swim:#6cc58c; --c-outras:#9aa49e;
+  color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.45}
+.wrap{max-width:1100px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:700;margin:0;letter-spacing:.01em;text-wrap:balance}
+h1{font-size:2.3rem;line-height:1}
+h2{font-size:1.45rem}
+.eyebrow{font-size:.74rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:600}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;margin-bottom:16px}
+.lead{color:var(--muted);max-width:68ch;margin:8px 0 0}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:7px 12px;font-weight:600;font-size:.88rem}
+.btn:hover{background:var(--sunk)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:16px}
+.stats{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:.9rem;color:var(--muted)}
+.stats b{color:var(--fg);font-family:var(--display);font-size:1.35rem;margin-right:4px}
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 11px;font-size:.85rem;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.chip[aria-pressed="false"]{opacity:.45}
+.sw{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.month{margin-top:22px}
+.month h2{border-bottom:2px solid var(--fg);padding-bottom:4px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:baseline}
+.month h2 span{font-family:var(--body);font-size:.85rem;font-weight:600;color:var(--muted)}
+.ev{display:grid;grid-template-columns:86px minmax(0,1fr) auto;gap:4px 14px;padding:10px 0;border-bottom:1px solid var(--line);align-items:start}
+.ev:last-child{border-bottom:0}
+.date{font-family:var(--display);font-weight:700;font-size:1.25rem;line-height:1.05}
+.date small{display:block;font-family:var(--body);font-weight:600;font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.name{font-weight:700;font-size:1.02rem}
+.meta{color:var(--muted);font-size:.88rem}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.tag{font-size:.75rem;font-weight:700;border-radius:4px;padding:1px 7px;color:var(--c);background:color-mix(in srgb,var(--c) 13%,transparent)}
+.prev{text-align:right;font-size:.8rem;color:var(--muted);white-space:nowrap}
+.note{grid-column:2 / -1;font-size:.84rem;border-radius:6px;padding:5px 9px;background:var(--warn-soft);color:var(--fg);border-left:3px solid var(--warn)}
+.note.bad{background:var(--bad-soft);border-left-color:var(--bad)}
+.legend{font-size:.85rem;color:var(--muted)}
+.legend ul{margin:6px 0 0;padding-left:18px}
+footer{margin-top:28px;font-size:.82rem;color:var(--muted)}
+footer a{color:inherit}
+@media (max-width:620px){.ev{grid-template-columns:64px minmax(0,1fr)}.prev{grid-column:2;text-align:left}}
+@media print{.actions,.filters{display:none}.panel{border:0;padding:0}body{background:#fff}.ev{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Triatlo · Calendário nacional</div>
+      <h1>Época 2027 — previsão</h1>
+      <p class="lead">Projeção feita a partir das provas do Calendário Nacional 2026 da Federação de Triatlo de Portugal: cada prova passa para o mesmo fim de semana do ano em 2027 (mesmo dia da semana, normalmente um dia mais cedo). As datas só ficam oficiais quando a FTP publicar o calendário de 2027.</p>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="ics">Exportar para calendário (.ics)</button>
+      <button class="btn" id="csv">Exportar CSV</button>
+      <button class="btn" onclick="print()">Imprimir</button>
+    </div>
+  </header>
+
+  <section class="panel">
+    <div class="stats" id="stats"></div>
+    <div class="filters" id="filters" aria-label="Filtrar por competição"></div>
+  </section>
+
+  <section class="panel legend">
+    <b>Pontos a confirmar</b>
+    <ul>
+      <li><b>Páscoa 2027 é a 28 de março</b> (em 2026 foi a 5 de abril). O fim de semana da Taça da Europa e da Taça de Portugal em Quarteira calha em Sábado de Aleluia / Domingo de Páscoa: é provável que mude.</li>
+      <li><b>Feriados com prova:</b> 25 de Abril calha a um domingo (Moura); o 1.º de Maio calha a um sábado (Cerveira). O Corpo de Deus (27 maio) e o 10 de Junho são quintas-feiras e criam pontes nos fins de semana da Golegã e de Coimbra.</li>
+      <li><b>Campeonato Ibérico:</b> em 2026 foi em Mérida (Espanha). A sede costuma alternar entre os dois países, por isso em 2027 pode ser em Portugal.</li>
+      <li><b>Provas canceladas em 2026</b> que podem regressar: Triatlo de S. Martinho do Porto (Taça de Portugal + Taça da Europa, setembro) e o Campeonato Nacional de Longa Distância (Coimbra, junho).</li>
+    </ul>
+  </section>
+
+  <div id="list"></div>
+
+  <footer>
+    Fonte: Federação de Triatlo de Portugal — <a href="https://www.federacao-triatlo.pt/ftp2015/wp-content/uploads/2026/07/calendario-nacional-2026-rev08.pdf">Calendário Nacional 2026 (rev. 08, 22-07-2026)</a> e
+    <a href="https://www.federacao-triatlo.pt/ftp2015/wp-content/uploads/2026/07/guia-calendario-nacional-2026-rev12.pdf">Guia do Calendário 2026 (rev. 12)</a>.
+    Calendário regional e provas abertas não incluídos.
+  </footer>
+</div>
+
+<script>
+const CATS = {
+  cni:    {label:'Campeonatos Nacionais Individuais', short:'CN Individual', c:'--c-cni'},
+  clubes: {label:'Campeonatos Nacionais de Clubes', short:'CN Clubes', c:'--c-clubes'},
+  taca:   {label:'Taça de Portugal', short:'Taça de Portugal', c:'--c-taca'},
+  jovem:  {label:'Jovens (CN Jovem / Juvenis)', short:'Jovem', c:'--c-jovem'},
+  swim:   {label:'Swim Run', short:'Swim Run', c:'--c-swim'},
+  outras: {label:'Internacionais e outras', short:'Outras', c:'--c-outras'},
+};
+// [data 2026, prova, local, modalidade/distância, [[categoria, texto da etiqueta], ...], nota 2027 (opcional), nível nota]
+const EVENTS = [
+  ['2026-01-25','Duatlo Cross de Abrantes','Abrantes','Duatlo Cross · Sprint',[['clubes','CN Clubes Cross · Etapa 1']]],
+  ['2026-02-14','Duatlo de Arronches','Arronches','Duatlo · Sprint',[['clubes','CN Clubes Duatlo · Etapa 1']]],
+  ['2026-02-28','Duatlo Jovem de Grândola','Grândola','Duatlo · Jovem',[['jovem','CN Jovem · Etapa 1'],['jovem','CN Juvenis Duatlo']]],
+  ['2026-03-01','Duatlo de Grândola','Grândola','Duatlo · Sprint',[['cni','CNI Duatlo (+ Juniores, Cadetes, Paratriatlo)'],['clubes','CN Clubes Duatlo · Etapa 2']]],
+  ['2026-03-08','Triatlo de Santo André','Santo André','Triatlo · Sprint',[['taca','Taça de Portugal · Etapa 1']]],
+  ['2026-03-15','Triatlo de Albufeira','Albufeira','Triatlo · Super Sprint',[['cni','CNI Super Sprint (+ Juniores, Paratriatlo)'],['cni','CN Cadetes · Etapa 1'],['jovem','CN Juvenis Triatlo · Etapa 1']]],
+  ['2026-03-22','Duatlo Cross de Famalicão','Vila Nova de Famalicão','Duatlo Cross · Sprint',[['cni','CNI Duatlo Cross (+ Juniores, Cadetes)'],['clubes','CN Clubes Cross · Etapa 2']]],
+  ['2026-03-28','Taça da Europa – Quarteira','Quarteira','Triatlo · Standard',[['outras','Europe Triathlon Cup']],'Calha no Sábado de Aleluia (Páscoa a 28/03/2027). Data provavelmente diferente — confirmar no calendário da Europe Triathlon.','bad'],
+  ['2026-03-29','Triatlo de Quarteira + Taça da Europa Júnior','Quarteira','Triatlo · Sprint',[['taca','Taça de Portugal · Etapa 2'],['outras','Taça da Europa Júnior']],'Calha no Domingo de Páscoa. Alternativa provável: 20–21 de março ou 3–4 de abril.','bad'],
+  ['2026-04-04','Aquatlo de Santa Cruz','Santa Cruz (Madeira)','Aquatlo · Sprint',[['cni','CNI Aquatlo (+ Juniores, Cadetes, Paratriatlo)'],['jovem','CN Jovem · Etapa 2']],'Em 2026 foi no fim de semana da Páscoa; em 2027 este sábado já é depois da Páscoa.'],
+  ['2026-04-11','Taça da Europa – Monte Gordo','Monte Gordo','Triatlo · Sprint',[['outras','Europe Triathlon Cup']]],
+  ['2026-04-12','Triatlo de Monte Gordo','Monte Gordo','Triatlo · Sprint',[['taca','Taça de Portugal · Etapa 3']]],
+  ['2026-04-12','Triatlo de Setúbal','Setúbal','Triatlo · Média Distância',[['outras','Prova aberta']]],
+  ['2026-04-19','Troia Swim Run','Troia','Swim Run',[['swim','Swim Run']]],
+  ['2026-04-26','Triatlo Longo de Moura','Moura','Triatlo · Média Distância',[['cni','CNI Média Distância (+ Paratriatlo)']],'Calha no 25 de Abril (feriado, domingo).'],
+  ['2026-05-01','Duatlo Jovem de Cerveira','Vila Nova de Cerveira','Duatlo · Jovem',[['jovem','CN Jovem · Etapa 3']],'Prova do 1.º de Maio: mantém-se o feriado, que em 2027 é sábado.',null,'2027-05-01'],
+  ['2026-05-02','Swim Run do Tâmega','Tâmega','Swim Run (2 dias)',[['swim','Swim Run']]],
+  ['2026-05-10','Triatlo de Oeiras','Oeiras','Triatlo · Sprint',[['cni','CNI Triatlo Sprint (+ Juniores, Paratriatlo)'],['cni','CN Cadetes · Etapa 2']]],
+  ['2026-05-16','Triatlo Jovem do Sabugal','Sabugal','Estafetas · Jovem',[['jovem','CN Jovem · Etapa 4']]],
+  ['2026-05-17','Duatlo Cross da Raia','Malhada Sorda','Duatlo Cross · Sprint',[['clubes','CN Clubes Cross · Etapa 3']]],
+  ['2026-05-24','Triatlo Cross de Fornos de Algodres','Fornos de Algodres','Triatlo Cross · Sprint',[['clubes','CN Clubes Cross · Etapa 4'],['cni','CN Juniores/Cadetes Triatlo Cross']]],
+  ['2026-05-24','Lagoa Swim Run','Lagoa','Swim Run',[['swim','Swim Run']]],
+  ['2026-05-30','Triatlo Cross da Golegã','Golegã','Triatlo Cross · Standard',[['cni','CNI Triatlo Cross (+ Paratriatlo)'],['clubes','CN Clubes Cross · Etapa 5']],'Fim de semana a seguir ao Corpo de Deus (quinta, 27/05).'],
+  ['2026-05-31','Triatlo Jovem da Golegã','Golegã','Triatlo BTT · Jovem',[['jovem','CN Jovem · Etapa 5']]],
+  ['2026-06-06','Triatlo de Peniche + Aquatlo Jovem','Peniche','Triatlo · Sprint / Aquatlo Jovem',[['clubes','CN Clubes Triatlo · Etapa 1'],['jovem','CN Jovem · Etapa 6'],['jovem','CN Juvenis Aquatlo']]],
+  ['2026-06-14','Campeonato Nacional de Triatlo Standard','Coimbra','Triatlo · Standard',[['cni','CNI Triatlo Standard (+ Juniores)']],'Fim de semana a seguir ao 10 de Junho (quinta).'],
+  ['2026-06-14','Penacova Swim Run','Penacova','Swim Run',[['swim','Swim Run']]],
+  ['2026-06-20','Triatlo de Serpa','Serpa','Triatlo · Super Sprint',[['taca','Taça de Portugal · Etapa 4']]],
+  ['2026-06-21','Triatlo de Serpa – Contrarrelógio por Equipas','Serpa','Triatlo · CRE Sprint',[['clubes','CN Clubes Triatlo · Etapa 2']]],
+  ['2026-06-27','Triatlo Jovem de Soure','Soure','Estafetas · Jovem',[['jovem','CN Jovem · Etapa 7']]],
+  ['2026-06-28','Duatlo de Mação','Mação','Duatlo · Sprint',[['clubes','CN Clubes Duatlo · Etapa 3']]],
+  ['2026-07-05','Starman','—','Triatlo · Média Distância',[['outras','Prova aberta']]],
+  ['2026-07-12','Triatlo Rios Ibéricos','Castelo de Paiva','Triatlo · Sprint/Standard',[['taca','Taça de Portugal · Etapa 5']]],
+  ['2026-07-19','Triatlo Longo de Caminha','Caminha','Triatlo · Média Distância',[['clubes','CN Clubes Triatlo Longo']]],
+  ['2026-07-25','Triatlo Jovem da Amora','Amora','Triatlo · Jovem',[['jovem','CN Jovem · Etapa 8'],['jovem','CN Juvenis Triatlo · Etapa 2']]],
+  ['2026-07-26','Aquatlo da Amora','Amora','Aquatlo · Sprint',[['clubes','CN Clubes Aquatlo']]],
+  ['2026-08-22','Campeonato Ibérico de Triatlo','A definir (2026: Mérida)','Triatlo · Standard',[['outras','Campeonato Ibérico']],'Sede a confirmar — pode passar para Portugal.'],
+  ['2026-09-05','Triatlo de Alhandra + Taça do Mundo de Paratriatlo','Alhandra','Triatlo · Super Sprint',[['taca','Taça de Portugal · Etapa 6'],['cni','CN Cadetes · Etapa 3'],['outras','World Cup Paratriatlo']]],
+  ['2026-09-06','Triatlo de Lisboa (Triton)','Lisboa','Triatlo · Várias distâncias',[['outras','Prova aberta']]],
+  ['2026-09-06','Madeira Swim Run','Madeira','Swim Run',[['swim','Swim Run']]],
+  ['2026-09-20','Triatlo Jovem de Coimbra + Taça da Europa','Coimbra','Triatlo · Jovem / Sprint',[['jovem','CN Jovem · Etapa 9'],['outras','Europe Triathlon Cup']]],
+  ['2026-09-27','Triatlo de Sines','Sines','Triatlo · Média Distância',[['outras','Prova aberta']]],
+  ['2026-09-27','Zêzere Swim Run','Zêzere','Swim Run',[['swim','Swim Run']]],
+  ['2026-10-10','Triatlo de S. Jacinto','S. Jacinto (Aveiro)','Triatlo · Standard',[['clubes','CN Clubes Triatlo · Etapa 3']]],
+  ['2026-10-11','Arrábida Swim Run','Arrábida','Swim Run',[['swim','Swim Run']]],
+  ['2026-10-17','Ironman Cascais','Cascais','Triatlo · Média e Longa Distância',[['outras','Prova aberta']]],
+  ['2026-10-25','Triatlo de Sesimbra – Estafetas','Lagoa de Albufeira','Estafetas · Super Sprint',[['clubes','CN Clubes Triatlo · Etapa 4 (final)']]],
+];
+
+const DOW = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+const MON = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+const iso = d => d.toISOString().slice(0,10);
+const parse = s => new Date(s+'T12:00:00Z');
+const fmtShort = d => `${String(d.getUTCDate()).padStart(2,'0')}/${String(d.getUTCMonth()+1).padStart(2,'0')}`;
+
+const data = EVENTS.map(([d26,name,local,mod,tags,note,level,override])=>{
+  const a = parse(d26);
+  const b = override ? parse(override) : new Date(a.getTime() + 364*864e5); // mesmo dia da semana, 52 semanas depois
+  return {d26:a,d27:b,name,local,mod,tags,note,level,cats:[...new Set(tags.map(t=>t[0]))]};
+}).sort((x,y)=>x.d27-y.d27);
+
+const active = new Set(Object.keys(CATS));
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const visible = () => data.filter(e=>e.cats.some(c=>active.has(c)));
+
+function renderFilters(){
+  const f = document.getElementById('filters');
+  f.innerHTML = Object.entries(CATS).map(([k,v])=>
+    `<button class="chip" data-k="${k}" aria-pressed="${active.has(k)}" style="--c:var(${v.c})"><span class="sw"></span>${v.label} <span class="mono">${data.filter(e=>e.cats.includes(k)).length}</span></button>`).join('');
+  f.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{
+    const k=b.dataset.k; active.has(k)?active.delete(k):active.add(k); renderFilters(); render();
+  });
+}
+
+function render(){
+  const ev = visible();
+  const s = document.getElementById('stats');
+  const weekends = new Set(ev.map(e=>{const d=new Date(e.d27);d.setUTCDate(d.getUTCDate()-((d.getUTCDay()+1)%7));return iso(d)})).size;
+  s.innerHTML = `<span><b>${ev.length}</b>provas</span><span><b>${weekends}</b>fins de semana ocupados</span>`+
+    `<span><b>${ev.length?fmtShort(ev[0].d27):'—'}</b>primeira prova</span><span><b>${ev.length?fmtShort(ev[ev.length-1].d27):'—'}</b>última prova</span>`+
+    `<span><b>${ev.filter(e=>e.note).length}</b>com pontos a confirmar</span>`;
+  let html='', cur=-1;
+  for(const e of ev){
+    const m=e.d27.getUTCMonth();
+    if(m!==cur){
+      if(cur>=0) html+='</section>';
+      cur=m;
+      const n=ev.filter(x=>x.d27.getUTCMonth()===m).length;
+      html+=`<section class="month panel"><h2>${MON[m][0].toUpperCase()+MON[m].slice(1)} 2027 <span>${n} prova${n>1?'s':''}</span></h2>`;
+    }
+    html+=`<div class="ev">
+      <div class="date">${e.d27.getUTCDate()} ${MON[m].slice(0,3)}<small>${DOW[e.d27.getUTCDay()]}</small></div>
+      <div><div class="name">${esc(e.name)}</div><div class="meta">${esc(e.local)} · ${esc(e.mod)}</div>
+        <div class="tags">${e.tags.map(([c,t])=>`<span class="tag" style="--c:var(${CATS[c].c})">${esc(t)}</span>`).join('')}</div></div>
+      <div class="prev">em 2026:<br><span class="mono">${fmtShort(e.d26)}/26</span></div>
+      ${e.note?`<div class="note ${e.level==='bad'?'bad':''}">${esc(e.note)}</div>`:''}
+    </div>`;
+  }
+  if(cur>=0) html+='</section>';
+  document.getElementById('list').innerHTML = html || '<p class="panel">Nenhuma prova com estes filtros.</p>';
+}
+
+function download(name,type,text){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([text],{type}));
+  a.download=name; document.body.appendChild(a); a.click(); a.remove();
+}
+document.getElementById('ics').onclick=()=>{
+  const fold=s=>s.replace(/[\\,;]/g,m=>'\\'+m).replace(/\n/g,'\\n');
+  const stamp=new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
+  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Calendario Triatlo 2027//PT','CALSCALE:GREGORIAN','X-WR-CALNAME:Triatlo 2027 (previsão)'];
+  visible().forEach((e,i)=>{
+    const d=iso(e.d27).replace(/-/g,''), n=new Date(e.d27.getTime()+864e5);
+    lines.push('BEGIN:VEVENT',`UID:triatlo2027-${i}-${d}@calendario`,`DTSTAMP:${stamp}`,`DTSTART;VALUE=DATE:${d}`,`DTEND;VALUE=DATE:${iso(n).replace(/-/g,'')}`,
+      `SUMMARY:${fold(e.name)} (previsão)`,`LOCATION:${fold(e.local)}`,
+      `DESCRIPTION:${fold(e.mod+'\n'+e.tags.map(t=>t[1]).join('\n')+'\nEm 2026: '+iso(e.d26)+(e.note?'\n⚠ '+e.note:''))}`,'TRANSP:TRANSPARENT','END:VEVENT');
+  });
+  lines.push('END:VCALENDAR');
+  download('triatlo-2027-previsao.ics','text/calendar',lines.join('\r\n'));
+};
+document.getElementById('csv').onclick=()=>{
+  const q=s=>'"'+String(s).replace(/"/g,'""')+'"';
+  const rows=[['Data 2027','Dia','Prova','Local','Modalidade','Competições','Data 2026','Notas']];
+  visible().forEach(e=>rows.push([iso(e.d27),DOW[e.d27.getUTCDay()],e.name,e.local,e.mod,e.tags.map(t=>t[1]).join(' | '),iso(e.d26),e.note||'']));
+  download('triatlo-2027-previsao.csv','text/csv;charset=utf-8','﻿'+rows.map(r=>r.map(q).join(';')).join('\r\n'));
+};
+
+renderFilters(); render();
+</script>
+</body>
+</html>
