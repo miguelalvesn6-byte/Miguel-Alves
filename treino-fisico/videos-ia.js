@@ -9,7 +9,8 @@
 // Carregar depois dos ficheiros de exercícios.
 (function () {
   const IDS = [
-    "rotacao-toracica",
+    "agachamento-goblet",
+    "peso-morto-romeno",
   ];
   if (typeof EXERCICIOS === "undefined") return;
   const pasta = "../treino-fisico/videos-ia/";
