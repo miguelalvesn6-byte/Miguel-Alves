@@ -9,7 +9,7 @@
 <style>
 /* Layout: agenda limpa — lista de provas por mês (data, nome, nível, quem vai); o detalhe abre num painel lateral. */
 :root{
-  --bg:#ffffff; --soft:#f5f6f8; --line:#e7e9ee; --line2:#d9dde4;
+  --page:#f2f4f7; --bg:#ffffff; --soft:#f4f5f8; --line:#e7e9ee; --line2:#d9dde4;
   --ink:#12151a; --ink2:#3b414b; --muted:#737b88;
   --A:#e0492b; --A-soft:#fdece7; --B:#2b67d9; --B-soft:#e9effc; --C:#8b94a3; --C-soft:#eff1f4;
   --ok:#17804a; --ok-soft:#e3f4ea; --warn:#a96400; --warn-soft:#fdf1dc; --bad:#c4321f; --bad-soft:#fde8e4;
@@ -18,14 +18,14 @@
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0f1216; --soft:#171b21; --line:#242a32; --line2:#2f3640;
+  --page:#0b0e12; --bg:#13171d; --soft:#1a1f26; --line:#242a32; --line2:#2f3640;
   --ink:#eef1f5; --ink2:#c4cad3; --muted:#8c95a3;
   --A:#ff7a5c; --A-soft:#3a1d16; --B:#7aa5ff; --B-soft:#192640; --C:#9aa3b1; --C-soft:#20262e;
   --ok:#4fcf8b; --ok-soft:#14301f; --warn:#f0b450; --warn-soft:#352812; --bad:#ff7d6b; --bad-soft:#3b1a16;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 32px rgba(0,0,0,.45);
   color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0f1216; --soft:#171b21; --line:#242a32; --line2:#2f3640;
+  --page:#0b0e12; --bg:#13171d; --soft:#1a1f26; --line:#242a32; --line2:#2f3640;
   --ink:#eef1f5; --ink2:#c4cad3; --muted:#8c95a3;
   --A:#ff7a5c; --A-soft:#3a1d16; --B:#7aa5ff; --B-soft:#192640; --C:#9aa3b1; --C-soft:#20262e;
   --ok:#4fcf8b; --ok-soft:#14301f; --warn:#f0b450; --warn-soft:#352812; --bad:#ff7d6b; --bad-soft:#3b1a16;
@@ -33,13 +33,81 @@
   color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+body{background:var(--page);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--B);outline-offset:2px;border-radius:6px}
-.wrap{max-width:980px;margin:0 auto;padding:40px 24px 80px}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 24px 80px}
 .muted{color:var(--muted)}
+
+/* faixa da época (topo escuro) */
+.band{background:#0d1b2a;color:#e9eef5;background-image:radial-gradient(1200px 400px at 85% -10%,rgba(91,156,255,.18),transparent 60%),radial-gradient(900px 380px at 0% 120%,rgba(255,106,77,.12),transparent 60%)}
+.band-in{max-width:1180px;margin:0 auto;padding:30px 24px 26px}
+.band .eyebrow{color:#93a4ba}
+.band h1{color:#fff}
+.band .seg{background:rgba(255,255,255,.08)}
+.band .seg button{color:#c9d4e2}
+.band .seg button[aria-pressed="true"]{background:#fff;color:#0d1b2a;box-shadow:none}
+.band .sync{color:#93a4ba}
+.band .btn.exp{background:#fff;border-color:#fff;color:#0d1b2a;font-weight:700}
+.band .btn.exp:hover{background:#e6edf6}
+.me-row2{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.tlbox{margin-top:26px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px 16px 10px;overflow-x:auto}
+.tl{min-width:860px;position:relative}
+.tl-head,.tl-row{display:grid;grid-template-columns:220px minmax(0,1fr);align-items:center}
+.tl-months{position:relative;height:22px;display:grid;grid-template-columns:repeat(11,1fr);font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#7f91a8}
+.tl-months div{padding-left:6px;border-left:1px solid rgba(255,255,255,.08)}
+.tl-rows{position:relative}
+.tl-grid{position:absolute;left:220px;right:0;top:0;bottom:0;display:grid;grid-template-columns:repeat(11,1fr);pointer-events:none}
+.tl-grid div{border-left:1px solid rgba(255,255,255,.06)}
+.tl-row{height:30px;border-radius:8px;cursor:pointer;position:relative}
+.tl-row:hover{background:rgba(255,255,255,.05)}
+.tl-row.sel{background:rgba(255,255,255,.09)}
+.tl-lab{display:flex;align-items:center;gap:8px;min-width:0;padding:0 8px;font-size:.85rem;font-weight:600;color:#e9eef5}
+.tl-lab em{font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl-lab small{margin-left:auto;color:#7f91a8;font-weight:600;font-size:.74rem;white-space:nowrap}
+.tl-lab i{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.tl-track{position:relative;height:100%}
+.tl-prep{position:absolute;top:9px;height:12px;border-radius:6px}
+.tl-dot{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%);border:2px solid #0d1b2a}
+.tl-dot.A{width:18px;height:18px;box-shadow:0 0 0 4px rgba(255,106,77,.22)}
+.tl-today{position:absolute;top:-22px;bottom:0;width:2px;background:#fff;opacity:.7;margin-left:220px}
+.tl-today span{position:absolute;top:0;left:6px;font-size:.66rem;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+.tl-legend{display:flex;gap:18px;flex-wrap:wrap;font-size:.8rem;color:#a9b7c9;margin-top:14px}
+.tl-legend span{display:inline-flex;align-items:center;gap:7px}
+.tl-legend i{width:10px;height:10px;border-radius:50%}
+.tl-legend b.pb{width:26px;height:8px;border-radius:4px;background:linear-gradient(90deg,rgba(255,106,77,.05),rgba(255,106,77,.6))}
+.tl-note{font-size:.8rem;color:#7f91a8;margin-left:auto}
+@media (max-width:640px){
+  .band-in{padding:22px 16px 20px}
+  .tlbox{padding:12px 0 8px 0;margin-left:-4px;margin-right:-4px}
+  .tl{min-width:760px}
+  .tl-head,.tl-row{grid-template-columns:118px minmax(0,1fr)}
+  .tl-grid{left:118px}
+  .tl-lab{position:sticky;left:0;z-index:2;background:#13202e;font-size:.8rem}
+  .tl-lab small{display:none}
+  .tl-head>div:first-child{position:sticky;left:0;z-index:2;background:#13202e}
+  .tl-note{margin-left:0}
+}
+
+/* cartões claros */
+.card{background:var(--bg)!important;border:1px solid var(--line);box-shadow:0 1px 2px rgba(16,22,30,.04)}
+.listcard{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:6px 22px 18px;margin-top:14px}
+.todo-card{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:18px 22px}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:22px}
+@media (max-width:860px){.cols{grid-template-columns:minmax(0,1fr)}}
+.cols .hero{margin-top:0;grid-template-columns:minmax(0,1fr)}
+.cal-links{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+
+/* exportar */
+#expDlg .opt{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:12px;margin-top:10px;cursor:pointer;font-size:.92rem}
+#expDlg .opt input{margin-top:3px;width:18px;height:18px}
+#expDlg .opt b{display:block}
+#expDlg .opt span{color:var(--muted);font-size:.84rem}
+#expDlg .how{background:var(--soft);border-radius:12px;padding:12px 14px;font-size:.86rem;margin-top:14px;color:var(--ink2)}
+#expDlg .how b{color:var(--ink)}
+#expMsg{font-size:.86rem;font-weight:600;margin-top:10px;min-height:1.2em}
 
 /* cabeçalho */
 .top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
@@ -243,34 +311,43 @@ dialog::backdrop{background:rgba(10,14,20,.45)}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
+<header class="band">
+ <div class="band-in">
+  <div class="top">
     <div>
       <div class="eyebrow">Época 2027 · Miguel, Nuno e Rita</div>
       <h1>Provas 2027</h1>
     </div>
     <div class="me">
-      <div class="seg" id="me" role="group" aria-label="Quem és?"></div>
+      <div class="me-row2"><div class="seg" id="me" role="group" aria-label="Quem és?"></div><button class="btn exp" type="button" id="expBtn">Exportar para o calendário</button></div>
       <div class="sync"><span class="dot" id="dot"></span><span id="synctxt">A ligar…</span></div>
     </div>
-  </header>
+  </div>
+  <div class="tlbox" aria-label="Gráfico da época: blocos de preparação e provas">
+    <div class="tl" id="tl"></div>
+  </div>
+  <div class="tl-legend" aria-hidden="true"><span><i style="background:#ff6a4d"></i>A · objetivo</span><span><i style="background:#5b9cff"></i>B · teste</span><span><i style="background:#a7b4c6"></i>C · treino</span><span><b class="pb"></b>bloco de preparação</span><span class="tl-note">Carrega numa prova para ver tudo</span></div>
+ </div>
+</header>
+<div class="wrap">
 
+  <div class="cols">
   <section class="hero">
     <div class="card next" id="next"></div>
     <div class="card mine" id="mine"></div>
   </section>
-
-  <section class="sec">
+  <section class="todo-card">
     <div class="sec-h"><h2>A seguir</h2><span class="small">inscrições, subidas de preço e decisões</span></div>
     <ul class="todo" id="todo"></ul>
   </section>
+  </div>
 
   <section class="sec">
     <div class="tools">
       <div class="chips" id="filters" aria-label="Filtrar por nível"></div>
       <button class="btn primary" type="button" id="addRace">+ Adicionar prova</button>
     </div>
-    <div id="list"><p class="empty">A carregar as provas…</p></div>
+    <div class="listcard"><div id="list"><p class="empty">A carregar as provas…</p></div></div>
     <div class="legend-who" aria-hidden="true">
       <span><i class="av" data-s="">M</i>por marcar</span><span><i class="av" data-s="vou">M</i>vou</span><span><i class="av" data-s="inscrito">M</i>inscrito</span><span><i class="av" data-s="talvez">M</i>talvez</span><span><i class="av" data-s="nao">M</i>não vou</span>
       <span>· carrega na bola para mudar, ou na prova para ver tudo</span>
@@ -370,6 +447,22 @@ dialog::backdrop{background:rgba(10,14,20,.45)}
 </dialog>
 
 
+<dialog id="expDlg" aria-labelledby="expTitle">
+  <form class="dlg" id="expForm" method="dialog" novalidate>
+    <div class="dlg-h"><div><h2 id="expTitle">Exportar para o calendário</h2><p class="sub">Cria um ficheiro de calendário (.ics) com as provas, para o telemóvel, Google Calendar ou Outlook.</p></div>
+    <button class="xbtn" type="button" data-close aria-label="Fechar"><svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="dlg-b">
+      <label class="opt"><input type="radio" name="expWhich" value="all" checked><div><b>Todas as provas do calendário</b><span id="expAllN"></span></div></label>
+      <label class="opt"><input type="radio" name="expWhich" value="mine"><div><b id="expMineT">Só as provas em que vou</b><span id="expMineN"></span></div></label>
+      <label class="opt"><input type="checkbox" id="expAlerts" checked><div><b>Incluir avisos</b><span>Abertura de inscrições e último dia antes de cada subida de preço.</span></div></label>
+      <label class="opt"><input type="checkbox" id="expRemind" checked><div><b>Lembrete 7 dias antes de cada prova</b><span>O telemóvel avisa uma semana antes.</span></div></label>
+      <div class="how"><b>Como importar:</b> o ficheiro vem dentro de um .zip. Abre o zip e depois o <b>provas-2027.ics</b>: no iPhone e no Mac abre no Calendário; no Android ou no Google Calendar, vai a <b>Definições → Importar</b> no computador; no Outlook, <b>Adicionar calendário → Carregar de ficheiro</b>. Em cada prova também há botões para a adicionar ao Google ou ao Outlook com um clique.</div>
+      <div id="expMsg" role="status"></div>
+    </div>
+    <div class="foot"><button class="btn" type="button" id="expCopy">Copiar texto .ics</button><div class="r"><button class="btn" type="button" data-close>Cancelar</button><button class="btn primary" type="submit" id="expGo">Descarregar</button></div></div>
+  </form>
+</dialog>
+
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -434,7 +527,7 @@ function normLodge(id,v){
 function renderMe(){$('me').innerHTML=PEOPLE.map(([k,n])=>`<button type="button" data-me="${k}" aria-pressed="${me===k}">${n}</button>`).join('')}
 $('me').addEventListener('click',e=>{const b=e.target.closest('[data-me]');if(!b)return;me=b.dataset.me;try{localStorage.setItem('provas2027-me',me)}catch(_){}renderMe();renderAll()});
 const meName=()=>(PEOPLE.find(p=>p[0]===me)||[,''])[1];
-let openId=null;
+let openId=null, dl=null;
 
 /* ---------- destaque ---------- */
 function costOf(k){let tot=0,cnt=0;races.forEach(r=>{const s=(pres[r.id]||{})[k];if(s==='vou'||s==='inscrito'){cnt++;tot+=r.price.entry+(r.lodge.trip||0)}});return {tot,cnt}}
@@ -507,6 +600,89 @@ function renderRetired(){
     <div style="display:flex;gap:6px"><button class="btn sm" type="button" data-restore="${r.id}">Repor</button><button class="btn sm ghost" type="button" data-edit="${r.id}">Editar</button></div></li>`).join('');
 }
 
+/* ---------- gráfico da época ---------- */
+const TC={A:'#ff6a4d',B:'#5b9cff',C:'#a7b4c6'};
+function renderTimeline(){
+  const start=P('2027-01-01'),end=P('2027-12-01'),span=end-start;
+  const pct=d=>Math.max(0,Math.min(100,(P(d)-start)/span*100));
+  const months=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov'];
+  let rows='';
+  races.forEach(r=>{
+    const c=TC[r.tier], x=pct(r.date);
+    let prep='';
+    if(r.prep.w&&r.prep.from){const l=pct(r.prep.from),w=Math.max(x-l,0.5);prep=`<div class="tl-prep" style="left:${l}%;width:${w}%;background:linear-gradient(90deg,${c}0d,${c}99)"></div>`}
+    const d=P(r.date);
+    rows+=`<div class="tl-row ${openId===r.id?'sel':''}" data-open="${r.id}" role="button" tabindex="0" title="${esc(r.name)} · ${r.label?esc(r.label):fmt(d)}">
+      <div class="tl-lab"><i style="background:${c}"></i><em>${esc(r.short||r.name.split(' · ')[0])}</em><small>${r.label?esc(r.label):fmt(d)}</small></div>
+      <div class="tl-track">${prep}<div class="tl-dot ${r.tier}" style="left:${x}%;background:${c}"></div></div></div>`;
+  });
+  const tp=(today-start)/span*100;
+  const todayLine=(tp>=0&&tp<=100)?`<div class="tl-today" style="left:calc((100% - var(--lab,220px)) * ${tp/100})"><span>hoje</span></div>`:'';
+  $('tl').innerHTML=`<div class="tl-head"><div style="font-size:.72rem;color:#7f91a8;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding-left:8px">${races.length} provas</div><div class="tl-months">${months.map(m=>`<div>${m}</div>`).join('')}</div></div>
+    <div class="tl-rows"><div class="tl-grid">${months.map(()=>'<div></div>').join('')}</div>${todayLine}${rows||'<div style="padding:20px 8px;color:#7f91a8">A carregar…</div>'}</div>`;
+}
+
+/* ---------- calendário ---------- */
+const ymd=d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+const plus1=s=>new Date(P(s).getTime()+864e5);
+function raceDesc(r){return [r.meta,`Nível ${r.tier} · ${TIERLBL[r.tier]}`,r.price.now?`Inscrição: ${r.price.now}`:'',r.reg.t,r.note,r.link].filter(Boolean).join('\n')}
+function gcalUrl(r){const q=new URLSearchParams({action:'TEMPLATE',text:r.name,dates:`${ymd(P(r.date))}/${ymd(plus1(r.date))}`,details:raceDesc(r),location:r.lodge.where||''});return 'https://calendar.google.com/calendar/render?'+q}
+function outlookUrl(r){const q=new URLSearchParams({path:'/calendar/action/compose',rru:'addevent',subject:r.name,startdt:r.date,enddt:plus1(r.date).toISOString().slice(0,10),allday:'true',body:raceDesc(r),location:r.lodge.where||''});return 'https://outlook.live.com/calendar/0/deeplink/compose?'+q}
+function icsEsc(t){return String(t).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n')}
+function fold(line){const out=[];let cur='';for(const ch of line){const add=new TextEncoder().encode(ch).length;if(new TextEncoder().encode(cur).length+add>73){out.push(cur);cur=' '+ch}else cur+=ch}out.push(cur);return out.join('\r\n')}
+function buildIcs(list,withAlerts,remind){
+  const stamp=new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
+  const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Provas 2027//PT','CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:Provas 2027','X-WR-TIMEZONE:Europe/Lisbon'];
+  const ev=(uid,date,summary,desc,loc,alarm)=>{L.push('BEGIN:VEVENT',`UID:${uid}@provas2027`,`DTSTAMP:${stamp}`,`DTSTART;VALUE=DATE:${ymd(P(date))}`,`DTEND;VALUE=DATE:${ymd(plus1(date))}`,
+    `SUMMARY:${icsEsc(summary)}`);if(desc)L.push(`DESCRIPTION:${icsEsc(desc)}`);if(loc)L.push(`LOCATION:${icsEsc(loc)}`);L.push('TRANSP:TRANSPARENT');
+    if(alarm)L.push('BEGIN:VALARM','ACTION:DISPLAY',`DESCRIPTION:${icsEsc(summary)}`,`TRIGGER:${alarm}`,'END:VALARM');L.push('END:VEVENT')};
+  list.forEach(r=>{
+    ev(r.id,r.date,`${r.name} (${r.tier} · ${TIERLBL[r.tier]})`,raceDesc(r),r.lodge.where,remind?'-P7D':'');
+    if(withAlerts){
+      if(r.reg.open&&days(P(r.reg.open))>=0)ev(r.id+'-abre',r.reg.open,`Abrem inscrições: ${r.name}`,r.reg.t+(r.decide?'\nDecidir: '+r.decide:''),'','PT9H');
+      r.price.ups.forEach((u,i)=>{const last=new Date(P(u.d)-864e5).toISOString().slice(0,10);if(days(P(last))>=0)ev(`${r.id}-preco${i}`,last,`Último dia antes de subir o preço: ${r.name}`,`Amanhã passa para ${u.to}.`,'','PT9H')});
+    }
+  });
+  L.push('END:VCALENDAR');
+  return L.map(fold).join('\r\n')+'\r\n';
+}
+/* zip sem compressão (o .ics não está na lista de ficheiros permitidos; o .zip está) */
+const CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(b){let c=0xFFFFFFFF;for(let i=0;i<b.length;i++)c=CRC[(c^b[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0}
+function zip1(name,text){
+  const enc=new TextEncoder(),nb=enc.encode(name),db_=enc.encode(text),crc=crc32(db_);
+  const lh=new DataView(new ArrayBuffer(30));lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(8,0,true);lh.setUint32(14,crc,true);lh.setUint32(18,db_.length,true);lh.setUint32(22,db_.length,true);lh.setUint16(26,nb.length,true);
+  const ch=new DataView(new ArrayBuffer(46));ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);ch.setUint32(16,crc,true);ch.setUint32(20,db_.length,true);ch.setUint32(24,db_.length,true);ch.setUint16(28,nb.length,true);ch.setUint32(42,0,true);
+  const off=30+nb.length+db_.length, cdl=46+nb.length;
+  const end=new DataView(new ArrayBuffer(22));end.setUint32(0,0x06054b50,true);end.setUint16(8,1,true);end.setUint16(10,1,true);end.setUint32(12,cdl,true);end.setUint32(16,off,true);
+  return new Blob([lh.buffer,nb,db_,ch.buffer,nb,end.buffer]);
+}
+function expList(){const which=(document.querySelector('input[name="expWhich"]:checked')||{}).value;
+  return which==='mine'&&me?races.filter(r=>['vou','inscrito'].includes((pres[r.id]||{})[me])):races}
+function openExport(){
+  const mineN=me?races.filter(r=>['vou','inscrito'].includes((pres[r.id]||{})[me])).length:0;
+  $('expAllN').textContent=`${races.length} provas`;
+  $('expMineT').textContent=me?`Só as provas em que ${meName()} vai`:'Só as provas em que vou';
+  $('expMineN').textContent=me?`${mineN} provas marcadas com “vou” ou “inscrito”`:'Escolhe primeiro quem és, no topo da página';
+  document.querySelector('input[name="expWhich"][value="mine"]').disabled=!me;
+  if(!me)document.querySelector('input[name="expWhich"][value="all"]').checked=true;
+  $('expMsg').textContent='';$('expGo').style.display=dl?'':'none';
+  $('expDlg').showModal();
+}
+$('expBtn').onclick=openExport;
+$('expForm').addEventListener('submit',async e=>{
+  e.preventDefault();const list=expList();
+  if(!list.length){$('expMsg').textContent='Não há provas para exportar com esta escolha.';return}
+  const ics=buildIcs(list,$('expAlerts').checked,$('expRemind').checked);
+  try{await dl.save({filename:'provas-2027-calendario.zip',data:zip1('provas-2027.ics',ics)});$('expMsg').textContent='Ficheiro guardado. Abre o zip e depois o provas-2027.ics.'}
+  catch(err){$('expMsg').textContent=err&&err.code==='declined'?'Download cancelado.':'Não foi possível descarregar aqui. Usa “Copiar texto .ics”.'}
+});
+$('expCopy').onclick=async()=>{
+  const list=expList();const ics=buildIcs(list,$('expAlerts').checked,$('expRemind').checked);
+  try{await navigator.clipboard.writeText(ics);$('expMsg').textContent='Copiado. Cola num ficheiro de texto e guarda-o como provas-2027.ics.'}
+  catch(e){$('expMsg').textContent='O browser não deixou copiar.'}
+};
+
 /* ---------- painel ---------- */
 function searchLinks(r){const st=stay(r);return `<a class="btn sm" href="${esc(bookingUrl(r.lodge.where,st))}" target="_blank" rel="noopener">Procurar no Booking</a><a class="btn sm" href="${esc(airbnbUrl(r.lodge.where,st))}" target="_blank" rel="noopener">Airbnb</a>`}
 function lodgeCards(r){
@@ -536,7 +712,7 @@ function renderDrawer(){
       <h2 id="dTitle">${esc(r.name)}</h2>
       <div class="when">${r.label?esc(r.label)+' 2027':`${DOW[d.getDay()]}, ${fmtFull(d)}`} · ${r.conf?'data confirmada':'data estimada'}</div>
       <div class="meta">${esc(r.meta)}</div>
-      <div class="acts">${r.link?`<a class="btn sm" href="${esc(r.link)}" target="_blank" rel="noopener">Site da prova</a>`:''}<button class="btn sm" type="button" data-edit="${r.id}">Editar</button>${r.retired?`<button class="btn sm" type="button" data-restore="${r.id}">Repor</button>`:`<button class="btn sm ghost" type="button" data-retire="${r.id}">Retirar do calendário</button>`}</div>
+      <div class="acts">${r.link?`<a class="btn sm" href="${esc(r.link)}" target="_blank" rel="noopener">Site da prova</a>`:''}<a class="btn sm" href="${esc(gcalUrl(r))}" target="_blank" rel="noopener">+ Google Calendar</a><a class="btn sm" href="${esc(outlookUrl(r))}" target="_blank" rel="noopener">+ Outlook</a><button class="btn sm" type="button" data-edit="${r.id}">Editar</button>${r.retired?`<button class="btn sm" type="button" data-restore="${r.id}">Repor</button>`:`<button class="btn sm ghost" type="button" data-retire="${r.id}">Retirar do calendário</button>`}</div>
       ${r.decide?`<div class="note decide"><b>Decidir:</b> ${esc(r.decide)}</div>`:''}${r.note?`<div class="note">${esc(r.note)}</div>`:''}
     </div>
     <div class="db">
@@ -557,12 +733,12 @@ function renderDrawer(){
     </div>`;
   dr.classList.add('on');$('scrim').classList.add('on');
 }
-function openDrawer(id){openId=id;renderList();renderDrawer();setTimeout(()=>{const x=$('drawer').querySelector('[data-closedrawer]');if(x)x.focus()},50)}
-function closeDrawer(){const id=openId;openId=null;renderList();renderDrawer();const el=id&&document.querySelector(`[data-open="${CSS.escape(id)}"]`);if(el)el.focus()}
+function openDrawer(id){openId=id;renderList();renderTimeline();renderDrawer();setTimeout(()=>{const x=$('drawer').querySelector('[data-closedrawer]');if(x)x.focus()},50)}
+function closeDrawer(){const id=openId;openId=null;renderList();renderTimeline();renderDrawer();const el=id&&document.querySelector(`[data-open="${CSS.escape(id)}"]`);if(el)el.focus()}
 $('scrim').onclick=closeDrawer;
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&openId&&!document.querySelector('dialog[open]'))closeDrawer();
-  if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('.race')){e.preventDefault();openDrawer(e.target.dataset.open)}});
-function renderAll(){renderHero();renderTodo();renderFilters();renderList();renderRetired();renderDrawer()}
+  if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('.race,.tl-row')){e.preventDefault();openDrawer(e.target.dataset.open)}});
+function renderAll(){renderTimeline();renderHero();renderTodo();renderFilters();renderList();renderRetired();renderDrawer()}
 
 /* ---------- escrita ---------- */
 function toast(t){const el=$('toast');el.textContent=t;el.style.display='block';clearTimeout(toast._t);toast._t=setTimeout(()=>el.style.display='none',3800)}
@@ -706,6 +882,7 @@ $('delLodge').onclick=async()=>{
 /* ---------- ligação à base de dados ---------- */
 async function init(){
   renderMe(); renderAll();
+  try{dl=window.claude&&claude.use?await claude.use('downloads'):null}catch(e){dl=null}
   let d=null; try{d=window.claude&&claude.use?await claude.use('db'):null}catch(e){d=null}
   if(!d){setSync(false,'Sem ligação');$('list').innerHTML='<p class="empty">As provas estão guardadas na base de dados partilhada. Abre a página no claude.ai, com sessão iniciada, para as ver.</p>';return}
   db=d;
