@@ -555,9 +555,9 @@ let openId=null, dl=null;
 /* ---------- destaque ---------- */
 function costOf(k){let tot=0,cnt=0;races.forEach(r=>{const s=(pres[r.id]||{})[k];if(s==='vou'||s==='inscrito'){cnt++;tot+=r.price.entry+(r.lodge.trip||0)}});return {tot,cnt}}
 function renderHero(){
-  const up=races.filter(r=>days(P(r.date))>=0), nx=up.find(r=>r.tier==='A')||up[0];
+  const up=races.filter(r=>days(P(r.date))>=0), nx=up[0];
   const c={A:0,B:0,C:0}; races.forEach(r=>c[r.tier]++);
-  $('next').innerHTML=nx?`<div class="lbl">Próximo objetivo</div>
+  $('next').innerHTML=nx?`<div class="lbl" style="display:flex;justify-content:space-between;gap:8px">Próxima prova<span class="tier ${nx.tier}"><i>${nx.tier}</i>${TIERLBL[nx.tier]}</span></div>
     <div class="big"><b>${days(P(nx.date))}</b><span>dias</span></div>
     <div class="nm">${esc(nx.name)}<small>${nx.label?esc(nx.label):fmt(P(nx.date))+' · '+DOW[P(nx.date).getDay()]}${nx.meta?' · '+esc(nx.meta):''}</small></div>
     <div class="stats"><div class="stat"><b>${c.A}</b>objetivos</div><div class="stat"><b>${c.B}</b>testes</div><div class="stat"><b>${c.C}</b>treinos</div></div>`
