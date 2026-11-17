@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
-/* Layout: quadro de época — faixa da temporada no topo, alertas ao lado do resumo, tabela de provas por baixo. */
+/* Layout: quadro de época partilhado — resumo e alertas no topo, tabela editável por baixo, alojamentos dentro de cada prova. */
 :root{
   --bg:#eef2f5; --surface:#ffffff; --sunk:#e3e9ee; --line:#d3dbe3;
   --ink:#0f1b2d; --muted:#56667a; --accent:#0a6e8a; --accent-soft:#d6ecf2;
@@ -33,20 +33,25 @@
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45}
-.wrap{max-width:1320px;margin:0 auto;padding:24px 20px 56px}
+.wrap{max-width:1340px;margin:0 auto;padding:24px 20px 56px}
 h1,h2,h3{font-family:var(--display);font-weight:700;margin:0;letter-spacing:.01em;text-wrap:balance}
 h1{font-size:2.6rem;line-height:1}
 h2{font-size:1.35rem}
 .eyebrow{font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .muted{color:var(--muted)}
-button{font:inherit;color:inherit;cursor:pointer}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 a{color:var(--accent)}
 
 header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px 24px;margin-bottom:18px}
 .lead{color:var(--muted);margin:8px 0 0;max-width:70ch}
-.legend{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:.85rem;color:var(--muted)}
+.me{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;padding:6px 14px;font-weight:700;font-size:.9rem}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
 
 .grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
 @media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
@@ -54,19 +59,22 @@ header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items
 .panel h2{margin-bottom:10px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .panel h2 small{font-family:var(--body);font-size:.8rem;font-weight:600;color:var(--muted)}
 
-/* resumo */
-.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-@media (max-width:560px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .tile{border-radius:10px;padding:10px 12px;background:var(--sunk)}
 .tile b{display:block;font-family:var(--display);font-size:2rem;line-height:1}
 .tile span{font-size:.82rem;color:var(--muted);font-weight:600}
 .tile.A b{color:var(--tA)} .tile.B b{color:var(--tB)} .tile.C b{color:var(--tC)}
+.costs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.cost{border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.cost.mine{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.cost b{font-family:var(--display);font-size:1.5rem}
+.cost span{display:block;font-size:.78rem;color:var(--muted);font-weight:600}
+@media (max-width:560px){.tiles,.costs{grid-template-columns:repeat(3,minmax(0,1fr))}.tile b{font-size:1.6rem}}
 
-/* faixa da época */
-.season{position:relative;margin-top:14px}
+.season{margin-top:14px}
 .months{display:grid;grid-template-columns:repeat(12,1fr);font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--line);padding-bottom:4px}
 .months div{padding-left:3px;border-left:1px solid var(--line)}
-.lanes{position:relative;height:110px;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(100%/12 - 1px),var(--line) calc(100%/12 - 1px),var(--line) calc(100%/12));}
+.lanes{position:relative;height:110px;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(100%/12 - 1px),var(--line) calc(100%/12 - 1px),var(--line) calc(100%/12))}
 .blk{position:absolute;height:20px;border-radius:5px;font-size:.72rem;font-weight:700;line-height:20px;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .blk.A{background:var(--tA-soft);color:var(--tA);border:1px solid color-mix(in srgb,var(--tA) 40%,transparent)}
 .blk.B{background:var(--tB-soft);color:var(--tB);border:1px solid color-mix(in srgb,var(--tB) 40%,transparent)}
@@ -75,7 +83,6 @@ header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items
 .today{position:absolute;top:-4px;bottom:0;width:2px;background:var(--accent)}
 .today::after{content:"hoje";position:absolute;top:-14px;left:4px;font-size:.66rem;font-weight:700;color:var(--accent)}
 
-/* alertas */
 .alerts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .alerts li{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;align-items:center;padding:8px 10px;border-radius:9px;background:var(--sunk);border-left:4px solid var(--line)}
 .alerts li.soon{background:var(--warn-soft);border-left-color:var(--warn)}
@@ -85,50 +92,58 @@ header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items
 .alerts .t{font-weight:700}
 .alerts .d{font-size:.85rem;color:var(--muted)}
 
-/* filtros */
-.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin:20px 0 10px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:20px 0 10px}
+.bar .l{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:.86rem;font-weight:700}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 13px;font-weight:700;font-size:.88rem}
+.btn:hover{background:var(--sunk)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,transparent)}
+.btn.danger.armed{background:var(--bad);color:#fff}
+.btn.sm{padding:3px 9px;font-size:.78rem;border-radius:6px}
 .sync{font-size:.82rem;color:var(--muted);display:flex;gap:6px;align-items:center}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)} .dot.on{background:var(--ok)} .dot.off{background:var(--warn)}
 
-/* tabela */
 .table-wrap{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:1180px}
-thead th{position:sticky;top:0;background:var(--surface);text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700;padding:12px 12px;border-bottom:2px solid var(--ink);white-space:nowrap}
+table{width:100%;border-collapse:collapse;min-width:1200px}
+thead th{background:var(--surface);text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700;padding:12px;border-bottom:2px solid var(--ink);white-space:nowrap}
 tbody td{padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:top;font-size:.9rem}
-tbody tr{position:relative}
-tbody tr:last-child td{border-bottom:0}
-tbody tr.tA td:first-child{box-shadow:inset 4px 0 0 var(--tA)}
-tbody tr.tB td:first-child{box-shadow:inset 4px 0 0 var(--tB)}
-tbody tr.tC td:first-child{box-shadow:inset 4px 0 0 var(--tC)}
-tbody tr.tA{background:color-mix(in srgb,var(--tA-soft) 35%,var(--surface))}
+tbody tr.race.tA td:first-child{box-shadow:inset 4px 0 0 var(--tA)}
+tbody tr.race.tB td:first-child{box-shadow:inset 4px 0 0 var(--tB)}
+tbody tr.race.tC td:first-child{box-shadow:inset 4px 0 0 var(--tC)}
+tbody tr.race.tA{background:color-mix(in srgb,var(--tA-soft) 35%,var(--surface))}
 .date{font-family:var(--display);font-weight:700;font-size:1.5rem;line-height:1;white-space:nowrap}
 .date small{display:block;font-family:var(--body);font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:3px}
-.conf{display:inline-block;margin-top:5px;font-size:.68rem;font-weight:700;border-radius:4px;padding:1px 6px;background:var(--sunk);color:var(--muted)}
+.conf{display:inline-block;margin-top:5px;font-size:.68rem;font-weight:700;border-radius:4px;padding:1px 6px;background:var(--sunk);color:var(--muted);white-space:nowrap}
 .conf.ok{background:var(--ok-soft);color:var(--ok)}
 .name{font-weight:700;font-size:1rem;line-height:1.25}
+.name a{color:inherit;text-decoration-color:var(--line)}
 .meta{color:var(--muted);font-size:.84rem;margin-top:2px}
-.note{font-size:.8rem;margin-top:6px;padding:4px 8px;border-radius:6px;background:var(--sunk);color:var(--ink)}
+.note{font-size:.8rem;margin-top:6px;padding:4px 8px;border-radius:6px;background:var(--sunk)}
 .note.decide{background:var(--warn-soft)}
+.edited{font-size:.72rem;color:var(--muted);margin-top:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .tier{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;font-family:var(--display);font-weight:700;font-size:1.25rem}
 .tier.A{background:var(--tA);color:#fff} .tier.B{background:var(--tB-soft);color:var(--tB);box-shadow:inset 0 0 0 2px var(--tB)} .tier.C{background:var(--tC-soft);color:var(--tC)}
 .tierlbl{display:block;font-size:.68rem;font-weight:700;color:var(--muted);margin-top:4px;white-space:nowrap}
 
 .ppl{display:flex;flex-direction:column;gap:5px;min-width:150px}
 .pp{display:flex;align-items:center;justify-content:space-between;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:3px 4px 3px 8px;font-size:.82rem;font-weight:600}
+.pp.mine{border-color:var(--accent)}
 .pp button{border:0;border-radius:5px;padding:2px 8px;font-size:.74rem;font-weight:700;min-width:82px;white-space:nowrap;background:var(--sunk);color:var(--muted)}
 .pp button[data-s="vou"]{background:var(--tB-soft);color:var(--tB)}
 .pp button[data-s="inscrito"]{background:var(--ok);color:#fff}
 .pp button[data-s="talvez"]{background:var(--warn-soft);color:var(--warn)}
-.pp button[data-s="nao"]{background:var(--sunk);color:var(--muted);text-decoration:line-through}
+.pp button[data-s="nao"]{text-decoration:line-through}
 
 .st{display:inline-block;font-size:.74rem;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
 .st.aberta{background:var(--ok-soft);color:var(--ok)}
 .st.anunciada{background:var(--warn-soft);color:var(--warn)}
 .st.por-abrir{background:var(--accent-soft);color:var(--accent)}
 .st.por-anunciar,.st.sem-info{background:var(--sunk);color:var(--muted)}
+.st.esgotada{background:var(--bad-soft);color:var(--bad)}
 .small{font-size:.82rem;color:var(--muted);margin-top:5px}
 .price{font-weight:700;font-variant-numeric:tabular-nums}
 .ups{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:3px}
@@ -138,19 +153,78 @@ tbody tr.tA{background:color-mix(in srgb,var(--tA-soft) 35%,var(--surface))}
 .ups li.past{color:var(--muted);text-decoration:line-through}
 .warn{display:inline-block;margin-top:6px;font-size:.76rem;font-weight:700;color:var(--bad)}
 .lodge{font-size:.84rem}
-.lodge b{display:block;font-size:.8rem}
+.lodge b.need{display:block;font-size:.8rem}
 .lodge.no{color:var(--muted)}
+.lodgebtn{margin-top:8px;display:inline-flex;gap:6px;align-items:center;border:1px solid var(--accent);color:var(--accent);background:var(--surface);border-radius:7px;padding:3px 9px;font-weight:700;font-size:.78rem}
+.lodgebtn[aria-expanded="true"]{background:var(--accent);color:#fff}
+.chosen{display:block;margin-top:6px;font-size:.78rem;font-weight:700;color:var(--ok)}
 .prep{min-width:200px}
 .prepbar{height:8px;border-radius:4px;background:var(--sunk);overflow:hidden;margin:6px 0 4px}
 .prepbar i{display:block;height:100%;border-radius:4px}
 .prepbar i.A{background:var(--tA)} .prepbar i.B{background:var(--tB)} .prepbar i.C{background:var(--tC)}
 .wk{font-family:var(--display);font-weight:700;font-size:1.1rem}
 
+/* alojamentos */
+tr.lodgerow td{background:var(--sunk);padding:14px 16px 18px}
+.lodgehead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.lodgehead h3{font-size:1.15rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.lcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px}
+.lcard.pick{border-color:var(--ok);box-shadow:inset 0 0 0 1px var(--ok)}
+.lcard h4{margin:0;font-size:.98rem;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.lcard .pn{font-family:var(--display);font-weight:700;font-size:1.35rem;line-height:1}
+.lcard .pp2{font-size:.78rem;color:var(--muted)}
+.lcard .kv{font-size:.8rem;color:var(--muted)}
+.lcard .acts{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto;padding-top:6px;align-items:center}
+.vote{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:1px 8px;font-size:.74rem;font-weight:700;color:var(--muted)}
+.vote[aria-pressed="true"]{background:var(--tB-soft);color:var(--tB);border-color:var(--tB)}
+.pickbtn[aria-pressed="true"]{background:var(--ok);color:#fff;border-color:var(--ok)}
+.empty{color:var(--muted);font-size:.88rem}
+
 .cut{margin-top:16px;font-size:.86rem;color:var(--muted)}
 .cut b{color:var(--ink)}
 footer{margin-top:22px;font-size:.8rem;color:var(--muted);line-height:1.6}
-.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:8px 14px;border-radius:8px;font-size:.88rem;font-weight:600;display:none;max-width:90vw}
-@media (prefers-reduced-motion:no-preference){.pp button{transition:background .15s}}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:8px 14px;border-radius:8px;font-size:.88rem;font-weight:600;display:none;max-width:90vw;z-index:20}
+.loading{padding:30px;text-align:center;color:var(--muted)}
+
+/* formulário */
+dialog{border:0;border-radius:14px;padding:0;width:min(760px,94vw);background:var(--surface);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(10,20,30,.5)}
+.dlg{padding:20px 22px;max-height:88vh;overflow:auto}
+.dlg h2{margin-bottom:4px}
+.dlg .sub{color:var(--muted);font-size:.86rem;margin:0 0 14px}
+.fg{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px 12px}
+.fg .s2{grid-column:span 2}.fg .s3{grid-column:span 3}.fg .s4{grid-column:span 4}.fg .s6{grid-column:span 6}
+@media (max-width:600px){.fg .s2,.fg .s3,.fg .s4{grid-column:span 6}}
+.fg label{display:flex;flex-direction:column;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted)}
+.fg input,.fg select,.fg textarea{border:1px solid var(--line);border-radius:7px;padding:7px 9px;background:var(--bg);font-size:.92rem;font-weight:500;color:var(--ink)}
+.fg textarea{min-height:56px;resize:vertical}
+.fg .chk{flex-direction:row;align-items:center;gap:8px;padding-top:20px}
+.fsec{grid-column:span 6;font-family:var(--display);font-size:1.05rem;font-weight:700;border-bottom:1px solid var(--line);padding-bottom:3px;margin-top:8px;color:var(--ink)}
+.uprow{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.uprow input{flex:1}
+.dlg .foot{display:flex;justify-content:space-between;gap:8px;margin-top:18px;flex-wrap:wrap}
+.dlg .foot .r{display:flex;gap:8px}
+.err{color:var(--bad);font-size:.84rem;font-weight:600;min-height:1.2em;margin-top:8px}
+
+@media (max-width:760px){
+  table{min-width:0}
+  thead{display:none}
+  tbody tr.race{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;padding:12px 14px;border-bottom:1px solid var(--line)}
+  tbody tr.race td{display:block;border:0;padding:4px 0}
+  tbody tr.race td.c-date{grid-row:span 2}
+  tbody tr.race td.c-name{grid-column:2}
+  tbody tr.race td.c-tier{grid-column:2}
+  tbody tr.race td.c-rest{grid-column:1 / -1}
+  tbody tr.race td.c-rest::before{content:attr(data-l);display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700;margin-bottom:3px}
+  tbody tr.race td:first-child{box-shadow:none!important}
+  tbody tr.race.tA{border-left:4px solid var(--tA)} tbody tr.race.tB{border-left:4px solid var(--tB)} tbody tr.race.tC{border-left:4px solid var(--tC)}
+  tr.lodgerow{display:block} tr.lodgerow td{display:block}
+  .ppl{min-width:0} .table-wrap{overflow:hidden} tbody{display:block}
+  .tier{width:28px;height:28px;font-size:1rem}
+  .tierlbl{display:inline;margin-left:6px}
+}
+@media (prefers-reduced-motion:no-preference){.pp button,.vote{transition:background .15s}}
 </style>
 </head>
 <body>
@@ -159,29 +233,36 @@ footer{margin-top:22px;font-size:.8rem;color:var(--muted);line-height:1.6}
     <div>
       <div class="eyebrow">Época 2027 · Miguel · Nuno · Rita</div>
       <h1>Provas 2027</h1>
-      <p class="lead">Provas por prioridade, com presença de cada um, inscrições, preços e subidas, alojamento e o tempo de preparação específica. Quase nenhuma prova publicou ainda a edição de 2027: preços e datas marcados como 2026 servem de referência.</p>
+      <p class="lead">Calendário partilhado: cada um marca a presença, acrescenta e edita provas e propõe alojamentos. Datas e preços marcados "2026" são referência até sair a edição de 2027.</p>
     </div>
-    <div class="legend"><span class="tier A" style="width:24px;height:24px;font-size:.9rem">A</span>objetivo <span class="tier B" style="width:24px;height:24px;font-size:.9rem">B</span>teste <span class="tier C" style="width:24px;height:24px;font-size:.9rem">C</span>treino</div>
+    <div class="me">
+      <span class="eyebrow">Quem és?</span>
+      <div class="seg" id="me" role="group" aria-label="Quem está a usar a página"></div>
+    </div>
   </header>
 
   <div class="grid">
     <section class="panel">
       <h2>Resumo da época <small id="span"></small></h2>
       <div class="tiles" id="tiles"></div>
+      <div class="costs" id="costs" aria-label="Custo estimado por pessoa"></div>
       <div class="season" aria-label="Faixa da época: blocos de preparação e provas">
         <div class="months" id="months"></div>
         <div class="lanes" id="lanes"></div>
       </div>
     </section>
     <section class="panel">
-      <h2>Alertas <small>aberturas e subidas de preço</small></h2>
+      <h2>Alertas <small>aberturas, subidas de preço e decisões</small></h2>
       <ul class="alerts" id="alerts"></ul>
     </section>
   </div>
 
   <div class="bar">
-    <div class="chips" id="filters" aria-label="Filtrar por nível"></div>
-    <div class="sync"><span class="dot" id="dot"></span><span id="synctxt">A carregar presenças…</span></div>
+    <div class="l">
+      <div class="chips" id="filters" aria-label="Filtrar por nível"></div>
+      <button class="btn primary" type="button" id="addRace">+ Adicionar prova</button>
+    </div>
+    <div class="sync"><span class="dot" id="dot"></span><span id="synctxt">A ligar…</span></div>
   </div>
 
   <div class="table-wrap">
@@ -189,18 +270,90 @@ footer{margin-top:22px;font-size:.8rem;color:var(--muted);line-height:1.6}
       <thead><tr>
         <th>Data</th><th>Prova</th><th>Nível</th><th>Presença</th><th>Inscrições</th><th>Preço</th><th>Alojamento e viagem</th><th>Preparação específica</th>
       </tr></thead>
-      <tbody id="rows"></tbody>
+      <tbody id="rows"><tr><td colspan="8" class="loading">A carregar as provas…</td></tr></tbody>
     </table>
   </div>
 
-  <p class="cut"><b>Fora do calendário:</b> Triatlo da Costa Nova e de Viana do Castelo (fica Moura), simulações HYROX de janeiro (Hx365 Famalicão, Hero Challenge Gondomar, Hybrid Day Aveiro), HYROX Bilbao e Málaga (Málaga choca com Moura). Triatlo de Caminha passou da Standard para o meio Ironman.</p>
+  <p class="cut"><b>Fora do calendário:</b> Triatlo da Costa Nova e de Viana do Castelo (fica Moura), simulações HYROX de janeiro (Hx365 Famalicão, Hero Challenge Gondomar, Hybrid Day Aveiro), HYROX Bilbao e Málaga (Málaga choca com Moura).</p>
 
   <footer>
-    Presença: carrega no estado de cada pessoa para mudar (por marcar → vou → inscrito → talvez → não vou). As marcações ficam guardadas e todos veem as mesmas.<br>
-    Custos de viagem por pessoa: carro com 3 pessoas a partir da Maia, combustível e portagens a dividir por 3, mais alojamento e alimentação, sem inscrição. Valores do levantamento de 16/11/2026.<br>
-    Fontes: federacao-triatlo.pt (guia do calendário 2026 e regulamentos de Moura e Caminha), porto-marathon.com (data de 2027), all4running.pt (preços Gaia 2026), finishers.com (preços Maratona do Porto 2026), raceradar.fit e hyresult.com (HYROX Madrid), racefinder.pt (Sines, Terras de Basto, Vila do Conde, Douro 2026). Atualizado a 17/11/2026.
+    <b>Presença:</b> carrega no estado para mudar (por marcar → vou → inscrito → talvez → não vou). <b>Custo por pessoa</b> soma inscrição + viagem das provas em que a pessoa marcou "vou" ou "inscrito". <b>Alojamento:</b> preços por quarto e por noite, como estimativa; confirma sempre com datas concretas antes de reservar. Escolhe uma opção como "reservado" quando estiver fechada.<br>
+    Viagem: carro com 3 pessoas a partir da Maia, combustível e portagens a dividir por 3, mais alojamento e alimentação, sem inscrição (levantamento de 16/11/2026).<br>
+    Fontes iniciais: federacao-triatlo.pt, porto-marathon.com, all4running.pt, finishers.com, raceradar.fit, hyresult.com, racefinder.pt, logitravel.pt, hotels.com, expedia, momondo.pt, btravel.com, nh-hotels.com. Primeira versão a 17/11/2026.
   </footer>
 </div>
+
+<dialog id="raceDlg" aria-labelledby="raceTitle">
+  <form class="dlg" id="raceForm" method="dialog" novalidate>
+    <h2 id="raceTitle">Prova</h2>
+    <p class="sub" id="raceSub">Preenche o que souberes; o resto pode ficar em branco.</p>
+    <div class="fg">
+      <div class="fsec">Prova</div>
+      <label class="s4">Nome<input id="f_name" required placeholder="Ex.: Triatlo de Viana do Castelo"></label>
+      <label class="s2">Nível<select id="f_tier"><option value="A">A · objetivo</option><option value="B">B · teste</option><option value="C" selected>C · treino</option></select></label>
+      <label class="s6">Distância e local<input id="f_meta" placeholder="Ex.: 1,5 · 40 · 10 km · Viana do Castelo"></label>
+      <label class="s2">Data<input id="f_date" type="date" required></label>
+      <label class="s2">Texto da data (opcional)<input id="f_label" placeholder="Ex.: 17–21 mar ou mai?"></label>
+      <label class="s2 chk"><input id="f_conf" type="checkbox"> Data confirmada</label>
+      <label class="s6">Link da prova<input id="f_link" type="url" placeholder="https://"></label>
+      <label class="s6">Nota<textarea id="f_note" placeholder="Ex.: Pelo menos 10 dias antes de Caminha."></textarea></label>
+      <label class="s6">Decisão pendente (aparece nos alertas)<input id="f_decide" placeholder="Deixa em branco se não houver"></label>
+
+      <div class="fsec">Inscrições e preço</div>
+      <label class="s2">Estado<select id="f_regs">
+        <option value="por-abrir">Ainda não abriram</option><option value="anunciada">Abertura anunciada</option><option value="aberta">Abertas</option>
+        <option value="esgotada">Esgotadas</option><option value="por-anunciar">Por anunciar</option><option value="sem-info">Sem informação</option></select></label>
+      <label class="s2">Abertura (data)<input id="f_open" type="date"></label>
+      <label class="s2 chk"><input id="f_openApprox" type="checkbox"> Data aproximada</label>
+      <label class="s6">Detalhe das inscrições<input id="f_regt" placeholder="Ex.: Pela FTP; em 2026 abriu em março"></label>
+      <label class="s3">Preço atual (texto)<input id="f_price" placeholder="Ex.: 75 € (2026)"></label>
+      <label class="s3">Inscrição para contas (€)<input id="f_entry" type="number" min="0" step="1" placeholder="75"></label>
+      <div class="s6"><div class="fg" style="grid-template-columns:1fr"><span style="font-size:.78rem;font-weight:700;color:var(--muted)">Subidas de preço (data e novo valor)</span></div><div id="upsBox"></div><button class="btn sm" type="button" id="addUp">+ Subida</button></div>
+      <label class="s3">Nota do preço<input id="f_ref" placeholder="Ex.: Não licenciados +30 €"></label>
+      <label class="s3">Aviso (a vermelho)<input id="f_warn" placeholder="Ex.: Inscrever no 1.º lote"></label>
+
+      <div class="fsec">Viagem e preparação</div>
+      <label class="s2 chk"><input id="f_need" type="checkbox"> Precisa de dormida</label>
+      <label class="s2">Viagem/pessoa (€)<input id="f_trip" type="number" min="0" step="1" placeholder="95"></label>
+      <label class="s2">Viagem (texto)<input id="f_tript" placeholder="Ex.: ~160 € (1 noite)"></label>
+      <label class="s6">Logística<input id="f_lodge" placeholder="Ex.: 1 noite; check-in da bike no sábado"></label>
+      <label class="s2">Semanas de preparação<input id="f_w" type="number" min="0" max="30" step="1"></label>
+      <label class="s2">Início do bloco<input id="f_from" type="date"></label>
+      <label class="s2">Fim do bloco<input id="f_to" type="date"></label>
+      <label class="s6">Foco da preparação<textarea id="f_prep" placeholder="Ex.: Bike longa de 3–4 h, combinados ao fim de semana"></textarea></label>
+    </div>
+    <div class="err" id="raceErr" role="alert"></div>
+    <div class="foot">
+      <button class="btn danger" type="button" id="delRace">Apagar prova</button>
+      <div class="r"><button class="btn" type="button" data-close>Cancelar</button><button class="btn primary" type="submit" id="saveRace">Guardar</button></div>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="lodgeDlg" aria-labelledby="lodgeTitle">
+  <form class="dlg" id="lodgeForm" method="dialog" novalidate>
+    <h2 id="lodgeTitle">Alojamento</h2>
+    <p class="sub" id="lodgeSub"></p>
+    <div class="fg">
+      <label class="s4">Nome<input id="l_name" required placeholder="Ex.: Hotel Santa Comba"></label>
+      <label class="s2">Tipo<select id="l_type"><option>Hotel</option><option>Alojamento local</option><option>Apartamento</option><option>Hostel</option><option>Parque de campismo</option><option>Casa</option></select></label>
+      <label class="s3">Zona<input id="l_area" placeholder="Ex.: Moura, centro"></label>
+      <label class="s3">Distância à prova<input id="l_dist" placeholder="Ex.: 13 km do T1 (Alqueva)"></label>
+      <label class="s2">Preço/noite (quarto, €)<input id="l_price" type="number" min="0" step="1"></label>
+      <label class="s2">Pessoas no quarto<input id="l_cap" type="number" min="1" max="10" step="1" value="3"></label>
+      <label class="s2">Noites<input id="l_nights" type="number" min="1" max="10" step="1" value="1"></label>
+      <label class="s6">Nota do preço<input id="l_pnote" placeholder="Ex.: quarto duplo, setembro 2026; pedir triplo"></label>
+      <label class="s6">Link<input id="l_link" type="url" placeholder="https://"></label>
+      <label class="s6">Notas<textarea id="l_notes" placeholder="Pequeno-almoço cedo? Garagem para as bikes? Cancelamento grátis?"></textarea></label>
+    </div>
+    <div class="err" id="lodgeErr" role="alert"></div>
+    <div class="foot">
+      <button class="btn danger" type="button" id="delLodge">Apagar</button>
+      <div class="r"><button class="btn" type="button" data-close>Cancelar</button><button class="btn primary" type="submit">Guardar</button></div>
+    </div>
+  </form>
+</dialog>
+
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -208,202 +361,300 @@ const PEOPLE=[['miguel','Miguel'],['nuno','Nuno'],['rita','Rita']];
 const STATES=['','vou','inscrito','talvez','nao'];
 const SLABEL={'':'por marcar',vou:'vou',inscrito:'inscrito ✓',talvez:'talvez',nao:'não vou'};
 const TIERLBL={A:'objetivo',B:'teste',C:'treino'};
-
-/* Datas 2027 estimadas a partir de 2026 salvo "conf". Preços "(2026)" são referência. */
-const RACES=[
- {id:'barcelos',date:'2027-01-24',name:'Duatlo de Barcelos',meta:'Duatlo sprint · Barcelos',tier:'B',
-  reg:{s:'por-abrir',t:'Inscrições pela FTP quando sair o regulamento'},
-  price:{now:'~20–25 €',ref:'referência dos duatlos FTP 2026'},
-  lodge:{need:false,t:'Ida e volta no dia (~35 min)',trip:'~20 €'},
-  prep:{t:'Sem bloco próprio: sessão de qualidade dentro do bloco de 10 km'}},
- {id:'vdc-duatlo',date:'2027-02-14',label:'fev',name:'Duatlo de Vila do Conde',meta:'Duatlo sprint · Vila do Conde',tier:'C',note:'Só se for até ~21/02 (3 semanas antes de Gaia).',
-  reg:{s:'sem-info',t:'Data de 2027 por anunciar'},price:{now:'Sem informação'},
-  lodge:{need:false,t:'Ida e volta no dia (~20 min)',trip:'~15 €'},
-  prep:{t:'Treino de qualidade; sem bloco próprio'}},
- {id:'gaia',short:'10 km Gaia',date:'2027-03-14',name:'10 km de Vila Nova de Gaia',meta:'10 km estrada · alvo ~38:00 (≤ 38:40 valida o sub-3h)',tier:'A',
-  reg:{s:'por-abrir',t:'Em 2026 abriu a 1/02',open:'2027-02-01'},
-  price:{now:'20 € (1.ª fase, 2026)',ups:[['2027-03-01','25 €'],['2027-03-13','30 € (última hora)']]},
-  lodge:{need:false,t:'Ida e volta no dia (dorsais: +1,5 h)',trip:'~12 €'},
-  prep:{w:8,from:'2027-01-18',to:'2027-03-14',t:'VO2máx, limiar e ritmo de prova 3:48–4:00/km; descarga a meio e taper de 10 dias'}},
- {id:'hyrox-madrid',date:'2027-03-19',label:'17–21 mar',conf:true,name:'HYROX Madrid',meta:'Open Singles · IFEMA, Madrid',tier:'B',note:'Escolher 1 HYROX: Madrid ou Lisboa. Onda pelo menos 6 dias depois de Gaia (sex 19 ou dom 21).',
-  reg:{s:'aberta',t:'Venda aberta desde 24/09/2026'},
-  price:{now:'130 € + taxas',warn:'Sábado 20, masculino Open: esgotado'},
-  lodge:{need:true,t:'2 noites · ~5h30 de carro',trip:'~220–260 € no total'},
-  prep:{w:5,from:'2027-02-15',to:'2027-03-19',t:'Estações HYROX 1–2×/semana a partir de fevereiro, em paralelo com o bloco de 10 km'}},
- {id:'feira',date:'2027-03-27',label:'26–27 mar',name:'Hybrid Day Santa Maria da Feira',meta:'Simulação HYROX · Europarque',tier:'C',
-  reg:{s:'sem-info',t:'Edição de 2027 por anunciar'},price:{now:'Sem informação'},
-  lodge:{need:false,t:'Ida e volta no dia'},
-  prep:{t:'Ensaio HYROX; sem bloco próprio'}},
- {id:'moura',short:'Moura',date:'2027-04-25',name:'Triatlo de Moura · prova aberta Standard',meta:'1,5 km · 56 km · 9,6 km · Moura / Alqueva',tier:'B',note:'No mesmo dia é o Nacional de Média Distância: pouco alojamento.',
-  reg:{s:'por-abrir',t:'Pela FTP; em 2026 o regulamento saiu em janeiro'},
-  price:{now:'75 € (2026)',ups:[['2027-04-13','95 € (estimativa: depois da penúltima 2.ª-feira)']]},
-  lodge:{need:true,t:'1 noite · ~35–40 €/pessoa em triplo. Reservar já, com cancelamento grátis',trip:'~155 €'},
-  prep:{w:5,from:'2027-03-22',to:'2027-04-25',t:'Águas abertas com neoprene, bike de 2–3 h, treinos combinados'}},
- {id:'douro',date:'2027-05-01',label:'1–2 mai',conf:true,name:'Granfondo Douro',meta:'Granfondo montanhoso · Peso da Régua',tier:'C',decide:'Por decidir: fica 1 semana depois de Moura e pode chocar com o HYROX Lisboa. Com Moura no calendário, a recomendação é cortar.',
-  reg:{s:'anunciada',t:'Abre qui 19/11/2026 às 20:00',open:'2026-11-19'},
-  price:{now:'46–50 € (2026)'},
-  lodge:{need:false,t:'Ida e volta no dia (saída ~6h15). Régua 36–67 €/noite se os dorsais forem só no sábado',trip:'~35 €'},
-  prep:{t:'Volume de bike do bloco de meio Ironman'}},
- {id:'hyrox-lisboa',date:'2027-05-02',label:'mai?',name:'HYROX Lisboa',meta:'FIL, Parque das Nações',tier:'B',note:'Alternativa a Madrid. Em 2026 (1–3 mai) esgotou em ~2 semanas.',
-  reg:{s:'por-anunciar',t:'Sem data. Venda por fases em portugal.hyrox.com'},
-  price:{now:'até ~130 € (2026)'},
-  lodge:{need:true,t:'1 noite · ~45–55 €/pessoa (Moscavide/Sacavém)',trip:'~140 €'},
-  prep:{t:'Igual a Madrid: estações HYROX 4–6 semanas antes'}},
- {id:'vdc-tri',date:'2027-05-15',label:'mai',name:'Triatlo olímpico de Vila do Conde',meta:'1,5 · 40 · 10 km · partida às 18h · Praia dos Barcos',tier:'B',
-  reg:{s:'por-abrir',t:'Em 2026 foi a 16/05'},price:{now:'~25 € (não confirmado)'},
-  lodge:{need:false,t:'Ida e volta no dia (~20 min)',trip:'~17 €'},
-  prep:{t:'Dentro do bloco de meio Ironman; 2–3 sessões a ritmo olímpico'}},
- {id:'basto',date:'2027-06-20',name:'Granfondo Terras de Basto',meta:'Granfondo · Celorico de Basto',tier:'C',note:'Pelo menos 10 dias antes de Caminha.',
-  reg:{s:'por-abrir',t:'Em 2026 fechou a 16/06 · 1000 vagas'},
-  price:{now:'43 € federado · 47 € (2026)'},
-  lodge:{need:false,t:'Ida e volta no dia (dorsais só 7h30–8h30)',trip:'~30 €'},
-  prep:{t:'Treino longo de bike do bloco de meio Ironman'}},
- {id:'caminha',short:'Caminha',date:'2027-07-18',name:'Triatlo Longo de Caminha · meio Ironman',meta:'1,9 · 90 · 21 km · Campeonato Nacional de Clubes · rio Minho',tier:'A',
-  reg:{s:'por-abrir',t:'Pela FTP; em 2026 o regulamento saiu em março'},
-  price:{now:'120 € licenciado (2026)',ups:[['2027-07-06','240 € (só no dia da prova)']],ref:'Não licenciados +30 €'},
-  lodge:{need:true,t:'1 noite (check-in da bike no sábado) · ~110–130 € por triplo, ~40 €/pessoa',trip:'~95 €'},
-  prep:{w:12,from:'2027-04-26',to:'2027-07-18',t:'Bike longa de 3–4 h, combinados ao fim de semana, corrida 3×/semana (1 limiar + 1 longa)'}},
- {id:'sines',short:'Sines',date:'2027-09-26',name:'Sines Triathlon',meta:'2 km · 80 km · 18 km · HMS Series',tier:'B',note:'Fazer como treino longo de prova: semana 8–9 do bloco de maratona, sem ir ao limite.',
-  reg:{s:'por-abrir',t:'Sem data. O preço sobe por lotes com o nº de inscritos'},
-  price:{now:'160–215 € (2026)',warn:'Inscrever logo no 1.º lote'},
-  lodge:{need:true,t:'1–2 noites · ~40–45 €/pessoa/noite; Santo André e Porto Covo mais baratos. Reservar já',trip:'~160 € (1 noite) · ~205 € (2)'},
-  prep:{w:6,from:'2027-08-16',to:'2027-09-26',t:'Dentro do bloco de maratona: 1 saída longa de bike por semana e natação no mar'}},
- {id:'meia',date:'2027-10-10',name:'Meia maratona de teste',meta:'Prova a escolher · 4 semanas antes da maratona',tier:'B',
-  reg:{s:'sem-info',t:'Escolher a prova'},price:{now:'—'},
-  lodge:{need:false,t:'De preferência no Norte'},
-  prep:{t:'Semana 10 do bloco de maratona, a ritmo de maratona ou um pouco mais rápido'}},
- {id:'maratona',short:'Maratona',date:'2027-11-07',conf:true,name:'Maratona do Porto',meta:'42,195 km · alvo sub-3h (4:15/km)',tier:'A',
-  reg:{s:'por-abrir',t:'Abertura prevista para dezembro de 2026',open:'2026-12-01',openApprox:true},
-  price:{now:'65 € (1.ª fase, 2026)',ups:[['2027-04-01','70 €'],['2027-09-01','80 €']]},
-  lodge:{need:false,t:'Em casa (~20 min). Dorsais na sexta ou no sábado, na Alfândega',trip:'~17 €'},
-  prep:{w:14,from:'2027-08-02',to:'2027-11-07',t:'Arranca depois da recuperação de Caminha; meia de teste a 10/10; taper de 2–3 semanas'}},
-];
-
+const REGLBL={aberta:'Abertas',anunciada:'Abertura anunciada','por-abrir':'Ainda não abriram','por-anunciar':'Por anunciar','sem-info':'Sem informação',esgotada:'Esgotadas'};
 const DOW=['dom','seg','ter','qua','qui','sex','sáb'];
 const MON=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-const P=s=>new Date(s+'T12:00:00');
+
+const $=id=>document.getElementById(id);
+const P=s=>new Date(String(s).slice(0,10)+'T12:00:00');
+const okDate=s=>/^\d{4}-\d{2}-\d{2}/.test(String(s||''))&&!isNaN(P(s));
 const fmt=d=>`${d.getDate()} ${MON[d.getMonth()]}`;
 const fmtFull=d=>`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
 const today=new Date(); today.setHours(12,0,0,0);
 const days=d=>Math.round((d-today)/864e5);
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeUrl=u=>/^https?:\/\//i.test(String(u||''))?String(u):'';
+const num=v=>{const n=Number(v);return isFinite(n)&&n>0?n:0};
+const euro=n=>Math.round(n).toLocaleString('pt-PT')+' €';
 function whenTxt(n){return n<0?'passou':n===0?'hoje':n===1?'amanhã':`em ${n} dias`}
 
-let pres={}, filter='all', db=null;
+let races=[], pres={}, lodges=[], filter='all', db=null, openLodge=null, editing=null, editingLodge=null, canWrite=true;
+let me=(()=>{try{return localStorage.getItem('provas2027-me')||''}catch(e){return''}})();
+
+/* ---------- normalização (dados partilhados não são de confiança) ---------- */
+function normRace(id,v){
+  v=v||{};
+  const s=x=>typeof x==='string'?x:'';
+  const r={id,name:s(v.name)||'Prova sem nome',date:okDate(v.date)?s(v.date).slice(0,10):'2027-12-31',label:s(v.label),conf:!!v.conf,
+    tier:['A','B','C'].includes(v.tier)?v.tier:'C',meta:s(v.meta),note:s(v.note),decide:s(v.decide),link:safeUrl(v.link),
+    reg:{s:REGLBL[v.reg?.s]?v.reg.s:'sem-info',t:s(v.reg?.t),open:okDate(v.reg?.open)?v.reg.open:'',openApprox:!!v.reg?.openApprox},
+    price:{now:s(v.price?.now),entry:num(v.price?.entry),ref:s(v.price?.ref),warn:s(v.price?.warn),
+      ups:Array.isArray(v.price?.ups)?v.price.ups.filter(u=>u&&okDate(u.d)).map(u=>({d:u.d.slice(0,10),to:s(u.to)})):[]},
+    lodge:{need:!!v.lodge?.need,t:s(v.lodge?.t),trip:num(v.lodge?.trip),tripT:s(v.lodge?.tripT)},
+    prep:{w:num(v.prep?.w),from:okDate(v.prep?.from)?v.prep.from:'',to:okDate(v.prep?.to)?v.prep.to:'',t:s(v.prep?.t)},
+    by:s(v.by),at:s(v.at),short:s(v.short)};
+  return r;
+}
+function normLodge(id,v){
+  v=v||{};const s=x=>typeof x==='string'?x:'';
+  const votes={};PEOPLE.forEach(([k])=>votes[k]=!!(v.votes&&v.votes[k]));
+  return {id,raceId:s(v.raceId),name:s(v.name)||'Sem nome',type:s(v.type),area:s(v.area),dist:s(v.dist),price:num(v.price),cap:num(v.cap)||3,nights:num(v.nights)||1,
+    pnote:s(v.pnote),link:safeUrl(v.link),notes:s(v.notes),votes,picked:!!v.picked,by:s(v.by)};
+}
+
+/* ---------- quem és ---------- */
+function renderMe(){
+  $('me').innerHTML=PEOPLE.map(([k,n])=>`<button type="button" data-me="${k}" aria-pressed="${me===k}">${n}</button>`).join('');
+}
+$('me').addEventListener('click',e=>{const b=e.target.closest('[data-me]');if(!b)return;me=b.dataset.me;try{localStorage.setItem('provas2027-me',me)}catch(_){}renderMe();renderAll()});
+const meName=()=>(PEOPLE.find(p=>p[0]===me)||[,''])[1];
 
 /* ---------- resumo ---------- */
 function renderSummary(){
-  const c={A:0,B:0,C:0}; RACES.forEach(r=>c[r.tier]++);
-  const nights=RACES.filter(r=>r.lodge.need&&!['hyrox-lisboa'].includes(r.id)).length;
-  document.getElementById('tiles').innerHTML=
-    `<div class="tile A"><b>${c.A}</b><span>provas A</span></div><div class="tile B"><b>${c.B}</b><span>provas B</span></div>`+
-    `<div class="tile C"><b>${c.C}</b><span>provas C</span></div><div class="tile"><b>${nights}</b><span>provas com dormida</span></div>`;
-  document.getElementById('span').textContent='24 jan → 7 nov 2027';
-  // faixa: dez 2026 → nov 2027
-  const start=P('2026-12-01'), end=P('2027-12-01'), span=end-start;
+  const c={A:0,B:0,C:0}; races.forEach(r=>c[r.tier]++);
+  $('tiles').innerHTML=['A','B','C'].map(t=>`<div class="tile ${t}"><b>${c[t]}</b><span>provas ${t} · ${TIERLBL[t]}</span></div>`).join('');
+  $('costs').innerHTML=PEOPLE.map(([k,n])=>{
+    let tot=0,cnt=0;
+    races.forEach(r=>{const s=(pres[r.id]||{})[k];if(s==='vou'||s==='inscrito'){cnt++;tot+=r.price.entry+(r.lodge.trip||0)}});
+    return `<div class="cost ${me===k?'mine':''}"><span>${n} · ${cnt} prova${cnt===1?'':'s'}</span><b>${euro(tot)}</b><span>inscrições + viagens</span></div>`;
+  }).join('');
+  if(races.length){const a=P(races[0].date),b=P(races[races.length-1].date);$('span').textContent=`${fmt(a)} → ${fmt(b)} ${b.getFullYear()}`}
+  const start=P('2026-12-01'),end=P('2027-12-01'),span=end-start;
   const pct=d=>Math.max(0,Math.min(100,(P(d)-start)/span*100));
-  document.getElementById('months').innerHTML=['dez','jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov'].map(m=>`<div>${m}</div>`).join('');
-  const blocks=RACES.filter(r=>r.prep.w&&r.tier!=='C'&&r.id!=='hyrox-madrid');
+  $('months').innerHTML=['dez','jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov'].map(m=>`<div>${m}</div>`).join('');
+  const blocks=races.filter(r=>r.prep.w&&r.prep.from&&r.prep.to&&r.tier==='A'||(r.tier==='B'&&r.prep.w>=5&&r.prep.from&&!/hyrox/i.test(r.name)));
   let html='';
-  blocks.forEach((r,i)=>{
-    const l=pct(r.prep.from), w=pct(r.prep.to)-l;
-    const top=24+(i%3)*28;
-    html+=`<div class="blk ${r.tier}" style="left:${l}%;width:${w}%;top:${top}px" title="${esc(r.name)}: ${r.prep.w} semanas">${esc(r.short||r.name)} · ${r.prep.w} sem</div>`;
-  });
-  RACES.forEach(r=>{html+=`<div class="pin ${r.tier}" style="left:${pct(r.date)}%" title="${esc(r.name)} · ${fmt(P(r.date))}"></div>`});
+  blocks.forEach((r,i)=>{const l=pct(r.prep.from),w=Math.max(pct(r.prep.to)-l,2);
+    html+=`<div class="blk ${r.tier}" style="left:${l}%;width:${w}%;top:${24+(i%3)*28}px" title="${esc(r.name)}: ${r.prep.w} semanas">${esc(r.short||r.name)} · ${r.prep.w} sem</div>`});
+  races.forEach(r=>{html+=`<div class="pin ${r.tier}" style="left:${pct(r.date)}%" title="${esc(r.name)} · ${fmt(P(r.date))}"></div>`});
   if(today>=start&&today<end) html+=`<div class="today" style="left:${(today-start)/span*100}%"></div>`;
-  document.getElementById('lanes').innerHTML=html;
+  $('lanes').innerHTML=html;
 }
 
 /* ---------- alertas ---------- */
 function renderAlerts(){
   const items=[];
-  RACES.forEach(r=>{
-    if(r.reg.open) items.push({d:P(r.reg.open),t:`Abrem inscrições: ${r.name}`,x:r.reg.t,approx:r.reg.openApprox});
-    (r.price.ups||[]).forEach(([d,to])=>items.push({d:P(d),t:`Sobe o preço: ${r.name}`,x:`Passa para ${to}. Inscrever até ${fmtFull(new Date(P(d)-864e5))}.`}));
-    if(r.decide) items.push({d:P(r.reg.open||r.date),t:`Decidir: ${r.name}`,x:r.decide,decide:true});
+  races.forEach(r=>{
+    if(r.reg.open) items.push({d:P(r.reg.open),t:`Abrem inscrições: ${r.name}`,x:(r.reg.t||'')+(r.decide?' · Decidir antes: '+r.decide:''),approx:r.reg.openApprox,rid:r.id});
+    r.price.ups.forEach(u=>items.push({d:P(u.d),t:`Sobe o preço: ${r.name}`,x:`Passa para ${u.to}. Inscrever até ${fmtFull(new Date(P(u.d)-864e5))}.`}));
+    if(r.decide&&!r.reg.open) items.push({d:P(r.date),t:`Decidir: ${r.name}`,x:r.decide});
   });
-  const merged=[];
-  items.sort((a,b)=>a.d-b.d).forEach(it=>{if(days(it.d)>=-1) merged.push(it)});
-  // decisão do Douro junta-se à abertura
-  const list=merged.filter((it,i,a)=>!(it.decide&&a.some(o=>!o.decide&&+o.d===+it.d&&o.t.includes('Douro'))));
-  document.getElementById('alerts').innerHTML=list.slice(0,6).map(it=>{
-    const n=days(it.d), cls=n<=3?'now':n<=21?'soon':'';
-    const extra=it.t.includes('Douro')?' Decidir antes: fica 1 semana depois de Moura.':'';
-    return `<li class="${cls}"><div class="when">${it.approx?'~':''}${fmt(it.d)}<small>${it.approx?'previsto':whenTxt(n)}</small></div><div><div class="t">${esc(it.t)}</div><div class="d">${esc(it.x+extra)}</div></div></li>`;
-  }).join('') || '<li><div></div><div class="d">Sem alertas próximos.</div></li>';
+  const list=items.filter(it=>days(it.d)>=-1).sort((a,b)=>a.d-b.d).slice(0,7);
+  $('alerts').innerHTML=list.map(it=>{const n=days(it.d),cls=n<=3?'now':n<=21?'soon':'';
+    return `<li class="${cls}"><div class="when">${it.approx?'~':''}${fmt(it.d)}<small>${it.approx?'previsto':whenTxt(n)}</small></div><div><div class="t">${esc(it.t)}</div><div class="d">${esc(it.x)}</div></div></li>`}).join('')
+    ||'<li><div></div><div class="d">Sem alertas próximos.</div></li>';
 }
 
 /* ---------- tabela ---------- */
 function rowHTML(r){
   const d=P(r.date);
   const dateMain=r.label?esc(r.label):`${d.getDate()} ${MON[d.getMonth()]}`;
-  const dateSub=r.label?(r.label.includes('?')||r.label.length<=4?'2027':`${DOW[d.getDay()]} · 2027`):`${DOW[d.getDay()]} · 2027`;
   const pp=PEOPLE.map(([k,n])=>{const s=(pres[r.id]||{})[k]||'';
-    return `<div class="pp"><span>${n}</span><button type="button" data-race="${r.id}" data-p="${k}" data-s="${s}" aria-label="${n}: ${SLABEL[s]}. Mudar estado">${SLABEL[s]}</button></div>`}).join('');
-  const ups=(r.price.ups||[]).map(([dd,to])=>{const n=days(P(dd));const cls=n<0?'past':n<=30?'soon':'';
-    return `<li class="${cls}"><span class="mono">${fmt(P(dd))}</span><span>→ ${esc(to)}</span></li>`}).join('');
-  let prep=`<div class="small" style="margin-top:0">${esc(r.prep.t)}</div>`;
-  if(r.prep.w){
-    const tot=(P(r.prep.to)-P(r.prep.from)), done=Math.max(0,Math.min(1,(today-P(r.prep.from))/tot));
-    prep=`<div><span class="wk">${r.prep.w} semanas</span> <span class="muted mono" style="font-size:.74rem;white-space:nowrap;display:block">${fmt(P(r.prep.from))} → ${fmt(P(r.prep.to))}</span></div>
-      <div class="prepbar" title="${Math.round(done*100)}% do bloco já decorrido"><i class="${r.tier}" style="width:${Math.max(done*100,2)}%"></i></div>`+prep;
-  }
-  return `<tr class="t${r.tier}" data-tier="${r.tier}">
-    <td><div class="date">${dateMain}<small>${dateSub}</small></div><span class="conf ${r.conf?'ok':''}">${r.conf?'data confirmada':'data estimada'}</span></td>
-    <td style="min-width:230px"><div class="name">${esc(r.name)}</div><div class="meta">${esc(r.meta)}</div>${r.note?`<div class="note">${esc(r.note)}</div>`:''}${r.decide?`<div class="note decide">${esc(r.decide)}</div>`:''}</td>
-    <td><span class="tier ${r.tier}">${r.tier}</span><span class="tierlbl">${TIERLBL[r.tier]}</span></td>
-    <td><div class="ppl">${pp}</div></td>
-    <td style="min-width:160px"><span class="st ${r.reg.s}">${{aberta:'Abertas',anunciada:'Abertura anunciada','por-abrir':'Ainda não abriram','por-anunciar':'Por anunciar','sem-info':'Sem informação'}[r.reg.s]}</span><div class="small">${esc(r.reg.t)}</div></td>
-    <td style="min-width:170px"><div class="price">${esc(r.price.now)}</div>${ups?`<ul class="ups">${ups}</ul>`:''}${r.price.ref?`<div class="small">${esc(r.price.ref)}</div>`:''}${r.price.warn?`<span class="warn">⚠ ${esc(r.price.warn)}</span>`:''}</td>
-    <td style="min-width:190px" class="lodge ${r.lodge.need?'':'no'}">${r.lodge.need?'<b>Precisa de dormida</b>':''}${esc(r.lodge.t)}${r.lodge.trip?`<div class="small">Custo/pessoa: <b style="display:inline">${esc(r.lodge.trip)}</b></div>`:''}</td>
-    <td class="prep">${prep}</td>
-  </tr>`;
+    return `<div class="pp ${me===k?'mine':''}"><span>${n}</span><button type="button" data-race="${r.id}" data-p="${k}" data-s="${s}" aria-label="${n}: ${SLABEL[s]}. Mudar estado">${SLABEL[s]}</button></div>`}).join('');
+  const ups=r.price.ups.map(u=>{const n=days(P(u.d));const cls=n<0?'past':n<=30?'soon':'';return `<li class="${cls}"><span class="mono">${fmt(P(u.d))}</span><span>→ ${esc(u.to)}</span></li>`}).join('');
+  let prep=r.prep.t?`<div class="small" style="margin-top:0">${esc(r.prep.t)}</div>`:'<div class="small" style="margin-top:0">—</div>';
+  if(r.prep.w&&r.prep.from&&r.prep.to){
+    const tot=P(r.prep.to)-P(r.prep.from),done=Math.max(0,Math.min(1,(today-P(r.prep.from))/tot));
+    prep=`<div><span class="wk">${r.prep.w} semanas</span><span class="muted mono" style="font-size:.74rem;white-space:nowrap;display:block">${fmt(P(r.prep.from))} → ${fmt(P(r.prep.to))}</span></div><div class="prepbar" title="${Math.round(done*100)}% do bloco já decorrido"><i class="${r.tier}" style="width:${Math.max(done*100,2)}%"></i></div>`+prep;
+  }else if(r.prep.w){prep=`<div><span class="wk">${r.prep.w} semanas</span></div>`+prep}
+  const ls=lodges.filter(l=>l.raceId===r.id), picked=ls.find(l=>l.picked), open=openLodge===r.id;
+  const lodgeBtn=(r.lodge.need||ls.length)?`<button type="button" class="lodgebtn" data-lodge="${r.id}" aria-expanded="${open}">${ls.length?`${ls.length} opç${ls.length===1?'ão':'ões'} de alojamento`:'Propor alojamento'} ${open?'▴':'▾'}</button>`:`<button type="button" class="lodgebtn" data-lodge="${r.id}" aria-expanded="${open}" style="opacity:.75">+ alojamento ${open?'▴':'▾'}</button>`;
+  const by=r.by?`editado por ${esc(r.by)}${r.at&&okDate(r.at)?' a '+fmtFull(P(r.at)):''}`:'';
+  let html=`<tr class="race t${r.tier}">
+    <td class="c-date"><div class="date">${dateMain}<small>${r.label&&!/\d/.test(r.label)?'2027':DOW[d.getDay()]+' · '+d.getFullYear()}</small></div><span class="conf ${r.conf?'ok':''}">${r.conf?'data confirmada':'data estimada'}</span></td>
+    <td class="c-name" style="min-width:230px"><div class="name">${r.link?`<a href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.name)}</a>`:esc(r.name)}</div><div class="meta">${esc(r.meta)}</div>${r.note?`<div class="note">${esc(r.note)}</div>`:''}${r.decide?`<div class="note decide">Decidir: ${esc(r.decide)}</div>`:''}<div class="edited"><button class="btn sm" type="button" data-edit="${r.id}">Editar</button>${by}</div></td>
+    <td class="c-tier"><span class="tier ${r.tier}">${r.tier}</span><span class="tierlbl">${TIERLBL[r.tier]}</span></td>
+    <td class="c-rest" data-l="Presença"><div class="ppl">${pp}</div></td>
+    <td class="c-rest" data-l="Inscrições" style="min-width:160px"><span class="st ${r.reg.s}">${REGLBL[r.reg.s]}</span>${r.reg.open?`<div class="small"><b>${r.reg.openApprox?'~':''}${fmtFull(P(r.reg.open))}</b></div>`:''}<div class="small">${esc(r.reg.t)}</div></td>
+    <td class="c-rest" data-l="Preço" style="min-width:170px"><div class="price">${esc(r.price.now||'—')}</div>${ups?`<ul class="ups">${ups}</ul>`:''}${r.price.ref?`<div class="small">${esc(r.price.ref)}</div>`:''}${r.price.warn?`<span class="warn">⚠ ${esc(r.price.warn)}</span>`:''}</td>
+    <td class="c-rest lodge ${r.lodge.need?'':'no'}" data-l="Alojamento e viagem" style="min-width:200px">${r.lodge.need?'<b class="need">Precisa de dormida</b>':''}${esc(r.lodge.t)}${(r.lodge.tripT||r.lodge.trip)?`<div class="small">Custo/pessoa: <b>${esc(r.lodge.tripT||euro(r.lodge.trip))}</b></div>`:''}${picked?`<span class="chosen">✓ Reservado: ${esc(picked.name)}</span>`:''}<div>${lodgeBtn}</div></td>
+    <td class="c-rest prep" data-l="Preparação específica">${prep}</td></tr>`;
+  if(open) html+=`<tr class="lodgerow"><td colspan="8">${lodgePanel(r,ls)}</td></tr>`;
+  return html;
+}
+function lodgePanel(r,ls){
+  const sorted=[...ls].sort((a,b)=>(b.picked-a.picked)||(Object.values(b.votes).filter(Boolean).length-Object.values(a.votes).filter(Boolean).length)||(a.price/a.cap-b.price/b.cap));
+  const cards=sorted.map(l=>{
+    const pp=l.price?l.price*l.nights/(l.cap||1):0;
+    const votes=PEOPLE.map(([k,n])=>`<button type="button" class="vote" data-vote="${l.id}" data-p="${k}" aria-pressed="${l.votes[k]}">${l.votes[k]?'♥':'♡'} ${n}</button>`).join('');
+    return `<div class="lcard ${l.picked?'pick':''}">
+      <h4><span>${l.link?`<a href="${esc(l.link)}" target="_blank" rel="noopener">${esc(l.name)}</a>`:esc(l.name)}</span>${l.picked?'<span class="st aberta">reservado</span>':''}</h4>
+      <div class="kv">${esc([l.type,l.area].filter(Boolean).join(' · '))}${l.dist?'<br>'+esc(l.dist):''}</div>
+      <div><span class="pn">${l.price?euro(l.price):'—'}</span> <span class="pp2">${l.price?'/noite por quarto':'sem preço'}</span></div>
+      ${l.price?`<div class="pp2">≈ ${euro(pp)} por pessoa · ${l.nights} noite${l.nights>1?'s':''} · quarto para ${l.cap}</div>`:''}
+      ${l.pnote?`<div class="kv">${esc(l.pnote)}</div>`:''}
+      ${l.notes?`<div class="kv" style="color:var(--ink)">${esc(l.notes)}</div>`:''}
+      <div class="acts">${votes}</div>
+      <div class="acts"><button type="button" class="btn sm pickbtn" data-pick="${l.id}" aria-pressed="${l.picked}">${l.picked?'✓ Reservado':'Marcar reservado'}</button><button type="button" class="btn sm" data-editlodge="${l.id}">Editar</button>${l.by?`<span class="kv">proposto por ${esc(l.by)}</span>`:''}</div>
+    </div>`}).join('');
+  return `<div class="lodgehead"><h3>Alojamento · ${esc(r.name)}</h3><button type="button" class="btn sm primary" data-addlodge="${r.id}">+ Propor alojamento</button></div>
+    ${cards?`<div class="cards">${cards}</div>`:'<p class="empty">Ainda não há opções. Propõe a primeira.</p>'}`;
 }
 function renderRows(){
-  const list=RACES.filter(r=>filter==='all'||r.tier===filter);
-  document.getElementById('rows').innerHTML=list.map(rowHTML).join('');
+  if(!races.length){$('rows').innerHTML=`<tr><td colspan="8" class="loading">${db?'Ainda não há provas. Carrega em “+ Adicionar prova”.':'A carregar as provas…'}</td></tr>`;return}
+  const list=races.filter(r=>filter==='all'||r.tier===filter);
+  $('rows').innerHTML=list.map(rowHTML).join('');
 }
 function renderFilters(){
-  const opts=[['all','Todas',RACES.length],['A','A · objetivo'],['B','B · teste'],['C','C · treino']];
-  const f=document.getElementById('filters');
-  f.innerHTML=opts.map(([k,l])=>`<button class="chip" type="button" data-f="${k}" aria-pressed="${filter===k}">${l} <span class="mono">${k==='all'?RACES.length:RACES.filter(r=>r.tier===k).length}</span></button>`).join('');
+  const opts=[['all','Todas'],['A','A · objetivo'],['B','B · teste'],['C','C · treino']];
+  $('filters').innerHTML=opts.map(([k,l])=>`<button class="chip" type="button" data-f="${k}" aria-pressed="${filter===k}">${l} <span class="mono">${k==='all'?races.length:races.filter(r=>r.tier===k).length}</span></button>`).join('');
 }
-document.getElementById('filters').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.f;renderFilters();renderRows()});
+function renderAll(){renderSummary();renderAlerts();renderFilters();renderRows()}
+$('filters').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.f;renderFilters();renderRows()});
 
-/* ---------- presenças ---------- */
-function toast(t){const el=document.getElementById('toast');el.textContent=t;el.style.display='block';clearTimeout(toast._t);toast._t=setTimeout(()=>el.style.display='none',3500)}
-function setSync(on,t){document.getElementById('dot').className='dot '+(on?'on':'off');document.getElementById('synctxt').textContent=t}
-function localLoad(){try{return JSON.parse(localStorage.getItem('provas2027-pres')||'{}')}catch(e){return{}}}
-function localSave(){try{localStorage.setItem('provas2027-pres',JSON.stringify(pres))}catch(e){}}
+/* ---------- escrita ---------- */
+function toast(t){const el=$('toast');el.textContent=t;el.style.display='block';clearTimeout(toast._t);toast._t=setTimeout(()=>el.style.display='none',3800)}
+function setSync(on,t){$('dot').className='dot '+(on?'on':'off');$('synctxt').textContent=t}
+function writeErr(err){
+  if(err&&err.code==='invalid_argument'){canWrite=false;return 'Sem permissão para alterar. Pede ao Miguel que te partilhe a página como Editor.'}
+  if(err&&err.code==='quota_exceeded')return 'A base de dados está cheia. Apaga provas ou alojamentos antigos.';
+  return 'Não foi possível guardar. Verifica a ligação e tenta outra vez.';
+}
+function needDb(){if(!db){toast('Abre a página no claude.ai para guardar alterações.');return false}return true}
 const busy=new Set();
-document.getElementById('rows').addEventListener('click',async e=>{
-  const b=e.target.closest('button[data-race]'); if(!b) return;
-  const id=b.dataset.race, k=b.dataset.p; if(busy.has(id)) return;
-  const cur=(pres[id]||{})[k]||''; const next=STATES[(STATES.indexOf(cur)+1)%STATES.length];
-  const prev=pres[id]?{...pres[id]}:null;
-  pres[id]={...(pres[id]||{}),[k]:next}; renderRows();
-  if(!db){localSave();return}
-  busy.add(id);
-  try{await db.doc('presencas/'+id).set({...pres[id]})}
-  catch(err){pres[id]=prev||{};renderRows();toast(err&&err.code==='invalid_argument'?'Sem permissão para alterar. Pede ao Miguel acesso de editor.':'Não foi possível guardar. Tenta outra vez.')}
-  finally{busy.delete(id)}
+async function write(path,data){busy.add(path);try{await db.doc(path).set(data)}finally{busy.delete(path)}}
+
+$('rows').addEventListener('click',async e=>{
+  const t=e.target;
+  const pb=t.closest('button[data-race]');
+  if(pb){
+    if(!needDb())return;
+    const id=pb.dataset.race,k=pb.dataset.p,path='presencas/'+id; if(busy.has(path))return;
+    const cur=(pres[id]||{})[k]||'',next=STATES[(STATES.indexOf(cur)+1)%STATES.length],prev={...(pres[id]||{})};
+    pres[id]={...prev,[k]:next}; renderSummary(); renderRows();
+    try{await write(path,{...pres[id]})}catch(err){pres[id]=prev;renderSummary();renderRows();toast(writeErr(err))}
+    return;
+  }
+  const eb=t.closest('[data-edit]'); if(eb){openRace(races.find(r=>r.id===eb.dataset.edit));return}
+  const lb=t.closest('[data-lodge]'); if(lb){openLodge=openLodge===lb.dataset.lodge?null:lb.dataset.lodge;renderRows();return}
+  const al=t.closest('[data-addlodge]'); if(al){openLodgeForm(al.dataset.addlodge,null);return}
+  const el=t.closest('[data-editlodge]'); if(el){const l=lodges.find(x=>x.id===el.dataset.editlodge);if(l)openLodgeForm(l.raceId,l);return}
+  const vb=t.closest('[data-vote]');
+  if(vb){
+    if(!needDb())return;
+    const l=lodges.find(x=>x.id===vb.dataset.vote);if(!l)return;const path='alojamentos/'+l.id;if(busy.has(path))return;
+    const k=vb.dataset.p, data=lodgeDoc(l); data.votes={...l.votes,[k]:!l.votes[k]};
+    try{await write(path,data)}catch(err){toast(writeErr(err))}
+    return;
+  }
+  const pk=t.closest('[data-pick]');
+  if(pk){
+    if(!needDb())return;
+    const l=lodges.find(x=>x.id===pk.dataset.pick);if(!l)return;
+    try{
+      const val=!l.picked;
+      if(val){for(const o of lodges.filter(o=>o.raceId===l.raceId&&o.picked&&o.id!==l.id)){await write('alojamentos/'+o.id,{...lodgeDoc(o),picked:false})}}
+      await write('alojamentos/'+l.id,{...lodgeDoc(l),picked:val});
+    }catch(err){toast(writeErr(err))}
+  }
 });
+function lodgeDoc(l){return {raceId:l.raceId,name:l.name,type:l.type,area:l.area,dist:l.dist,price:l.price,cap:l.cap,nights:l.nights,pnote:l.pnote,link:l.link,notes:l.notes,votes:{...l.votes},picked:l.picked,by:l.by}}
 
-async function initDb(){
-  pres=localLoad(); renderRows();
-  let d=null; try{d=await (window.claude&&claude.use?claude.use('db'):null)}catch(e){d=null}
-  if(!d){setSync(false,'Presenças só neste dispositivo (abre a página no claude.ai para partilhar)');return}
-  db=d;
-  const timer=setTimeout(()=>setSync(false,'Ainda sem ligação às presenças partilhadas…'),10000);
-  db.collection('presencas').onSnapshot(snap=>{
-    const m={}; snap.docs.forEach(doc=>{const v=doc.data()||{};const o={};PEOPLE.forEach(([k])=>{if(STATES.includes(v[k]))o[k]=v[k]});m[doc.id]=o});
-    pres=m; renderRows();
-    if(!snap.metadata.fromCache){clearTimeout(timer);setSync(true,'Presenças partilhadas · ao vivo')}
-  },err=>{clearTimeout(timer);setSync(false,'Presenças partilhadas indisponíveis')});
+/* ---------- formulário de prova ---------- */
+const F=id=>$('f_'+id);
+function upRow(d='',to=''){const div=document.createElement('div');div.className='uprow';
+  div.innerHTML=`<input type="date" class="u_d" value="${esc(d)}" aria-label="Data da subida"><input class="u_to" value="${esc(to)}" placeholder="Novo preço, ex.: 95 €" aria-label="Novo preço"><button type="button" class="btn sm" aria-label="Remover subida">✕</button>`;
+  div.querySelector('button').onclick=()=>div.remove(); $('upsBox').appendChild(div)}
+$('addUp').onclick=()=>upRow();
+function openRace(r){
+  editing=r?r.id:null;
+  $('raceTitle').textContent=r?'Editar prova':'Nova prova';
+  $('raceSub').textContent=r?'As alterações ficam visíveis para todos.':'Preenche o que souberes; o resto pode ficar em branco.';
+  const v=r||normRace('',{date:'',tier:'C'});
+  F('name').value=r?v.name:''; F('tier').value=v.tier; F('meta').value=v.meta; F('date').value=r?v.date:''; F('label').value=v.label; F('conf').checked=v.conf;
+  F('link').value=v.link; F('note').value=v.note; F('decide').value=v.decide;
+  F('regs').value=r?v.reg.s:'por-abrir'; F('open').value=v.reg.open; F('openApprox').checked=v.reg.openApprox; F('regt').value=v.reg.t;
+  F('price').value=v.price.now; F('entry').value=v.price.entry||''; F('ref').value=v.price.ref; F('warn').value=v.price.warn;
+  $('upsBox').innerHTML=''; v.price.ups.forEach(u=>upRow(u.d,u.to));
+  F('need').checked=v.lodge.need; F('trip').value=v.lodge.trip||''; F('tript').value=v.lodge.tripT; F('lodge').value=v.lodge.t;
+  F('w').value=v.prep.w||''; F('from').value=v.prep.from; F('to').value=v.prep.to; F('prep').value=v.prep.t;
+  $('delRace').style.display=r?'':'none'; $('delRace').classList.remove('armed'); $('delRace').textContent='Apagar prova';
+  $('raceErr').textContent='';
+  $('raceDlg').showModal(); F('name').focus();
 }
+$('addRace').onclick=()=>openRace(null);
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
+$('raceForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(!needDb())return;
+  const name=F('name').value.trim(), date=F('date').value;
+  if(!name){$('raceErr').textContent='Falta o nome da prova.';F('name').focus();return}
+  if(!okDate(date)){$('raceErr').textContent='Falta a data (usa uma data aproximada se ainda não houver oficial).';F('date').focus();return}
+  const ups=[...$('upsBox').querySelectorAll('.uprow')].map(x=>({d:x.querySelector('.u_d').value,to:x.querySelector('.u_to').value.trim()})).filter(u=>okDate(u.d)).sort((a,b)=>a.d<b.d?-1:1);
+  const old=editing?races.find(r=>r.id===editing):null;
+  const data={name,date,label:F('label').value.trim(),conf:F('conf').checked,tier:F('tier').value,meta:F('meta').value.trim(),note:F('note').value.trim(),decide:F('decide').value.trim(),link:safeUrl(F('link').value.trim()),
+    reg:{s:F('regs').value,t:F('regt').value.trim(),open:F('open').value||'',openApprox:F('openApprox').checked},
+    price:{now:F('price').value.trim(),entry:num(F('entry').value),ref:F('ref').value.trim(),warn:F('warn').value.trim(),ups},
+    lodge:{need:F('need').checked,t:F('lodge').value.trim(),trip:num(F('trip').value),tripT:F('tript').value.trim()},
+    prep:{w:num(F('w').value),from:F('from').value||'',to:F('to').value||'',t:F('prep').value.trim()},
+    short:old?old.short:'',by:meName(),at:new Date().toISOString().slice(0,10)};
+  const id=editing||('p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6));
+  $('saveRace').disabled=true;
+  try{await write('races/'+id,data);$('raceDlg').close();toast(editing?'Prova atualizada.':'Prova adicionada.')}
+  catch(err){$('raceErr').textContent=writeErr(err)}
+  finally{$('saveRace').disabled=false}
+});
+$('delRace').onclick=async()=>{
+  const b=$('delRace'); if(!b.classList.contains('armed')){b.classList.add('armed');b.textContent='Confirmar: apagar de vez';return}
+  if(!needDb()||!editing)return;
+  try{await db.doc('races/'+editing).delete();await db.doc('presencas/'+editing).delete();
+    for(const l of lodges.filter(l=>l.raceId===editing))await db.doc('alojamentos/'+l.id).delete();
+    $('raceDlg').close();toast('Prova apagada.')}
+  catch(err){$('raceErr').textContent=writeErr(err)}
+};
 
-renderSummary(); renderAlerts(); renderFilters(); renderRows(); initDb();
+/* ---------- formulário de alojamento ---------- */
+const L=id=>$('l_'+id); let lodgeRace=null;
+function openLodgeForm(raceId,l){
+  lodgeRace=raceId; editingLodge=l?l.id:null;
+  const r=races.find(x=>x.id===raceId);
+  $('lodgeTitle').textContent=l?'Editar alojamento':'Propor alojamento';
+  $('lodgeSub').textContent=r?`${r.name} · ${fmtFull(P(r.date))}`:'';
+  L('name').value=l?l.name:''; L('type').value=l&&l.type?l.type:'Hotel'; L('area').value=l?l.area:''; L('dist').value=l?l.dist:'';
+  L('price').value=l&&l.price?l.price:''; L('cap').value=l?l.cap:3; L('nights').value=l?l.nights:1; L('pnote').value=l?l.pnote:''; L('link').value=l?l.link:''; L('notes').value=l?l.notes:'';
+  $('delLodge').style.display=l?'':'none'; $('delLodge').classList.remove('armed'); $('delLodge').textContent='Apagar';
+  $('lodgeErr').textContent=''; $('lodgeDlg').showModal(); L('name').focus();
+}
+$('lodgeForm').addEventListener('submit',async e=>{
+  e.preventDefault(); if(!needDb())return;
+  const name=L('name').value.trim(); if(!name){$('lodgeErr').textContent='Falta o nome.';return}
+  const old=editingLodge?lodges.find(x=>x.id===editingLodge):null;
+  const data={raceId:lodgeRace,name,type:L('type').value,area:L('area').value.trim(),dist:L('dist').value.trim(),price:num(L('price').value),cap:num(L('cap').value)||3,nights:num(L('nights').value)||1,
+    pnote:L('pnote').value.trim(),link:safeUrl(L('link').value.trim()),notes:L('notes').value.trim(),votes:old?{...old.votes}:{miguel:false,nuno:false,rita:false},picked:old?old.picked:false,by:old?old.by:meName()};
+  const id=editingLodge||('a'+Date.now().toString(36)+Math.random().toString(36).slice(2,6));
+  try{await write('alojamentos/'+id,data);$('lodgeDlg').close();openLodge=lodgeRace;renderRows();toast(old?'Alojamento atualizado.':'Alojamento proposto.')}
+  catch(err){$('lodgeErr').textContent=writeErr(err)}
+});
+$('delLodge').onclick=async()=>{
+  const b=$('delLodge'); if(!b.classList.contains('armed')){b.classList.add('armed');b.textContent='Confirmar: apagar';return}
+  if(!needDb()||!editingLodge)return;
+  try{await db.doc('alojamentos/'+editingLodge).delete();$('lodgeDlg').close();toast('Alojamento apagado.')}catch(err){$('lodgeErr').textContent=writeErr(err)}
+};
+
+/* ---------- ligação à base de dados ---------- */
+async function init(){
+  renderMe(); renderAll();
+  let d=null; try{d=window.claude&&claude.use?await claude.use('db'):null}catch(e){d=null}
+  if(!d){setSync(false,'Sem ligação: abre a página no claude.ai, com sessão iniciada');$('rows').innerHTML='<tr><td colspan="8" class="loading">As provas estão guardadas na base de dados partilhada. Abre a página no claude.ai, com sessão iniciada, para as ver.</td></tr>';return}
+  db=d;
+  const timer=setTimeout(()=>setSync(false,'Ainda sem resposta da base de dados… os dados podem estar desatualizados'),10000);
+  let got=0; const ready=()=>{if(++got>=3){clearTimeout(timer);setSync(true,'Partilhado · ao vivo')}};
+  const fail=()=>{clearTimeout(timer);setSync(false,'Ligação perdida. Recarrega a página.')};
+  let s1=false,s2=false,s3=false;
+  db.collection('races').onSnapshot(snap=>{
+    races=snap.docs.map(x=>normRace(x.id,x.data())).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.name.localeCompare(b.name));
+    renderAll(); if(!snap.metadata.fromCache&&!s1){s1=true;ready()}
+  },fail);
+  db.collection('presencas').onSnapshot(snap=>{
+    const m={}; snap.docs.forEach(x=>{const v=x.data()||{},o={};PEOPLE.forEach(([k])=>{if(STATES.includes(v[k]))o[k]=v[k]});m[x.id]=o});
+    pres=m; renderSummary(); renderRows(); if(!snap.metadata.fromCache&&!s2){s2=true;ready()}
+  },fail);
+  db.collection('alojamentos').onSnapshot(snap=>{
+    lodges=snap.docs.map(x=>normLodge(x.id,x.data()));
+    renderSummary(); renderRows(); if(!snap.metadata.fromCache&&!s3){s3=true;ready()}
+  },fail);
+}
+init();
 </script>
 </body>
 </html>
