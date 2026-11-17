@@ -180,6 +180,18 @@ tr.lodgerow td{background:var(--sunk);padding:14px 16px 18px}
 .vote[aria-pressed="true"]{background:var(--tB-soft);color:var(--tB);border-color:var(--tB)}
 .pickbtn[aria-pressed="true"]{background:var(--ok);color:#fff;border-color:var(--ok)}
 .empty{color:var(--muted);font-size:.88rem}
+.score{display:inline-block;background:#003b95;color:#fff;font-weight:700;font-size:.8rem;border-radius:5px 5px 5px 0;padding:1px 6px}
+.srch{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.srch a{font-size:.76rem;font-weight:700;text-decoration:none;border-radius:6px;padding:2px 8px;border:1px solid var(--line);color:var(--ink);background:var(--surface)}
+.srch a.bk{border-color:#003b95;color:#003b95} .srch a.ab{border-color:#e0565b;color:#c9363c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .srch a.bk{color:#8fb3ff;border-color:#8fb3ff}}
+:root[data-theme="dark"] .srch a.bk{color:#8fb3ff;border-color:#8fb3ff}
+.retired{margin-top:18px}
+.retired ul{list-style:none;margin:8px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+.retired li{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--surface);border:1px dashed var(--line);border-radius:9px;padding:8px 10px}
+.retired li .n{font-weight:700;font-size:.9rem}
+.retired li .m{font-size:.78rem;color:var(--muted)}
+.retired li .b{display:flex;gap:5px;flex-shrink:0}
 
 .cut{margin-top:16px;font-size:.86rem;color:var(--muted)}
 .cut b{color:var(--ink)}
@@ -274,10 +286,10 @@ dialog::backdrop{background:rgba(10,20,30,.5)}
     </table>
   </div>
 
-  <p class="cut"><b>Fora do calendário:</b> Triatlo da Costa Nova e de Viana do Castelo (fica Moura), simulações HYROX de janeiro (Hx365 Famalicão, Hero Challenge Gondomar, Hybrid Day Aveiro), HYROX Bilbao e Málaga (Málaga choca com Moura).</p>
+  <section class="retired panel" id="retiredBox" aria-labelledby="retH"><h2 id="retH">Provas retiradas <small>ficam aqui para poderem voltar ao calendário</small></h2><ul id="retired"></ul></section>
 
   <footer>
-    <b>Presença:</b> carrega no estado para mudar (por marcar → vou → inscrito → talvez → não vou). <b>Custo por pessoa</b> soma inscrição + viagem das provas em que a pessoa marcou "vou" ou "inscrito". <b>Alojamento:</b> preços por quarto e por noite, como estimativa; confirma sempre com datas concretas antes de reservar. Escolhe uma opção como "reservado" quando estiver fechada.<br>
+    <b>Retirar</b> tira a prova do calendário (pode ser reposta); <b>Apagar de vez</b> está dentro de Editar. <b>Presença:</b> carrega no estado para mudar (por marcar → vou → inscrito → talvez → não vou). <b>Custo por pessoa</b> soma inscrição + viagem das provas em que a pessoa marcou "vou" ou "inscrito". <b>Alojamento:</b> preços por quarto e por noite, como estimativa; confirma sempre com datas concretas antes de reservar. Escolhe uma opção como "reservado" quando estiver fechada.<br>
     Viagem: carro com 3 pessoas a partir da Maia, combustível e portagens a dividir por 3, mais alojamento e alimentação, sem inscrição (levantamento de 16/11/2026).<br>
     Fontes iniciais: federacao-triatlo.pt, porto-marathon.com, all4running.pt, finishers.com, raceradar.fit, hyresult.com, racefinder.pt, logitravel.pt, hotels.com, expedia, momondo.pt, btravel.com, nh-hotels.com. Primeira versão a 17/11/2026.
   </footer>
@@ -317,6 +329,9 @@ dialog::backdrop{background:rgba(10,20,30,.5)}
       <label class="s2">Viagem/pessoa (€)<input id="f_trip" type="number" min="0" step="1" placeholder="95"></label>
       <label class="s2">Viagem (texto)<input id="f_tript" placeholder="Ex.: ~160 € (1 noite)"></label>
       <label class="s6">Logística<input id="f_lodge" placeholder="Ex.: 1 noite; check-in da bike no sábado"></label>
+      <label class="s2">Onde procurar alojamento<input id="f_where" placeholder="Ex.: Moura, Portugal"></label>
+      <label class="s2">Entrada (check-in)<input id="f_in" type="date"></label>
+      <label class="s2">Saída (check-out)<input id="f_out" type="date"></label>
       <label class="s2">Semanas de preparação<input id="f_w" type="number" min="0" max="30" step="1"></label>
       <label class="s2">Início do bloco<input id="f_from" type="date"></label>
       <label class="s2">Fim do bloco<input id="f_to" type="date"></label>
@@ -324,7 +339,7 @@ dialog::backdrop{background:rgba(10,20,30,.5)}
     </div>
     <div class="err" id="raceErr" role="alert"></div>
     <div class="foot">
-      <button class="btn danger" type="button" id="delRace">Apagar prova</button>
+      <button class="btn danger" type="button" id="delRace">Apagar de vez</button>
       <div class="r"><button class="btn" type="button" data-close>Cancelar</button><button class="btn primary" type="submit" id="saveRace">Guardar</button></div>
     </div>
   </form>
@@ -342,7 +357,9 @@ dialog::backdrop{background:rgba(10,20,30,.5)}
       <label class="s2">Preço/noite (quarto, €)<input id="l_price" type="number" min="0" step="1"></label>
       <label class="s2">Pessoas no quarto<input id="l_cap" type="number" min="1" max="10" step="1" value="3"></label>
       <label class="s2">Noites<input id="l_nights" type="number" min="1" max="10" step="1" value="1"></label>
-      <label class="s6">Nota do preço<input id="l_pnote" placeholder="Ex.: quarto duplo, setembro 2026; pedir triplo"></label>
+      <label class="s3">Avaliação<input id="l_rating" placeholder="Ex.: 8,5 Ótimo · 1209 comentários"></label>
+      <label class="s3">Quarto<input id="l_room" placeholder="Ex.: Quarto triplo, pequeno-almoço incluído"></label>
+      <label class="s6">Nota do preço<input id="l_pnote" placeholder="Ex.: preço Booking para 3 adultos a 17/11/2026"></label>
       <label class="s6">Link<input id="l_link" type="url" placeholder="https://"></label>
       <label class="s6">Notas<textarea id="l_notes" placeholder="Pequeno-almoço cedo? Garagem para as bikes? Cancelamento grátis?"></textarea></label>
     </div>
@@ -378,7 +395,7 @@ const num=v=>{const n=Number(v);return isFinite(n)&&n>0?n:0};
 const euro=n=>Math.round(n).toLocaleString('pt-PT')+' €';
 function whenTxt(n){return n<0?'passou':n===0?'hoje':n===1?'amanhã':`em ${n} dias`}
 
-let races=[], pres={}, lodges=[], filter='all', db=null, openLodge=null, editing=null, editingLodge=null, canWrite=true;
+let races=[], allRaces=[], pres={}, lodges=[], filter='all', db=null, openLodge=null, editing=null, editingLodge=null, canWrite=true;
 let me=(()=>{try{return localStorage.getItem('provas2027-me')||''}catch(e){return''}})();
 
 /* ---------- normalização (dados partilhados não são de confiança) ---------- */
@@ -390,16 +407,27 @@ function normRace(id,v){
     reg:{s:REGLBL[v.reg?.s]?v.reg.s:'sem-info',t:s(v.reg?.t),open:okDate(v.reg?.open)?v.reg.open:'',openApprox:!!v.reg?.openApprox},
     price:{now:s(v.price?.now),entry:num(v.price?.entry),ref:s(v.price?.ref),warn:s(v.price?.warn),
       ups:Array.isArray(v.price?.ups)?v.price.ups.filter(u=>u&&okDate(u.d)).map(u=>({d:u.d.slice(0,10),to:s(u.to)})):[]},
-    lodge:{need:!!v.lodge?.need,t:s(v.lodge?.t),trip:num(v.lodge?.trip),tripT:s(v.lodge?.tripT)},
+    lodge:{need:!!v.lodge?.need,t:s(v.lodge?.t),trip:num(v.lodge?.trip),tripT:s(v.lodge?.tripT),
+      where:s(v.lodge?.where),in:okDate(v.lodge?.in)?v.lodge.in:'',out:okDate(v.lodge?.out)?v.lodge.out:''},
     prep:{w:num(v.prep?.w),from:okDate(v.prep?.from)?v.prep.from:'',to:okDate(v.prep?.to)?v.prep.to:'',t:s(v.prep?.t)},
-    by:s(v.by),at:s(v.at),short:s(v.short)};
+    by:s(v.by),at:s(v.at),short:s(v.short),retired:!!v.retired,retiredBy:s(v.retiredBy)};
   return r;
 }
+function raceDoc(r){return {name:r.name,date:r.date,label:r.label,conf:r.conf,tier:r.tier,meta:r.meta,note:r.note,decide:r.decide,link:r.link,
+  reg:{...r.reg},price:{...r.price,ups:r.price.ups.map(u=>({...u}))},lodge:{...r.lodge},prep:{...r.prep},short:r.short,by:r.by,at:r.at,retired:r.retired,retiredBy:r.retiredBy}}
+/* datas de alojamento: por omissão a noite anterior à prova */
+function stay(r){
+  const out=r.lodge.out||r.date, inn=r.lodge.in||new Date(P(out)-864e5).toISOString().slice(0,10);
+  return {in:inn,out,nights:Math.max(1,Math.round((P(out)-P(inn))/864e5))};
+}
+function bookingUrl(where,s,adults=3){return `https://www.booking.com/searchresults.pt-pt.html?ss=${encodeURIComponent(where)}&checkin=${s.in}&checkout=${s.out}&group_adults=${adults}&no_rooms=1&group_children=0&selected_currency=EUR`}
+function airbnbUrl(where,s,adults=3){return `https://www.airbnb.pt/s/${encodeURIComponent(where)}/homes?checkin=${s.in}&checkout=${s.out}&adults=${adults}`}
+function hotelUrl(link,s){if(!link)return'';if(/booking\.com\/hotel\//.test(link))return `${link.split('?')[0]}?checkin=${s.in}&checkout=${s.out}&group_adults=3&no_rooms=1&selected_currency=EUR`;return link}
 function normLodge(id,v){
   v=v||{};const s=x=>typeof x==='string'?x:'';
   const votes={};PEOPLE.forEach(([k])=>votes[k]=!!(v.votes&&v.votes[k]));
   return {id,raceId:s(v.raceId),name:s(v.name)||'Sem nome',type:s(v.type),area:s(v.area),dist:s(v.dist),price:num(v.price),cap:num(v.cap)||3,nights:num(v.nights)||1,
-    pnote:s(v.pnote),link:safeUrl(v.link),notes:s(v.notes),votes,picked:!!v.picked,by:s(v.by)};
+    pnote:s(v.pnote),link:safeUrl(v.link),notes:s(v.notes),votes,picked:!!v.picked,by:s(v.by),rating:s(v.rating),room:s(v.room)};
 }
 
 /* ---------- quem és ---------- */
@@ -462,32 +490,36 @@ function rowHTML(r){
   const by=r.by?`editado por ${esc(r.by)}${r.at&&okDate(r.at)?' a '+fmtFull(P(r.at)):''}`:'';
   let html=`<tr class="race t${r.tier}">
     <td class="c-date"><div class="date">${dateMain}<small>${r.label&&!/\d/.test(r.label)?'2027':DOW[d.getDay()]+' · '+d.getFullYear()}</small></div><span class="conf ${r.conf?'ok':''}">${r.conf?'data confirmada':'data estimada'}</span></td>
-    <td class="c-name" style="min-width:230px"><div class="name">${r.link?`<a href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.name)}</a>`:esc(r.name)}</div><div class="meta">${esc(r.meta)}</div>${r.note?`<div class="note">${esc(r.note)}</div>`:''}${r.decide?`<div class="note decide">Decidir: ${esc(r.decide)}</div>`:''}<div class="edited"><button class="btn sm" type="button" data-edit="${r.id}">Editar</button>${by}</div></td>
+    <td class="c-name" style="min-width:230px"><div class="name">${r.link?`<a href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.name)}</a>`:esc(r.name)}</div><div class="meta">${esc(r.meta)}</div>${r.note?`<div class="note">${esc(r.note)}</div>`:''}${r.decide?`<div class="note decide">Decidir: ${esc(r.decide)}</div>`:''}<div class="edited"><button class="btn sm" type="button" data-edit="${r.id}">Editar</button><button class="btn sm" type="button" data-retire="${r.id}" title="Tira a prova do calendário; pode ser reposta mais abaixo">Retirar</button>${by}</div></td>
     <td class="c-tier"><span class="tier ${r.tier}">${r.tier}</span><span class="tierlbl">${TIERLBL[r.tier]}</span></td>
     <td class="c-rest" data-l="Presença"><div class="ppl">${pp}</div></td>
     <td class="c-rest" data-l="Inscrições" style="min-width:160px"><span class="st ${r.reg.s}">${REGLBL[r.reg.s]}</span>${r.reg.open?`<div class="small"><b>${r.reg.openApprox?'~':''}${fmtFull(P(r.reg.open))}</b></div>`:''}<div class="small">${esc(r.reg.t)}</div></td>
     <td class="c-rest" data-l="Preço" style="min-width:170px"><div class="price">${esc(r.price.now||'—')}</div>${ups?`<ul class="ups">${ups}</ul>`:''}${r.price.ref?`<div class="small">${esc(r.price.ref)}</div>`:''}${r.price.warn?`<span class="warn">⚠ ${esc(r.price.warn)}</span>`:''}</td>
-    <td class="c-rest lodge ${r.lodge.need?'':'no'}" data-l="Alojamento e viagem" style="min-width:200px">${r.lodge.need?'<b class="need">Precisa de dormida</b>':''}${esc(r.lodge.t)}${(r.lodge.tripT||r.lodge.trip)?`<div class="small">Custo/pessoa: <b>${esc(r.lodge.tripT||euro(r.lodge.trip))}</b></div>`:''}${picked?`<span class="chosen">✓ Reservado: ${esc(picked.name)}</span>`:''}<div>${lodgeBtn}</div></td>
+    <td class="c-rest lodge ${r.lodge.need?'':'no'}" data-l="Alojamento e viagem" style="min-width:200px">${r.lodge.need?'<b class="need">Precisa de dormida</b>':''}${esc(r.lodge.t)}${(r.lodge.tripT||r.lodge.trip)?`<div class="small">Custo/pessoa: <b>${esc(r.lodge.tripT||euro(r.lodge.trip))}</b></div>`:''}${picked?`<span class="chosen">✓ Reservado: ${esc(picked.name)}</span>`:''}<div>${lodgeBtn}</div>${r.lodge.where?searchLinks(r,'small'):''}</td>
     <td class="c-rest prep" data-l="Preparação específica">${prep}</td></tr>`;
   if(open) html+=`<tr class="lodgerow"><td colspan="8">${lodgePanel(r,ls)}</td></tr>`;
   return html;
 }
 function lodgePanel(r,ls){
   const sorted=[...ls].sort((a,b)=>(b.picked-a.picked)||(Object.values(b.votes).filter(Boolean).length-Object.values(a.votes).filter(Boolean).length)||(a.price/a.cap-b.price/b.cap));
+  const st0=stay(r);
   const cards=sorted.map(l=>{
-    const pp=l.price?l.price*l.nights/(l.cap||1):0;
+    const pp=l.price?l.price*l.nights/(l.cap||1):0, href=hotelUrl(l.link,st0);
     const votes=PEOPLE.map(([k,n])=>`<button type="button" class="vote" data-vote="${l.id}" data-p="${k}" aria-pressed="${l.votes[k]}">${l.votes[k]?'♥':'♡'} ${n}</button>`).join('');
     return `<div class="lcard ${l.picked?'pick':''}">
-      <h4><span>${l.link?`<a href="${esc(l.link)}" target="_blank" rel="noopener">${esc(l.name)}</a>`:esc(l.name)}</span>${l.picked?'<span class="st aberta">reservado</span>':''}</h4>
+      <h4><span>${href?`<a href="${esc(href)}" target="_blank" rel="noopener">${esc(l.name)}</a>`:esc(l.name)}</span>${l.picked?'<span class="st aberta">reservado</span>':''}</h4>
+      ${l.rating?`<div><span class="score">${esc(l.rating.split(' ')[0])}</span> <span class="kv">${esc(l.rating.split(' ').slice(1).join(' '))}</span></div>`:''}
       <div class="kv">${esc([l.type,l.area].filter(Boolean).join(' · '))}${l.dist?'<br>'+esc(l.dist):''}</div>
+      ${l.room?`<div class="kv" style="color:var(--ink)">${esc(l.room)}</div>`:''}
       <div><span class="pn">${l.price?euro(l.price):'—'}</span> <span class="pp2">${l.price?'/noite por quarto':'sem preço'}</span></div>
       ${l.price?`<div class="pp2">≈ ${euro(pp)} por pessoa · ${l.nights} noite${l.nights>1?'s':''} · quarto para ${l.cap}</div>`:''}
       ${l.pnote?`<div class="kv">${esc(l.pnote)}</div>`:''}
       ${l.notes?`<div class="kv" style="color:var(--ink)">${esc(l.notes)}</div>`:''}
       <div class="acts">${votes}</div>
-      <div class="acts"><button type="button" class="btn sm pickbtn" data-pick="${l.id}" aria-pressed="${l.picked}">${l.picked?'✓ Reservado':'Marcar reservado'}</button><button type="button" class="btn sm" data-editlodge="${l.id}">Editar</button>${l.by?`<span class="kv">proposto por ${esc(l.by)}</span>`:''}</div>
+      <div class="acts"><button type="button" class="btn sm pickbtn" data-pick="${l.id}" aria-pressed="${l.picked}">${l.picked?'✓ Reservado':'Marcar reservado'}</button><button type="button" class="btn sm" data-editlodge="${l.id}">Editar</button>${href&&/booking\.com/.test(href)?`<a class="btn sm" href="${esc(href)}" target="_blank" rel="noopener">Ver no Booking</a>`:''}${l.by?`<span class="kv">proposto por ${esc(l.by)}</span>`:''}</div>
     </div>`}).join('');
-  return `<div class="lodgehead"><h3>Alojamento · ${esc(r.name)}</h3><button type="button" class="btn sm primary" data-addlodge="${r.id}">+ Propor alojamento</button></div>
+  const st=stay(r);
+  return `<div class="lodgehead"><div><h3>Alojamento · ${esc(r.name)}</h3><div class="small" style="margin-top:2px">${st.nights} noite${st.nights>1?'s':''} · entrada ${fmtFull(P(st.in))}, saída ${fmtFull(P(st.out))} · 3 adultos${r.lodge.where?' · '+esc(r.lodge.where):''}</div></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${r.lodge.where?searchLinks(r,'btn'):''}<button type="button" class="btn sm primary" data-addlodge="${r.id}">+ Propor alojamento</button></div></div>
     ${cards?`<div class="cards">${cards}</div>`:'<p class="empty">Ainda não há opções. Propõe a primeira.</p>'}`;
 }
 function renderRows(){
@@ -499,8 +531,29 @@ function renderFilters(){
   const opts=[['all','Todas'],['A','A · objetivo'],['B','B · teste'],['C','C · treino']];
   $('filters').innerHTML=opts.map(([k,l])=>`<button class="chip" type="button" data-f="${k}" aria-pressed="${filter===k}">${l} <span class="mono">${k==='all'?races.length:races.filter(r=>r.tier===k).length}</span></button>`).join('');
 }
-function renderAll(){renderSummary();renderAlerts();renderFilters();renderRows()}
+function renderAll(){renderSummary();renderAlerts();renderFilters();renderRows();renderRetired()}
 $('filters').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.f;renderFilters();renderRows()});
+
+function searchLinks(r,kind){
+  const st=stay(r);
+  return `<div class="srch"><a class="bk" href="${esc(bookingUrl(r.lodge.where,st))}" target="_blank" rel="noopener">Booking · ${fmt(P(st.in))}→${fmt(P(st.out))}</a><a class="ab" href="${esc(airbnbUrl(r.lodge.where,st))}" target="_blank" rel="noopener">Airbnb</a></div>`;
+}
+function renderRetired(){
+  const ret=allRaces.filter(r=>r.retired);
+  $('retiredBox').style.display=ret.length?'':'none';
+  $('retired').innerHTML=ret.map(r=>`<li><div><div class="n">${esc(r.name)}</div><div class="m">${r.label?esc(r.label):fmt(P(r.date))} · nível ${r.tier}${r.retiredBy?' · retirada por '+esc(r.retiredBy):''}</div></div>
+    <div class="b"><button class="btn sm" type="button" data-restore="${r.id}">Repor</button><button class="btn sm" type="button" data-edit2="${r.id}">Editar</button></div></li>`).join('');
+}
+async function setRetired(id,val){
+  if(!needDb())return;
+  const r=allRaces.find(x=>x.id===id);if(!r)return;
+  const data=raceDoc(r);data.retired=val;data.retiredBy=val?meName():'';
+  try{await write('races/'+id,data);toast(val?`“${r.name}” retirada. Podes repô-la em “Provas retiradas”.`:`“${r.name}” voltou ao calendário.`)}catch(err){toast(writeErr(err))}
+}
+document.addEventListener('click',e=>{
+  const rs=e.target.closest('[data-restore]');if(rs){setRetired(rs.dataset.restore,false);return}
+  const ed=e.target.closest('[data-edit2]');if(ed){openRace(allRaces.find(r=>r.id===ed.dataset.edit2))}
+});
 
 /* ---------- escrita ---------- */
 function toast(t){const el=$('toast');el.textContent=t;el.style.display='block';clearTimeout(toast._t);toast._t=setTimeout(()=>el.style.display='none',3800)}
@@ -525,7 +578,8 @@ $('rows').addEventListener('click',async e=>{
     try{await write(path,{...pres[id]})}catch(err){pres[id]=prev;renderSummary();renderRows();toast(writeErr(err))}
     return;
   }
-  const eb=t.closest('[data-edit]'); if(eb){openRace(races.find(r=>r.id===eb.dataset.edit));return}
+  const eb=t.closest('[data-edit]'); if(eb){openRace(allRaces.find(r=>r.id===eb.dataset.edit));return}
+  const rb=t.closest('[data-retire]'); if(rb){setRetired(rb.dataset.retire,true);return}
   const lb=t.closest('[data-lodge]'); if(lb){openLodge=openLodge===lb.dataset.lodge?null:lb.dataset.lodge;renderRows();return}
   const al=t.closest('[data-addlodge]'); if(al){openLodgeForm(al.dataset.addlodge,null);return}
   const el=t.closest('[data-editlodge]'); if(el){const l=lodges.find(x=>x.id===el.dataset.editlodge);if(l)openLodgeForm(l.raceId,l);return}
@@ -548,7 +602,7 @@ $('rows').addEventListener('click',async e=>{
     }catch(err){toast(writeErr(err))}
   }
 });
-function lodgeDoc(l){return {raceId:l.raceId,name:l.name,type:l.type,area:l.area,dist:l.dist,price:l.price,cap:l.cap,nights:l.nights,pnote:l.pnote,link:l.link,notes:l.notes,votes:{...l.votes},picked:l.picked,by:l.by}}
+function lodgeDoc(l){return {raceId:l.raceId,name:l.name,type:l.type,area:l.area,dist:l.dist,price:l.price,cap:l.cap,nights:l.nights,pnote:l.pnote,link:l.link,notes:l.notes,votes:{...l.votes},picked:l.picked,by:l.by,rating:l.rating,room:l.room}}
 
 /* ---------- formulário de prova ---------- */
 const F=id=>$('f_'+id);
@@ -566,9 +620,9 @@ function openRace(r){
   F('regs').value=r?v.reg.s:'por-abrir'; F('open').value=v.reg.open; F('openApprox').checked=v.reg.openApprox; F('regt').value=v.reg.t;
   F('price').value=v.price.now; F('entry').value=v.price.entry||''; F('ref').value=v.price.ref; F('warn').value=v.price.warn;
   $('upsBox').innerHTML=''; v.price.ups.forEach(u=>upRow(u.d,u.to));
-  F('need').checked=v.lodge.need; F('trip').value=v.lodge.trip||''; F('tript').value=v.lodge.tripT; F('lodge').value=v.lodge.t;
+  F('need').checked=v.lodge.need; F('where').value=v.lodge.where; F('in').value=v.lodge.in; F('out').value=v.lodge.out; F('trip').value=v.lodge.trip||''; F('tript').value=v.lodge.tripT; F('lodge').value=v.lodge.t;
   F('w').value=v.prep.w||''; F('from').value=v.prep.from; F('to').value=v.prep.to; F('prep').value=v.prep.t;
-  $('delRace').style.display=r?'':'none'; $('delRace').classList.remove('armed'); $('delRace').textContent='Apagar prova';
+  $('delRace').style.display=r?'':'none'; $('delRace').classList.remove('armed'); $('delRace').textContent='Apagar de vez';
   $('raceErr').textContent='';
   $('raceDlg').showModal(); F('name').focus();
 }
@@ -581,13 +635,13 @@ $('raceForm').addEventListener('submit',async e=>{
   if(!name){$('raceErr').textContent='Falta o nome da prova.';F('name').focus();return}
   if(!okDate(date)){$('raceErr').textContent='Falta a data (usa uma data aproximada se ainda não houver oficial).';F('date').focus();return}
   const ups=[...$('upsBox').querySelectorAll('.uprow')].map(x=>({d:x.querySelector('.u_d').value,to:x.querySelector('.u_to').value.trim()})).filter(u=>okDate(u.d)).sort((a,b)=>a.d<b.d?-1:1);
-  const old=editing?races.find(r=>r.id===editing):null;
+  const old=editing?allRaces.find(r=>r.id===editing):null;
   const data={name,date,label:F('label').value.trim(),conf:F('conf').checked,tier:F('tier').value,meta:F('meta').value.trim(),note:F('note').value.trim(),decide:F('decide').value.trim(),link:safeUrl(F('link').value.trim()),
     reg:{s:F('regs').value,t:F('regt').value.trim(),open:F('open').value||'',openApprox:F('openApprox').checked},
     price:{now:F('price').value.trim(),entry:num(F('entry').value),ref:F('ref').value.trim(),warn:F('warn').value.trim(),ups},
-    lodge:{need:F('need').checked,t:F('lodge').value.trim(),trip:num(F('trip').value),tripT:F('tript').value.trim()},
+    lodge:{need:F('need').checked,t:F('lodge').value.trim(),trip:num(F('trip').value),tripT:F('tript').value.trim(),where:F('where').value.trim(),in:F('in').value||'',out:F('out').value||''},
     prep:{w:num(F('w').value),from:F('from').value||'',to:F('to').value||'',t:F('prep').value.trim()},
-    short:old?old.short:'',by:meName(),at:new Date().toISOString().slice(0,10)};
+    short:old?old.short:'',by:meName(),at:new Date().toISOString().slice(0,10),retired:old?old.retired:false,retiredBy:old?old.retiredBy:''};
   const id=editing||('p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6));
   $('saveRace').disabled=true;
   try{await write('races/'+id,data);$('raceDlg').close();toast(editing?'Prova atualizada.':'Prova adicionada.')}
@@ -611,7 +665,7 @@ function openLodgeForm(raceId,l){
   $('lodgeTitle').textContent=l?'Editar alojamento':'Propor alojamento';
   $('lodgeSub').textContent=r?`${r.name} · ${fmtFull(P(r.date))}`:'';
   L('name').value=l?l.name:''; L('type').value=l&&l.type?l.type:'Hotel'; L('area').value=l?l.area:''; L('dist').value=l?l.dist:'';
-  L('price').value=l&&l.price?l.price:''; L('cap').value=l?l.cap:3; L('nights').value=l?l.nights:1; L('pnote').value=l?l.pnote:''; L('link').value=l?l.link:''; L('notes').value=l?l.notes:'';
+  L('price').value=l&&l.price?l.price:''; L('cap').value=l?l.cap:3; L('nights').value=l?l.nights:1; L('pnote').value=l?l.pnote:''; L('rating').value=l?l.rating:''; L('room').value=l?l.room:''; L('link').value=l?l.link:''; L('notes').value=l?l.notes:'';
   $('delLodge').style.display=l?'':'none'; $('delLodge').classList.remove('armed'); $('delLodge').textContent='Apagar';
   $('lodgeErr').textContent=''; $('lodgeDlg').showModal(); L('name').focus();
 }
@@ -620,7 +674,7 @@ $('lodgeForm').addEventListener('submit',async e=>{
   const name=L('name').value.trim(); if(!name){$('lodgeErr').textContent='Falta o nome.';return}
   const old=editingLodge?lodges.find(x=>x.id===editingLodge):null;
   const data={raceId:lodgeRace,name,type:L('type').value,area:L('area').value.trim(),dist:L('dist').value.trim(),price:num(L('price').value),cap:num(L('cap').value)||3,nights:num(L('nights').value)||1,
-    pnote:L('pnote').value.trim(),link:safeUrl(L('link').value.trim()),notes:L('notes').value.trim(),votes:old?{...old.votes}:{miguel:false,nuno:false,rita:false},picked:old?old.picked:false,by:old?old.by:meName()};
+    rating:L('rating').value.trim(),room:L('room').value.trim(),pnote:L('pnote').value.trim(),link:safeUrl(L('link').value.trim()),notes:L('notes').value.trim(),votes:old?{...old.votes}:{miguel:false,nuno:false,rita:false},picked:old?old.picked:false,by:old?old.by:meName()};
   const id=editingLodge||('a'+Date.now().toString(36)+Math.random().toString(36).slice(2,6));
   try{await write('alojamentos/'+id,data);$('lodgeDlg').close();openLodge=lodgeRace;renderRows();toast(old?'Alojamento atualizado.':'Alojamento proposto.')}
   catch(err){$('lodgeErr').textContent=writeErr(err)}
@@ -642,7 +696,8 @@ async function init(){
   const fail=()=>{clearTimeout(timer);setSync(false,'Ligação perdida. Recarrega a página.')};
   let s1=false,s2=false,s3=false;
   db.collection('races').onSnapshot(snap=>{
-    races=snap.docs.map(x=>normRace(x.id,x.data())).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.name.localeCompare(b.name));
+    allRaces=snap.docs.map(x=>normRace(x.id,x.data())).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.name.localeCompare(b.name));
+    races=allRaces.filter(r=>!r.retired);
     renderAll(); if(!snap.metadata.fromCache&&!s1){s1=true;ready()}
   },fail);
   db.collection('presencas').onSnapshot(snap=>{
