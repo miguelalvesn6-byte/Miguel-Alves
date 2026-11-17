@@ -11,6 +11,15 @@
   const IDS = [
     "agachamento-goblet",
     "peso-morto-romeno",
+    "split-squat-bulgaro",
+    "remada-haltere",
+    "flexoes",
+    "pallof",
+    "prancha-lateral",
+    "hip-thrust",
+    "flexor-anca",
+    "step-up",
+    "prancha-frontal",
   ];
   if (typeof EXERCICIOS === "undefined") return;
   const pasta = "../treino-fisico/videos-ia/";
