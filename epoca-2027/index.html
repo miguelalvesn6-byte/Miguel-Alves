@@ -9,31 +9,19 @@
 <style>
 /* Layout: agenda limpa — lista de provas por mês (data, nome, nível, quem vai); o detalhe abre num painel lateral. */
 :root{
-  --page:#f2f4f7; --bg:#ffffff; --soft:#f4f5f8; --line:#e7e9ee; --line2:#d9dde4;
-  --ink:#12151a; --ink2:#3b414b; --muted:#737b88;
-  --A:#e0492b; --A-soft:#fdece7; --B:#2b67d9; --B-soft:#e9effc; --C:#8b94a3; --C-soft:#eff1f4;
-  --ok:#17804a; --ok-soft:#e3f4ea; --warn:#a96400; --warn-soft:#fdf1dc; --bad:#c4321f; --bad-soft:#fde8e4;
+  /* um só tema, o da faixa da época: azul-noite com painéis translúcidos */
+  --page:#0d1b2a; --bg:#132437; --soft:#1a2c42; --line:#22364d; --line2:#2d455f;
+  --ink:#eef3f9; --ink2:#c3cfdd; --muted:#8597ad;
+  --A:#ff6a4d; --A-soft:#3a2530; --B:#5b9cff; --B-soft:#1c3352; --C:#a7b4c6; --C-soft:#24364b;
+  --ok:#3ccf86; --ok-soft:#153a2f; --warn:#f5b54a; --warn-soft:#382f22; --bad:#ff6a5a; --bad-soft:#3d2229;
+  --glass:rgba(255,255,255,.04); --glass-line:rgba(255,255,255,.09);
   --font:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --shadow:0 1px 2px rgba(16,22,30,.06),0 8px 28px rgba(16,22,30,.08);
-  color-scheme:light;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 18px 48px rgba(0,0,0,.45);
+  color-scheme:dark;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --page:#0b0e12; --bg:#13171d; --soft:#1a1f26; --line:#242a32; --line2:#2f3640;
-  --ink:#eef1f5; --ink2:#c4cad3; --muted:#8c95a3;
-  --A:#ff7a5c; --A-soft:#3a1d16; --B:#7aa5ff; --B-soft:#192640; --C:#9aa3b1; --C-soft:#20262e;
-  --ok:#4fcf8b; --ok-soft:#14301f; --warn:#f0b450; --warn-soft:#352812; --bad:#ff7d6b; --bad-soft:#3b1a16;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 32px rgba(0,0,0,.45);
-  color-scheme:dark}}
-:root[data-theme="dark"]{
-  --page:#0b0e12; --bg:#13171d; --soft:#1a1f26; --line:#242a32; --line2:#2f3640;
-  --ink:#eef1f5; --ink2:#c4cad3; --muted:#8c95a3;
-  --A:#ff7a5c; --A-soft:#3a1d16; --B:#7aa5ff; --B-soft:#192640; --C:#9aa3b1; --C-soft:#20262e;
-  --ok:#4fcf8b; --ok-soft:#14301f; --warn:#f0b450; --warn-soft:#352812; --bad:#ff7d6b; --bad-soft:#3b1a16;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 32px rgba(0,0,0,.45);
-  color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--page);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+body{background:var(--page);background-image:radial-gradient(1200px 500px at 85% -5%,rgba(91,156,255,.16),transparent 60%),radial-gradient(1000px 600px at -10% 40%,rgba(255,106,77,.07),transparent 60%);background-attachment:fixed;color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 a{color:inherit}
@@ -42,7 +30,7 @@ a{color:inherit}
 .muted{color:var(--muted)}
 
 /* faixa da época (topo escuro) */
-.band{background:#0d1b2a;color:#e9eef5;background-image:radial-gradient(1200px 400px at 85% -10%,rgba(91,156,255,.18),transparent 60%),radial-gradient(900px 380px at 0% 120%,rgba(255,106,77,.12),transparent 60%)}
+.band{color:#e9eef5}
 .band-in{max-width:1180px;margin:0 auto;padding:30px 24px 26px}
 .band .eyebrow{color:#93a4ba}
 .band h1{color:#fff}
@@ -308,6 +296,41 @@ dialog::backdrop{background:rgba(10,14,20,.45)}
 .foot .r{display:flex;gap:8px}
 .err{color:var(--bad);font-size:.86rem;font-weight:600;min-height:1.2em;margin-top:10px}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:.9rem;font-weight:600;display:none;z-index:60;max-width:90vw;box-shadow:var(--shadow)}
+
+/* tema único: tudo no estilo da faixa */
+.card,.listcard,.todo-card{background:var(--glass)!important;border:1px solid var(--glass-line)!important;box-shadow:none!important;border-radius:18px}
+.wrap{padding-top:8px}
+.btn{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);color:var(--ink)}
+.btn:hover{background:rgba(255,255,255,.12)}
+.btn.primary{background:#fff;border-color:#fff;color:#0d1b2a;font-weight:700}
+.btn.primary:hover{background:#e6edf6;opacity:1}
+.btn.ghost{background:transparent;border-color:transparent}
+.chip{color:var(--muted)}
+.chip[aria-pressed="true"]{background:#fff;color:#0d1b2a}
+.race{border-top-color:var(--glass-line)}
+.race:hover,.race.sel{background:rgba(255,255,255,.05)}
+.tier.A i{background:var(--A);color:#fff}
+.av{border-color:#3a526d}
+.av[data-s="inscrito"]{background:var(--ok);color:#0d1b2a}
+.av[data-s="nao"]{background:rgba(255,255,255,.04);color:#4b6178}
+.av.isme{box-shadow:0 0 0 2px var(--page),0 0 0 3.5px #fff}
+.mine .row,.todo li{border-color:var(--glass-line)}
+.drawer{background:#0f1f30;border-left:1px solid var(--glass-line)}
+.dh,.blk{border-color:var(--glass-line)}
+.pbtn{background:var(--glass);border-color:var(--glass-line)}
+.lc{background:var(--glass);border-color:var(--glass-line)}
+.vote{background:transparent;border-color:var(--glass-line)}
+.note{background:rgba(255,255,255,.06)}
+.prepbar{background:rgba(255,255,255,.08)} .prepbar i{background:linear-gradient(90deg,var(--B),var(--A))}
+dialog{background:#11223a;border:1px solid var(--glass-line)}
+.fg input,.fg select,.fg textarea,.uprow input{background:#0c192a;border-color:var(--line2);color:var(--ink)}
+.xbtn,.xbtn2{background:rgba(255,255,255,.08);color:var(--ink)}
+#expDlg .opt{border-color:var(--glass-line)} #expDlg .how{background:rgba(255,255,255,.05)}
+.toast{background:#fff;color:#0d1b2a}
+.scrim{background:rgba(3,8,14,.55)}
+details.ret{border-color:var(--glass-line)}
+.retl li{border-color:var(--glass-line)}
+.dot.on{box-shadow:0 0 0 3px rgba(60,207,134,.18)}
 </style>
 </head>
 <body>
