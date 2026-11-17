@@ -226,7 +226,7 @@
     const base = (window.EXERCICIOS_BASE || []).map((e) => ({
       id: e.id, nome: e.nome, nome_en: e.nomeEn || "", categoria: e.categoria, material: e.material,
       disciplinas: e.disciplinas, musculos: e.musculos, execucao: e.execucao, erros: e.erros,
-      regressao: e.regressao, progressao: e.progressao, dose: e.dose, video: e.video || "", videoIA: e.videoIA || ""
+      regressao: e.regressao, progressao: e.progressao, dose: e.dose, video: e.video || ""
     }));
     const porId = new Map(base.map((e) => [e.id, e]));
     ex.data.forEach((e) => {
@@ -914,13 +914,6 @@
   // Blocos de uma sessão (usado no treino e nos modelos)
   // ======================================================================
   const ICO_PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true" class="ico"><circle cx="12" cy="12" r="9.5"/><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none"/></svg>';
-  // Vídeo curto com pessoa gerada por IA (treino-fisico/videos-ia.js): loop, sem som.
-  // Com "reduzir movimento" ativo não arranca sozinho — mostra o primeiro fotograma e os controlos.
-  const MENOS_MOVIMENTO = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function htmlVideoIA(e, classe) {
-    const auto = MENOS_MOVIMENTO ? ' controls preload="metadata"' : ' autoplay preload="auto"';
-    return `<video class="${classe}" src="${esc(e.videoIA)}#t=0.1" muted loop playsinline${auto} aria-label="Demonstração: ${esc(e.nome)}"></video>`;
-  }
   const ICO_RELOGIO = '<svg viewBox="0 0 24 24" aria-hidden="true" class="ico"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 2M9.5 3h5"/></svg>';
 
   function cabBloco(b, bi) {
@@ -970,7 +963,7 @@
       const c = cabBloco(b, bi);
       const rel = relogioDoBloco(b);
       const nItens = (b.itens || []).length;
-      const comVideo = (b.itens || []).some((i) => est.exPorId[i.ex] && (est.exPorId[i.ex].video || est.exPorId[i.ex].videoIA));
+      const comVideo = (b.itens || []).some((i) => est.exPorId[i.ex] && est.exPorId[i.ex].video);
       return `
       <section class="bloco${rel ? " bloco-relogio" : ""}" id="bloco-${bi + 1}">
         <header class="bloco-cab">
@@ -992,9 +985,7 @@
             const partes = pd.resto.split(/\s+·\s+/);
             const [dose, extra] = partirDose(partes[0]);
             const extras = [extra, ...partes.slice(1)].filter(Boolean);
-            const video = e && e.videoIA
-              ? `<a class="passo-mini" href="#ex-${esc(e.id)}" aria-label="Ver demonstração: ${esc(e.nome)}">${htmlVideoIA(e, "mini-ia")}</a>`
-              : e && e.video ? `<a class="passo-video" href="${esc(e.video)}" target="_blank" rel="noopener" aria-label="Ver vídeo: ${esc(e.nome)}">${ICO_PLAY}</a>` : (comVideo ? "<span></span>" : "");
+            const video = e && e.video ? `<a class="passo-video" href="${esc(e.video)}" target="_blank" rel="noopener" aria-label="Ver vídeo: ${esc(e.nome)}">${ICO_PLAY}</a>` : (comVideo ? "<span></span>" : "");
             return `<li class="passo${e ? " com-link" : ""}"><span class="n">${n}</span><div class="passo-txt">${nome}${tags ? `<span class="tags-ex">${tags}</span>` : ""}${nota}</div><div class="dose"><span class="dose-v">${esc(dose)}</span>${extras.map((x) => `<small>${esc(x)}</small>`).join("")}${descanso}</div>${video}</li>`;
           }).join("")}
         </ol>
@@ -2755,9 +2746,8 @@
             <div><dt>Dose habitual</dt><dd class="dose-grande">${esc(e.dose)}</dd></div>
             <div><dt>Material</dt><dd>${(e.material || []).map((m) => MATERIAIS[m] || m).join(", ")}</dd></div>
           </dl>
-          ${e.videoIA ? `<figure class="video-ia">${htmlVideoIA(e, "video-ia-v")}<figcaption>Pessoa gerada por IA</figcaption></figure>` : ""}
           <div class="acoes">
-            <a class="btn ${e.videoIA ? "" : "primario"}" href="${esc(video.href)}" target="_blank" rel="noopener">${e.videoIA && e.video ? "Vídeo explicativo" : video.texto} ↗</a>
+            <a class="btn primario" href="${esc(video.href)}" target="_blank" rel="noopener">${video.texto} ↗</a>
           </div>
         </div>
         <div class="secao-ex"><h3>Execução</h3><ol class="execucao">${(e.execucao || []).map((p) => `<li>${esc(p)}</li>`).join("")}</ol></div>
@@ -3049,15 +3039,6 @@
   }, true);
 
   window.addEventListener("hashchange", rota);
-
-  // Se o ficheiro do vídeo IA ainda não existir (ou falhar), esconde-o em vez de mostrar uma caixa vazia.
-  document.addEventListener("error", (ev) => {
-    const v = ev.target;
-    if (v && v.tagName === "VIDEO" && (v.classList.contains("mini-ia") || v.classList.contains("video-ia-v"))) {
-      const caixa = v.closest(".passo-mini, .video-ia");
-      if (caixa) caixa.hidden = true;
-    }
-  }, true);
 
   // ======================================================================
   // Arranque
