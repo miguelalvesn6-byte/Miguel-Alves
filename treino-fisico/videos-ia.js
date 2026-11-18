@@ -15,6 +15,8 @@
     "prancha-lateral",
     "flexor-anca",
     "prancha-frontal",
+    "copenhagen",
+    "step-up",
   ];
   if (typeof EXERCICIOS === "undefined") return;
   const pasta = "../treino-fisico/videos-ia/";
