@@ -17,6 +17,12 @@
     "prancha-frontal",
     "copenhagen",
     "step-up",
+    "flexoes",
+    "split-squat-bulgaro",
+    "pallof",
+    "ponte-unilateral",
+    "rotacao-toracica",
+    "pulldown-bracos-estendidos",
   ];
   if (typeof EXERCICIOS === "undefined") return;
   const pasta = "../treino-fisico/videos-ia/";
