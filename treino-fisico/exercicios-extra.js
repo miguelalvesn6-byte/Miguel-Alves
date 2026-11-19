@@ -654,6 +654,12 @@
   ex("sandbag-clean", "Sandbag ao ombro (clean)", "sandbag to shoulder", "forca", ["ginasio"], "NCR", "Glúteos, isquiotibiais, costas, core",
     ["Saco no chão entre os pés, agarra-o por baixo.", "Levanta até às coxas (como um peso morto), ajeita-o no colo e explode com a anca para o pôr ao ombro.", "Pousa controlado e alterna o ombro."],
     ["Puxar só com os braços e as costas arredondadas", "Saco longe do corpo"], "Saco mais leve ou kettlebell swing.", "Saco mais pesado.", "5–8 reps");
+  ex("floor-press", "Floor press com halteres", "dumbbell floor press", "forca", ["halteres"], "NCR", "Peitoral, tríceps, ombros",
+    ["Deitado no chão, joelhos fletidos e pés apoiados, halteres por cima do peito.", "Desce com os cotovelos a ≈45° do tronco até os braços tocarem no chão.", "Pausa curta e empurra até esticar os braços."],
+    ["Cotovelos abertos a 90°", "Ressaltar os cotovelos no chão", "Lombar a arquear"], "Halteres mais leves.", "Halteres mais pesados ou barra.", "3 × 10");
+  ex("wall-walk", "Wall walk (subir a parede)", "wall walk", "core", ["peso-corporal"], "NCR", "Ombros, tríceps, core",
+    ["Começa em prancha com os pés junto à parede.", "Sobe os pés pela parede enquanto as mãos recuam até o peito ficar perto da parede.", "Desce com controlo pelo mesmo caminho, mãos à frente e pés a descer."],
+    ["Lombar a arquear (costelas abertas)", "Descer de repente", "Cabeça a cair entre os braços"], "Subir só até meio da parede.", "Tocar no peito na parede e pausa de 3 s.", "3 × 3");
   ex("burpee", "Burpee", "burpee", "forca", ["peso-corporal"], "CR", "Peitoral, ombros, pernas, core",
     ["Mãos no chão, pés para trás até à prancha.", "Peito ao chão (ou flexão) e volta à prancha.", "Pés à frente debaixo do corpo, levanta-te e salta com as mãos acima da cabeça."],
     ["Lombar a cair na prancha", "Aterrar pesado"], "Sem salto e sem peito ao chão.", "Burpee com salto à caixa.", "8–12 reps");

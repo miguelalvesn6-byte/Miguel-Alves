@@ -193,27 +193,27 @@
     ]);
 
   S(3, "B", "8",
-    "Intensificação: peso morto em triplas a ≈85% com GHD, pliometria horizontal e unilateral (skipping em comprimento, zigue-zague, bounds máximos, triplo salto) com salto com trap bar, e rondas de 3 min com air bike, arranco e sandbag.",
-    "Tripla a RPE ≤7 → +5–10 kg; RPE 9 → −5%. Reset em cada repetição do peso morto. Bounds máximos com 3 passos de balanço: a distância conta, mas o contacto continua curto.",
-    170,
+    "Intensificação simples: pliometria com saltos e drop jumps (cai da caixa e salta logo do chão), peso morto pesado em 3 × 3 com GHD 3 × 12, e 4 rondas de corpo inteiro com SkiErg, sandbag, burpees com salto, floor press e wall walks.",
+    "Peso morto: rampa até à carga de trabalho e depois 3 × 3 pesado (RPE 8; reset em cada repetição). Drop jump: deixa-te cair da caixa (não saltes dela) e sai do chão o mais rápido possível. Os 40 burpees com salto em comprimento do condicionamento são contactos extra.",
+    116,
     [
       b(1, "Aquecimento", 5, AQUEC_B),
-      b(2, "Pliometria", 20, [
-        i("pogo-frente", "2 × 20 (≈15 m)", "30 s", EL("rigidez do tornozelo a avançar com o pé debaixo da anca (primer)")),
-        i("skipping-distancia", "2 × 8 skips (≈25 m)", "45 s (volta a andar)", EL("impulso horizontal da anca com aterragem ativa debaixo do corpo")),
-        i("saltos-zigzag", "3 × 6/perna", "45 s", EL("reatividade unilateral com mudança de direção e anca estável")),
-        i("multisaltos", "4 × 8 apoios (3 passos de balanço, distância máxima)", "75 s (volta a andar)", MAX("potência horizontal alternada com o pé a aterrar debaixo da anca")),
-        i("triplo-salto", "3 × 1/perna", "60 s", MAX("potência unilateral horizontal (hops para distância)")),
-        i("salto-trap-bar", "3 × 4 @ 20–25% 1RM", "75 s", POT("potência com carga (força-velocidade)"))
+      b(2, "Pliometria", 14, [
+        i("pogo", "3 × 20", "30 s", EL("rigidez do tornozelo e contacto curto (primer)")),
+        i("salto-contramovimento", "3 × 5", "45 s", MAX("potência vertical com aterragem estável")),
+        i("salto-comprimento", "3 × 3", "60 s", MAX("potência horizontal da anca com aterragem fixa")),
+        i("drop-jump", "4 × 4 (caixa de 30–40 cm: cai e salta logo do chão)", "60 s", MAX("força reativa: contacto curto e salto máximo depois da queda"))
       ]),
-      b(3, "Força", 18, [
-        i("peso-morto", "voltas 1–3 rampa (50% × 5, 65% × 3, 75% × 2) · voltas 4–9: 3 reps a ≈82–85% (RPE 8)", "resto do minuto", OBJ("força máxima de extensão da anca")),
-        i("ghd-abdominais", "14 reps", "resto do minuto", OBJ("força dos flexores da anca e do abdómen"))
+      b(3, "Força", 15, [
+        i("peso-morto", "rampa (50% × 5, 65% × 3, 75% × 2) · depois 3 × 3 pesado a ≈85–88% (RPE 8)", "2–3 min (o GHD entra no descanso)", OBJ("força máxima de extensão da anca")),
+        i("ghd-abdominais", "3 × 12", "logo a seguir ao peso morto", OBJ("força dos flexores da anca e do abdómen"))
       ]),
-      b(4, "Condicionamento", 15, [
-        i("air-bike", "10/8 cal", "—", OBJ("motor de pernas e braços")),
-        i("haltere-snatch", "6 alternados (20–22,5 kg)", "—", OBJ("potência da anca até acima da cabeça")),
-        i("sandbag-carry", "30 m", "resto dos 3 min", OBJ("rigidez do tronco com carga em abraço"))
+      b(4, "Condicionamento", 20, [
+        i("ski-erg", "15 cal", "—", OBJ("motor de corpo inteiro")),
+        i("sandbag-carry", "40 m", "—", OBJ("rigidez do tronco com carga em abraço")),
+        i("burpee-salto-comprimento", "10 reps", "—", OBJ("potência horizontal de pernas sob fadiga")),
+        i("floor-press", "10 reps (2 halteres, carga moderada)", "—", OBJ("força de empurrar horizontal")),
+        i("wall-walk", "3 reps", "fim da ronda", OBJ("força dos ombros e rigidez do tronco em pino"))
       ])
     ]);
 
@@ -382,7 +382,7 @@
     semanas: [
       { n: 1, foco: "Acumulação e técnica", notas: "E2MOM 16: búlgaro + GHD (A) e peso morto ≈70% + GHD (B). Pliometria técnica e de volume baixo-intensidade (tornozelos, pogo, pogo a uma perna, skipping em altura, tesouras) + testes: CMJ, triplo salto por perna e scoop (A), salto em comprimento e 5 bounds (B) (170 + 161 contactos). Peça de referência (A) e EMOM 16 (B)." },
       { n: 2, foco: "Acumulação (mais carga)", notas: "E2MOM 16: búlgaro com barra pesado (4/perna) + GHD (A) e búlgaro com barra + GHD (B). Pliometria com o maior volume do bloco: pogo lateral, hurdle hops a 30 cm, pogo a uma perna a avançar, caixa contínua + lançamento rotacional (A); skipping em comprimento, tesouras, patinador, bounds a 80% + step-up explosivo (B) (180 + 198 contactos). AMRAP 3 × 4 min (A) e E2MOM 16 (B)." },
-      { n: 3, foco: "Intensificação", notas: "E2MOM 18: triplas a ≈85% no agachamento (+ GHD) e no peso morto (+ GHD). Pliometria intensificada: hurdle hops a 40 cm e a uma perna, depth jump para caixa, caixa unipodal + salto carregado (A); zigue-zague, bounds máximos de 8 apoios, triplo salto + trap bar (B) (148 + 170 contactos). Chipper (A) e 5 rondas de 3 min (B)." },
+      { n: 3, foco: "Intensificação", notas: "Agachamento em triplas a ≈85% em E2MOM 18 (+ GHD) (A); peso morto 3 × 3 pesado + GHD 3 × 12 (B). Pliometria intensificada: hurdle hops a 40 cm e a uma perna, depth jump para caixa, caixa unipodal + salto carregado (A); pogo, CMJ, salto em comprimento e drop jumps (B) (148 + 116 contactos). Chipper (A) e 4 rondas com SkiErg, sandbag, burpees com salto, floor press e wall walks (B)." },
       { n: 4, foco: "Intensificação + entrada da potência", notas: "E2MOM 18: agachamento 85–87% (+ GHD) e peso morto 87–88% (+ GHD). Pliometria mais reativa e unilateral: hurdle hops a 45–50 cm e a uma perna (20 cm), drop jump (RSI), 4 caixas em série + step-up explosivo (A); skipping máximo, patinador contínuo, bounds de 10 apoios, triplo salto + trap bar (B) (141 + 149 contactos); swings pesados no condicionamento. EMOM 16 (A) e densidade 2 × 7 min (B)." },
       { n: 5, foco: "Pico de expressão de potência", notas: "E2MOM 16 pesado-leve: agachamento (A) e búlgaro com barra (B). Pliometria de pico, poucos saltos máximos com recuperação completa: hurdle hops a 50–60 cm, drop jump a uma perna, depth jump de 40 cm + lançamento para trás de 6 kg (A); bounds máximos medidos, depth jump para comprimento, triplo salto + trap bar a 30–35% (B) (127 + 111 contactos, só 57 e 48 máximos). Intervalos 6 × 30 s (A) e 3 rondas explosivas (B)." },
       { n: 6, foco: "Descarga + testes", notas: "E3MOM 15 com tripla de teste (RPE 9) → 1RM estimado. Pliometria de descarga (92 + 80 contactos): teste 10/5 e reteste do CMJ, do triplo salto e do scoop (A); teste RSI no drop jump e reteste do comprimento e dos 5 bounds (B). Reteste da peça de referência e dos wall balls (A); AMRAP leve (B)." }
@@ -449,9 +449,9 @@
     },
     "off-s3-dia2": {
       Aquecimento: AQ_B,
-      Pliometria: "20 min · 17 séries · elástico 30–45 s · máximo 60–75 s · potência 75 s · 170 contactos",
-      "Força": "E2MOM 18 min · 9 voltas · min ímpar peso morto, min par GHD · voltas 1–3 rampa",
-      Condicionamento: "5 rondas de 3 min · air bike → arranco → sandbag · trabalho ≈2 min + descanso até fechar a janela"
+      Pliometria: "14 min · 13 séries · elástico 30 s · máximo 45–60 s · 116 contactos",
+      "Força": "Rampa + 3 séries · peso morto 3 reps pesado + GHD 12 reps · 2–3 min entre séries",
+      Condicionamento: "4 rondas por tempo · SkiErg → sandbag → burpees com salto → floor press → wall walks · limite 22 min"
     },
     "off-s4-dia1": {
       Aquecimento: AQ_A,

@@ -233,6 +233,8 @@
     "skipping-distancia": "https://www.youtube.com/watch?v=mMuA8wHXlfM", // "Power Skip for Distance" — NEMO Fitness
     "lancamento-medicinal-tras": "https://www.youtube.com/watch?v=b05ny1i308Y", // "Medicine Ball Throw — Overhead Backward" — Brendan Thompson | Speed Coach, DPT
     "step-up-explosivo": "https://www.youtube.com/watch?v=_KYXIeUatqk", // "Reactive Step Up Jump to Knee Drive" — Theory of Motion Exercise Library
+    "floor-press": "https://www.youtube.com/watch?v=jjlekYs1cfQ", // "Dumbbell Floor Press - OPEX Exercise Library" — OPEX Fitness
+    "wall-walk": "https://www.youtube.com/watch?v=XjK1DrZg1Zc", // "How to Perform a Wall Walk" — BPM
   };
   if (typeof EXERCICIOS === 'undefined') return;
   EXERCICIOS.forEach(e => { if (V[e.id] && !e.video) e.video = V[e.id]; });
