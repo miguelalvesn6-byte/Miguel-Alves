@@ -193,14 +193,14 @@
     ]);
 
   S(3, "B", "8",
-    "Intensificação simples: pliometria com saltos e drop jumps (cai da caixa e salta logo do chão), peso morto pesado em 3 × 3 com GHD 3 × 12, e 4 rondas de corpo inteiro com SkiErg, sandbag, burpees com salto, floor press e wall walks.",
+    "Intensificação simples: pliometria com saltos (incluindo salto à caixa com extensão completa) e drop jumps (cai da caixa e salta logo do chão), peso morto pesado em 3 × 3 com GHD 3 × 12, e 4 rondas de corpo inteiro com SkiErg, sandbag, afundos com sandbag, burpees com salto, floor press e wall walks.",
     "Peso morto: rampa até à carga de trabalho e depois 3 × 3 pesado (RPE 8; reset em cada repetição). Drop jump: deixa-te cair da caixa (não saltes dela) e sai do chão o mais rápido possível. Os 40 burpees com salto em comprimento do condicionamento são contactos extra.",
     116,
     [
       b(1, "Aquecimento", 5, AQUEC_B),
       b(2, "Pliometria", 14, [
         i("pogo", "3 × 20", "30 s", EL("rigidez do tornozelo e contacto curto (primer)")),
-        i("salto-contramovimento", "3 × 5", "45 s", MAX("potência vertical com aterragem estável")),
+        i("salto-caixa", "3 × 5 (caixa de 50–60 cm: aterra e estende por completo joelhos e anca em cima da caixa; desce a andar)", "45 s", MAX("potência vertical com extensão completa de joelho e anca")),
         i("salto-comprimento", "3 × 3", "60 s", MAX("potência horizontal da anca com aterragem fixa")),
         i("drop-jump", "4 × 4 (caixa de 30–40 cm: cai e salta logo do chão)", "60 s", MAX("força reativa: contacto curto e salto máximo depois da queda"))
       ]),
@@ -211,6 +211,7 @@
       b(4, "Condicionamento", 20, [
         i("ski-erg", "15 cal", "—", OBJ("motor de corpo inteiro")),
         i("sandbag-carry", "40 m", "—", OBJ("rigidez do tronco com carga em abraço")),
+        i("afundo-andar", "10 reps com sandbag ao ombro ou em abraço", "—", OBJ("força unilateral de pernas sob carga")),
         i("burpee-salto-comprimento", "10 reps", "—", OBJ("potência horizontal de pernas sob fadiga")),
         i("floor-press", "10 reps (2 halteres, carga moderada)", "—", OBJ("força de empurrar horizontal")),
         i("wall-walk", "3 reps", "fim da ronda", OBJ("força dos ombros e rigidez do tronco em pino"))
@@ -451,7 +452,7 @@
       Aquecimento: AQ_B,
       Pliometria: "14 min · 13 séries · elástico 30 s · máximo 45–60 s · 116 contactos",
       "Força": "Rampa + 3 séries · peso morto 3 reps pesado + GHD 12 reps · 2–3 min entre séries",
-      Condicionamento: "4 rondas por tempo · SkiErg → sandbag → burpees com salto → floor press → wall walks · limite 22 min"
+      Condicionamento: "4 rondas por tempo · SkiErg → sandbag → afundos com sandbag → burpees com salto → floor press → wall walks · limite 22 min"
     },
     "off-s4-dia1": {
       Aquecimento: AQ_A,
