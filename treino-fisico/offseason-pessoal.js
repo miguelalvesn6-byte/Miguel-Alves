@@ -246,7 +246,7 @@
     ]);
 
   S(4, "B", "8–8,5",
-    "Intensificação: peso morto em duplas a 87–88% com GHD, pliometria com pogo, patinador e salto em comprimento, com salto de agachamento com halteres, e 5 rondas com SkiErg, afundos com sandbag, handstand push-ups, elevações, box jump overs e swings.",
+    "Intensificação: peso morto em duplas a 87–88% com GHD, pliometria com pogo, patinador e salto em comprimento, com salto de agachamento com halteres, e 5 rondas com SkiErg, afundos com sandbag, push press, elevações, box jump overs e swings.",
     "Salto de agachamento com halteres: carga leve, cada salto à altura máxima; para se a altura cair. Condicionamento: ritmo que consigas manter nas 5 rondas.",
     117,
     [
@@ -264,7 +264,7 @@
       b(4, "Condicionamento", 25, [
         i("ski-erg", "15 cal", "—", OBJ("motor de corpo inteiro")),
         i("afundo-andar", "12 reps (6/perna) com sandbag ao ombro ou em abraço", "—", OBJ("força unilateral de pernas sob carga")),
-        i("handstand-push-up", "5–6 reps", "—", OBJ("força de empurrar vertical e rigidez do tronco")),
+        i("push-press", "10 reps (40 kg)", "—", OBJ("força de empurrar vertical com impulso das pernas")),
         i("elevacoes", "6 reps", "—", OBJ("força de puxar vertical")),
         i("box-jump-over", "12 reps (caixa de 50–60 cm)", "—", OBJ("potência de pernas repetida sob fadiga")),
         i("kettlebell-swing", "10 reps (24–32 kg)", "fim da ronda", OBJ("potência da extensão da anca"))
@@ -464,7 +464,7 @@
       Aquecimento: AQ_B,
       Pliometria: "15 min · 13 séries · elástico 30–45 s · máximo 60 s · potência 60 s · 117 contactos",
       "Força": "E2MOM 18 min · 9 voltas · min ímpar peso morto, min par GHD · voltas 1–3 rampa",
-      Condicionamento: "5 rondas por tempo · SkiErg → afundos com sandbag → handstand push-ups → elevações → box jump overs → swings · limite 25 min"
+      Condicionamento: "5 rondas por tempo · SkiErg → afundos com sandbag → push press → elevações → box jump overs → swings · limite 25 min"
     },
     "off-s5-dia1": {
       Aquecimento: AQ_A,

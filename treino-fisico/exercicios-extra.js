@@ -666,6 +666,9 @@
   ex("box-jump-over", "Box jump over (saltar por cima da caixa)", "box jump over", "pliometria", ["ginasio"], "CR", "Pernas, gémeos, motor",
     ["Em frente a uma caixa de 50–60 cm.", "Salta para cima da caixa (ou por cima dela, sem a tocar) e passa para o outro lado.", "Vira-te e repete na direção contrária; cada passagem conta 1 rep."],
     ["Aterrar pesado do outro lado", "Joelhos a cair para dentro", "Prender o pé na caixa por cansaço"], "Caixa mais baixa ou subir e descer a andar do outro lado.", "Saltar por cima sem tocar na caixa.", "12 reps");
+  ex("push-press", "Push press com barra", "barbell push press", "forca", ["barra"], "CR", "Ombros, tríceps, pernas (transferência)",
+    ["Barra apoiada nos ombros, pegada um pouco mais aberta que os ombros, cotovelos ligeiramente à frente.", "Flete um pouco os joelhos com o tronco direito e estende logo as pernas com força.", "Aproveita o impulso para empurrar a barra até esticar os braços por cima da cabeça, com a cabeça a passar para a frente."],
+    ["Dobrar os joelhos demasiado (vira agachamento)", "Lombar a arquear no fim", "Barra a ir para a frente da cara"], "Push press com halteres ou carga mais leve.", "Mais carga ou push jerk.", "3 × 5");
   ex("burpee", "Burpee", "burpee", "forca", ["peso-corporal"], "CR", "Peitoral, ombros, pernas, core",
     ["Mãos no chão, pés para trás até à prancha.", "Peito ao chão (ou flexão) e volta à prancha.", "Pés à frente debaixo do corpo, levanta-te e salta com as mãos acima da cabeça."],
     ["Lombar a cair na prancha", "Aterrar pesado"], "Sem salto e sem peito ao chão.", "Burpee com salto à caixa.", "8–12 reps");
