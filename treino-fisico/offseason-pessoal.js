@@ -246,18 +246,18 @@
     ]);
 
   S(4, "B", "8–8,5",
-    "Intensificação: peso morto em duplas a 87–88% com GHD, pliometria horizontal (skipping em comprimento máximo, patinador contínuo, bounds máximos de 10 apoios, triplo salto) com salto com trap bar, e densidade com remo, búlgaros, flexões e swings pesados.",
-    "Salto com trap bar com 25–30% do 1RM do peso morto: altura máxima. Swings com 32 kg, cada repetição explosiva. Densidade: o mesmo número de voltas nos 2 blocos.",
-    149,
+    "Intensificação: peso morto em duplas a 87–88% com GHD, pliometria com pogo, skipping, patinador, salto em comprimento e 20 saltos à caixa, com lançamento de bola medicinal para a frente, e densidade com remo, búlgaros, flexões e swings pesados.",
+    "Saltos à caixa: aterra e estende por completo joelhos e anca em cima da caixa e desce a andar. Lançamento de bola medicinal: distância máxima. Swings com 32 kg, cada repetição explosiva. Densidade: o mesmo número de voltas nos 2 blocos.",
+    152,
     [
       b(1, "Aquecimento", 5, AQUEC_B),
-      b(2, "Pliometria", 20, [
-        i("pogo-frente", "2 × 15 (≈12 m)", "30 s", EL("rigidez do tornozelo a avançar com o pé debaixo da anca (primer)")),
-        i("skipping-distancia", "2 × 8 skips máximos (≈25–30 m)", "60 s (volta a andar)", EL("impulso horizontal da anca com aterragem ativa debaixo do corpo")),
-        i("saltos-patinador", "3 × 5/lado contínuos (sem fixar)", "45 s", EL("reatividade lateral contínua com apoio ativo")),
-        i("multisaltos", "3 × 10 apoios (3 passos de balanço, distância máxima)", "90 s (volta a andar)", MAX("potência horizontal alternada mantida em 10 apoios")),
-        i("triplo-salto", "3 × 1/perna (máximo)", "60 s", MAX("potência unilateral horizontal (hops para distância)")),
-        i("salto-trap-bar", "3 × 3 @ 25–30% 1RM", "75 s", POT("potência com carga (força-velocidade)"))
+      b(2, "Pliometria", 21, [
+        i("pogo", "3 × 20", "30 s", EL("rigidez do tornozelo e contacto curto (primer)")),
+        i("skipping-altura", "3 × 10 skips (≈20 m)", "45 s (volta a andar)", EL("impulso vertical com joelho alto e aterragem ativa debaixo da anca")),
+        i("saltos-patinador", "3 × 5/lado", "45 s", EL("reatividade lateral com apoio ativo numa perna")),
+        i("salto-comprimento", "4 × 3", "60 s", MAX("potência horizontal da anca com aterragem fixa")),
+        i("salto-caixa", "4 × 5 = 20 saltos (caixa de 50–60 cm: aterra e estende por completo joelhos e anca; desce a andar)", "45 s", MAX("potência vertical com extensão completa de joelho e anca")),
+        i("lancamento-medicinal-scoop", "3 × 4 (bola de 4–6 kg, distância máxima)", "45 s", POT("potência balística da extensão da anca"))
       ]),
       b(3, "Força", 18, [
         i("peso-morto", "voltas 1–3 rampa (50% × 5, 65% × 3, 78% × 2) · voltas 4–9: 2 reps a ≈87–88% (RPE 8–8,5)", "resto do minuto", OBJ("força máxima de extensão da anca")),
@@ -462,7 +462,7 @@
     },
     "off-s4-dia2": {
       Aquecimento: AQ_B,
-      Pliometria: "20 min · 16 séries · elástico 30–60 s · máximo 60–90 s · potência 75 s · 149 contactos",
+      Pliometria: "21 min · 20 séries · elástico 30–45 s · máximo 45–60 s · potência 45 s · 152 contactos",
       "Força": "E2MOM 18 min · 9 voltas · min ímpar peso morto, min par GHD · voltas 1–3 rampa",
       Condicionamento: "Densidade 2 × 7 min · 1 min entre blocos · remo → búlgaro → flexões → swings pesados · máximo de voltas com técnica perfeita"
     },
