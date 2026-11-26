@@ -246,8 +246,8 @@
     ]);
 
   S(4, "B", "8–8,5",
-    "Intensificação: peso morto em duplas a 87–88% com GHD, pliometria com pogo, skipping, patinador, salto em comprimento e 20 saltos à caixa, com lançamento de bola medicinal para a frente, e densidade com remo, búlgaros, flexões e swings pesados.",
-    "Saltos à caixa: aterra e estende por completo joelhos e anca em cima da caixa e desce a andar. Lançamento de bola medicinal: distância máxima. Swings com 32 kg, cada repetição explosiva. Densidade: o mesmo número de voltas nos 2 blocos.",
+    "Intensificação: peso morto em duplas a 87–88% com GHD, pliometria com pogo, skipping, patinador, salto em comprimento e 20 saltos à caixa, com lançamento de bola medicinal para a frente, e densidade com remo, afundos, flexões e elevações.",
+    "Saltos à caixa: aterra e estende por completo joelhos e anca em cima da caixa e desce a andar. Lançamento de bola medicinal: distância máxima. Densidade: o mesmo número de voltas nos 2 blocos.",
     152,
     [
       b(1, "Aquecimento", 5, AQUEC_B),
@@ -265,9 +265,9 @@
       ]),
       b(4, "Condicionamento", 15, [
         i("remo-ergometro", "200 m", "—", OBJ("motor com extensão da anca e puxada")),
-        i("split-squat-bulgaro", "6/perna (halteres)", "—", OBJ("força unilateral sob fadiga moderada")),
+        i("afundo-andar", "12 reps (6/perna) com 2 halteres de 16–20 kg", "—", OBJ("força unilateral de pernas sob fadiga moderada")),
         i("flexoes", "12 reps", "—", OBJ("força de empurrar horizontal")),
-        i("kettlebell-swing", "10 reps (32 kg)", "—", OBJ("potência da extensão da anca"))
+        i("elevacoes", "6 reps", "—", OBJ("força de puxar vertical"))
       ])
     ]);
 
@@ -464,7 +464,7 @@
       Aquecimento: AQ_B,
       Pliometria: "21 min · 20 séries · elástico 30–45 s · máximo 45–60 s · potência 45 s · 152 contactos",
       "Força": "E2MOM 18 min · 9 voltas · min ímpar peso morto, min par GHD · voltas 1–3 rampa",
-      Condicionamento: "Densidade 2 × 7 min · 1 min entre blocos · remo → búlgaro → flexões → swings pesados · máximo de voltas com técnica perfeita"
+      Condicionamento: "Densidade 2 × 7 min · 1 min entre blocos · remo → afundos → flexões → elevações · máximo de voltas com técnica perfeita"
     },
     "off-s5-dia1": {
       Aquecimento: AQ_A,
