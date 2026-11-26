@@ -246,18 +246,16 @@
     ]);
 
   S(4, "B", "8–8,5",
-    "Intensificação: peso morto em duplas a 87–88% com GHD, pliometria com pogo, skipping, patinador, salto em comprimento e 20 saltos à caixa, com lançamento de bola medicinal para a frente, e 5 rondas com SkiErg, afundos com sandbag, handstand push-ups, elevações e box jump overs.",
-    "Saltos à caixa: aterra e estende por completo joelhos e anca em cima da caixa e desce a andar. Lançamento de bola medicinal: distância máxima. Condicionamento: ritmo que consigas manter nas 5 rondas.",
-    152,
+    "Intensificação: peso morto em duplas a 87–88% com GHD, pliometria com pogo, patinador e salto em comprimento, com salto com trap bar, e 5 rondas com SkiErg, afundos com sandbag, handstand push-ups, elevações e box jump overs.",
+    "Salto com trap bar: carga leve (20–30% do 1RM do peso morto), cada salto à altura máxima; para se a altura cair. Condicionamento: ritmo que consigas manter nas 5 rondas.",
+    114,
     [
       b(1, "Aquecimento", 5, AQUEC_B),
-      b(2, "Pliometria", 21, [
+      b(2, "Pliometria", 15, [
         i("pogo", "3 × 20", "30 s", EL("rigidez do tornozelo e contacto curto (primer)")),
-        i("skipping-altura", "3 × 10 skips (≈20 m)", "45 s (volta a andar)", EL("impulso vertical com joelho alto e aterragem ativa debaixo da anca")),
         i("saltos-patinador", "3 × 5/lado", "45 s", EL("reatividade lateral com apoio ativo numa perna")),
         i("salto-comprimento", "4 × 3", "60 s", MAX("potência horizontal da anca com aterragem fixa")),
-        i("salto-caixa", "4 × 5 = 20 saltos (caixa de 50–60 cm: aterra e estende por completo joelhos e anca; desce a andar)", "45 s", MAX("potência vertical com extensão completa de joelho e anca")),
-        i("lancamento-medicinal-scoop", "3 × 4 (bola de 4–6 kg, distância máxima)", "45 s", POT("potência balística da extensão da anca"))
+        i("salto-trap-bar", "3 × 4 @ 20–30% do 1RM do peso morto (altura máxima, aterragem suave)", "75 s", POT("potência com carga (força-velocidade)"))
       ]),
       b(3, "Força", 18, [
         i("peso-morto", "voltas 1–3 rampa (50% × 5, 65% × 3, 78% × 2) · voltas 4–9: 2 reps a ≈87–88% (RPE 8–8,5)", "resto do minuto", OBJ("força máxima de extensão da anca")),
@@ -463,7 +461,7 @@
     },
     "off-s4-dia2": {
       Aquecimento: AQ_B,
-      Pliometria: "21 min · 20 séries · elástico 30–45 s · máximo 45–60 s · potência 45 s · 152 contactos",
+      Pliometria: "15 min · 13 séries · elástico 30–45 s · máximo 60 s · potência 75 s · 114 contactos",
       "Força": "E2MOM 18 min · 9 voltas · min ímpar peso morto, min par GHD · voltas 1–3 rampa",
       Condicionamento: "5 rondas por tempo · SkiErg → afundos com sandbag → handstand push-ups → elevações → box jump overs · limite 25 min"
     },
