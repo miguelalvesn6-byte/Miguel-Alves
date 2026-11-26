@@ -235,6 +235,8 @@
     "step-up-explosivo": "https://www.youtube.com/watch?v=_KYXIeUatqk", // "Reactive Step Up Jump to Knee Drive" — Theory of Motion Exercise Library
     "floor-press": "https://www.youtube.com/watch?v=jjlekYs1cfQ", // "Dumbbell Floor Press - OPEX Exercise Library" — OPEX Fitness
     "wall-walk": "https://www.youtube.com/watch?v=XjK1DrZg1Zc", // "How to Perform a Wall Walk" — BPM
+    "handstand-push-up": "https://www.youtube.com/watch?v=7wSZnHQZChI", // "Handstand Push Up Tutorial (HSPU) - Complete Progression" — Calisthenics & Weight Training
+    "box-jump-over": "https://www.youtube.com/watch?v=COMymbLDWfs", // "Box Jump Over" — Camille Leblanc-Bazinet
   };
   if (typeof EXERCICIOS === 'undefined') return;
   EXERCICIOS.forEach(e => { if (V[e.id] && !e.video) e.video = V[e.id]; });

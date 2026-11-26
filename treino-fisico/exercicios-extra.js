@@ -660,6 +660,12 @@
   ex("wall-walk", "Wall walk (subir a parede)", "wall walk", "core", ["peso-corporal"], "NCR", "Ombros, tríceps, core",
     ["Começa em prancha com os pés junto à parede.", "Sobe os pés pela parede enquanto as mãos recuam até o peito ficar perto da parede.", "Desce com controlo pelo mesmo caminho, mãos à frente e pés a descer."],
     ["Lombar a arquear (costelas abertas)", "Descer de repente", "Cabeça a cair entre os braços"], "Subir só até meio da parede.", "Tocar no peito na parede e pausa de 3 s.", "3 × 3");
+  ex("handstand-push-up", "Flexão em pino (handstand push-up)", "handstand push-up", "forca", ["peso-corporal"], "NCR", "Ombros, tríceps, core",
+    ["Pino de frente para fora com os calcanhares na parede e mãos um pouco mais abertas que os ombros.", "Desce com controlo até a cabeça tocar num tapete, formando um triângulo entre a cabeça e as mãos.", "Empurra até esticar os braços, com o tronco rígido e as costelas fechadas."],
+    ["Lombar a arquear", "Cair de cabeça sem controlo", "Cotovelos muito abertos"], "Pike push-up com os pés numa caixa ou descer só até meio.", "Sem tapete (amplitude maior) ou deficit.", "3 × 5");
+  ex("box-jump-over", "Box jump over (saltar por cima da caixa)", "box jump over", "pliometria", ["ginasio"], "CR", "Pernas, gémeos, motor",
+    ["Em frente a uma caixa de 50–60 cm.", "Salta para cima da caixa (ou por cima dela, sem a tocar) e passa para o outro lado.", "Vira-te e repete na direção contrária; cada passagem conta 1 rep."],
+    ["Aterrar pesado do outro lado", "Joelhos a cair para dentro", "Prender o pé na caixa por cansaço"], "Caixa mais baixa ou subir e descer a andar do outro lado.", "Saltar por cima sem tocar na caixa.", "12 reps");
   ex("burpee", "Burpee", "burpee", "forca", ["peso-corporal"], "CR", "Peitoral, ombros, pernas, core",
     ["Mãos no chão, pés para trás até à prancha.", "Peito ao chão (ou flexão) e volta à prancha.", "Pés à frente debaixo do corpo, levanta-te e salta com as mãos acima da cabeça."],
     ["Lombar a cair na prancha", "Aterrar pesado"], "Sem salto e sem peito ao chão.", "Burpee com salto à caixa.", "8–12 reps");

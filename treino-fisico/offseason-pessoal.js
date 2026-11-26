@@ -246,8 +246,8 @@
     ]);
 
   S(4, "B", "8–8,5",
-    "Intensificação: peso morto em duplas a 87–88% com GHD, pliometria com pogo, skipping, patinador, salto em comprimento e 20 saltos à caixa, com lançamento de bola medicinal para a frente, e densidade com remo, afundos, flexões e elevações.",
-    "Saltos à caixa: aterra e estende por completo joelhos e anca em cima da caixa e desce a andar. Lançamento de bola medicinal: distância máxima. Densidade: o mesmo número de voltas nos 2 blocos.",
+    "Intensificação: peso morto em duplas a 87–88% com GHD, pliometria com pogo, skipping, patinador, salto em comprimento e 20 saltos à caixa, com lançamento de bola medicinal para a frente, e 5 rondas com SkiErg, afundos com sandbag, handstand push-ups, elevações e box jump overs.",
+    "Saltos à caixa: aterra e estende por completo joelhos e anca em cima da caixa e desce a andar. Lançamento de bola medicinal: distância máxima. Condicionamento: ritmo que consigas manter nas 5 rondas.",
     152,
     [
       b(1, "Aquecimento", 5, AQUEC_B),
@@ -263,11 +263,12 @@
         i("peso-morto", "voltas 1–3 rampa (50% × 5, 65% × 3, 78% × 2) · voltas 4–9: 2 reps a ≈87–88% (RPE 8–8,5)", "resto do minuto", OBJ("força máxima de extensão da anca")),
         i("ghd-abdominais", "15 reps", "resto do minuto", OBJ("força dos flexores da anca e do abdómen"))
       ]),
-      b(4, "Condicionamento", 15, [
-        i("remo-ergometro", "200 m", "—", OBJ("motor com extensão da anca e puxada")),
-        i("afundo-andar", "12 reps (6/perna) com 2 halteres de 16–20 kg", "—", OBJ("força unilateral de pernas sob fadiga moderada")),
-        i("flexoes", "12 reps", "—", OBJ("força de empurrar horizontal")),
-        i("elevacoes", "6 reps", "—", OBJ("força de puxar vertical"))
+      b(4, "Condicionamento", 25, [
+        i("ski-erg", "15 cal", "—", OBJ("motor de corpo inteiro")),
+        i("afundo-andar", "12 reps (6/perna) com sandbag ao ombro ou em abraço", "—", OBJ("força unilateral de pernas sob carga")),
+        i("handstand-push-up", "5–6 reps", "—", OBJ("força de empurrar vertical e rigidez do tronco")),
+        i("elevacoes", "6 reps", "—", OBJ("força de puxar vertical")),
+        i("box-jump-over", "12 reps (caixa de 50–60 cm)", "fim da ronda", OBJ("potência de pernas repetida sob fadiga"))
       ])
     ]);
 
@@ -464,7 +465,7 @@
       Aquecimento: AQ_B,
       Pliometria: "21 min · 20 séries · elástico 30–45 s · máximo 45–60 s · potência 45 s · 152 contactos",
       "Força": "E2MOM 18 min · 9 voltas · min ímpar peso morto, min par GHD · voltas 1–3 rampa",
-      Condicionamento: "Densidade 2 × 7 min · 1 min entre blocos · remo → afundos → flexões → elevações · máximo de voltas com técnica perfeita"
+      Condicionamento: "5 rondas por tempo · SkiErg → afundos com sandbag → handstand push-ups → elevações → box jump overs · limite 25 min"
     },
     "off-s5-dia1": {
       Aquecimento: AQ_A,
