@@ -246,16 +246,16 @@
     ]);
 
   S(4, "B", "8–8,5",
-    "Intensificação: peso morto em duplas a 87–88% com GHD, pliometria com pogo, patinador e salto em comprimento, com salto com trap bar, e 5 rondas com SkiErg, afundos com sandbag, handstand push-ups, elevações e box jump overs.",
-    "Salto com trap bar: carga leve (20–30% do 1RM do peso morto), cada salto à altura máxima; para se a altura cair. Condicionamento: ritmo que consigas manter nas 5 rondas.",
-    114,
+    "Intensificação: peso morto em duplas a 87–88% com GHD, pliometria com pogo, patinador e salto em comprimento, com salto de agachamento com halteres, e 5 rondas com SkiErg, afundos com sandbag, handstand push-ups, elevações, box jump overs e swings.",
+    "Salto de agachamento com halteres: carga leve, cada salto à altura máxima; para se a altura cair. Condicionamento: ritmo que consigas manter nas 5 rondas.",
+    117,
     [
       b(1, "Aquecimento", 5, AQUEC_B),
       b(2, "Pliometria", 15, [
         i("pogo", "3 × 20", "30 s", EL("rigidez do tornozelo e contacto curto (primer)")),
         i("saltos-patinador", "3 × 5/lado", "45 s", EL("reatividade lateral com apoio ativo numa perna")),
         i("salto-comprimento", "4 × 3", "60 s", MAX("potência horizontal da anca com aterragem fixa")),
-        i("salto-trap-bar", "3 × 4 @ 20–30% do 1RM do peso morto (altura máxima, aterragem suave)", "75 s", POT("potência com carga (força-velocidade)"))
+        i("salto-agachamento", "3 × 5 com 2 halteres de 8–12 kg (altura máxima, aterragem suave)", "60 s", POT("potência com carga (força-velocidade)"))
       ]),
       b(3, "Força", 18, [
         i("peso-morto", "voltas 1–3 rampa (50% × 5, 65% × 3, 78% × 2) · voltas 4–9: 2 reps a ≈87–88% (RPE 8–8,5)", "resto do minuto", OBJ("força máxima de extensão da anca")),
@@ -266,7 +266,8 @@
         i("afundo-andar", "12 reps (6/perna) com sandbag ao ombro ou em abraço", "—", OBJ("força unilateral de pernas sob carga")),
         i("handstand-push-up", "5–6 reps", "—", OBJ("força de empurrar vertical e rigidez do tronco")),
         i("elevacoes", "6 reps", "—", OBJ("força de puxar vertical")),
-        i("box-jump-over", "12 reps (caixa de 50–60 cm)", "fim da ronda", OBJ("potência de pernas repetida sob fadiga"))
+        i("box-jump-over", "12 reps (caixa de 50–60 cm)", "—", OBJ("potência de pernas repetida sob fadiga")),
+        i("kettlebell-swing", "10 reps (24–32 kg)", "fim da ronda", OBJ("potência da extensão da anca"))
       ])
     ]);
 
@@ -461,9 +462,9 @@
     },
     "off-s4-dia2": {
       Aquecimento: AQ_B,
-      Pliometria: "15 min · 13 séries · elástico 30–45 s · máximo 60 s · potência 75 s · 114 contactos",
+      Pliometria: "15 min · 13 séries · elástico 30–45 s · máximo 60 s · potência 60 s · 117 contactos",
       "Força": "E2MOM 18 min · 9 voltas · min ímpar peso morto, min par GHD · voltas 1–3 rampa",
-      Condicionamento: "5 rondas por tempo · SkiErg → afundos com sandbag → handstand push-ups → elevações → box jump overs · limite 25 min"
+      Condicionamento: "5 rondas por tempo · SkiErg → afundos com sandbag → handstand push-ups → elevações → box jump overs → swings · limite 25 min"
     },
     "off-s5-dia1": {
       Aquecimento: AQ_A,
