@@ -266,7 +266,7 @@
         i("afundo-andar", "12 reps (6/perna) com sandbag ao ombro ou em abraço", "—", OBJ("força unilateral de pernas sob carga")),
         i("push-press", "10 reps (40 kg)", "—", OBJ("força de empurrar vertical com impulso das pernas")),
         i("elevacoes", "6 reps", "—", OBJ("força de puxar vertical")),
-        i("box-jump-over", "12 reps (caixa de 50–60 cm)", "—", OBJ("potência de pernas repetida sob fadiga")),
+        i("box-jump-over", "10 reps (caixa de 50–60 cm)", "—", OBJ("potência de pernas repetida sob fadiga")),
         i("kettlebell-swing", "10 reps (24–32 kg)", "fim da ronda", OBJ("potência da extensão da anca"))
       ])
     ]);
